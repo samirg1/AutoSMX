@@ -2,7 +2,7 @@ import pyautogui
 import pytesseract  # type: ignore
 from PIL import ImageGrab
 
-from locators import find_text
+from src.locators import find_text
 
 if __name__ == "__main__":
     screen = ImageGrab.grab()
