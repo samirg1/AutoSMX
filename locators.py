@@ -1,36 +1,42 @@
-from PIL import ImageGrab
-import pyautogui
-import pytesseract # type: ignore
+import os
 
-# pytesseract.pytesseract.tesseract_cmd = (r"C:\...\AppData\Local\Programs\Tesseract-OCR\tesseract") # needed for Windows as OS
+import pytesseract  # type: ignore
 
-screen =  ImageGrab.grab() 
-cap = screen.convert('L')
+if os.name == "nt":  # TODO specify path
+    pytesseract.pytesseract.tesseract_cmd = r"C:\...\AppData\Local\Programs\Tesseract-OCR\tesseract"  # needed for Windows as OS
 
-# BMI/Barcode
 
-data: list[str] = pytesseract.image_to_boxes(cap).splitlines() # type: ignore
-all_letters = ''.join(x[0] for x in data)
+def find_text(image_string_lines: list[str], all_letters: str, text: str, window_height: int) -> tuple[float, float]:
+    """
+    Find the x, y coordinates of text in a pytesseract image string.
+    - Input:
+        - image_string_lines (list[str]): The image string lines from pytesseract.image_to_boxes.splitlines function.
+        - all_letters (str): The list of all characters in the image string.
+        - text (str): The text to find.
+        - window_height (int): The height of the window.
+    - Returns (tuple[float, float]): The x, y coordinates.
+    """
+    index_start = -1
+    try:
+        index_start = all_letters.index(text)
+    except ValueError:
+        raise ValueError(f"Could not find text '{text}' in image string.")
 
-def find_text(image_data: list[str], all_letters: str, text: str) -> tuple[float, float]:
-    index_start = all_letters.index(text)
-
-    first = image_data[index_start].split(" ")
-    left = int(first[1])
-    bottom = int(first[2])
-    right = int(image_data[index_start + len(text) - 1].split(" ")[3])
-    top = int(first[4])
+    start_coords = image_string_lines[index_start].split(" ")
+    left = int(start_coords[1])
+    bottom = int(start_coords[2])
+    right = int(image_string_lines[index_start + len(text) - 1].split(" ")[3])
+    top = int(start_coords[4])
     for i in range(index_start + 1, index_start + len(text)):
-        top = max(top, int(image_data[i].split(' ')[4]))
+        top = max(top, int(image_string_lines[i].split(" ")[4]))
 
     mid_x, mid_y = (right + left) / 2, (top + bottom) / 2
-    return convert_to_screen(mid_x, mid_y)
-
-def convert_to_screen(x: float, y: float) -> tuple[float, float]:
-    _, height = pyautogui.size()
-    return x / 2, (height * 2 - y) / 2
+    return _pytesseract_to_pyautogui_coords(mid_x, mid_y, window_height)
 
 
-x, y = find_text(data, all_letters, 'BMI/Barcode')
-print(x, y)
-pyautogui.moveTo(x, y)
+def _pytesseract_to_pyautogui_coords(x: float, y: float, window_height: int) -> tuple[float, float]:
+    return x / 2, (window_height * 2 - y) / 2
+
+
+if __name__ == "__main__":
+    pass
