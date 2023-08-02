@@ -1,0 +1,22 @@
+{{! Google Docstring Template }}
+
+{{summaryPlaceholder}}.
+{{#parametersExist}}
+- Input:
+{{#args}}
+    - {{var}} ({{typePlaceholder}}): {{descriptionPlaceholder}}.
+{{/args}}
+{{#kwargs}}
+    - {{var}} ({{typePlaceholder}}, optional): {{descriptionPlaceholder}}. Defaults to {{&default}}.
+{{/kwargs}}
+{{/parametersExist}}
+{{#returnsExist}}
+- Returns{{#returns}} ({{typePlaceholder}}): {{descriptionPlaceholder}}. {{/returns}}
+{{/returnsExist}}
+{{#exceptionsExist}}
+{{#exceptions}}
+- Raises ({{type}}): {{descriptionPlaceholder}}.
+{{/exceptions}}
+{{/exceptionsExist}}
+- Time Complexity: {{descriptionPlaceholder}}.
+- Aux space complexity: {{descriptionPlaceholder}}.
