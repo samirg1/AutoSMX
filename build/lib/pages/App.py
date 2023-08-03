@@ -1,5 +1,10 @@
-import pyautogui
 import time
+import tkinter
+from typing import Literal
+
+import pyautogui
+
+from pages import JobPage, Page, TestPage
 
 """
 ['\t', '\n', '\r', ' ', '!', '"', '#', '$', '%', '&',
@@ -24,6 +29,36 @@ import time
 'win', 'winleft', 'winright', 'yen', 'command', 'option', 'optionleft', 'optionright']
 """
 
+TPAGES = Literal["JOB", "TEST", "TESTJOB"]
+
+
+class App(tkinter.Tk):
+    def __init__(self):
+        super().__init__()
+        maxWidth = self.winfo_screenwidth()
+        width = 360
+        height = self.winfo_screenheight()
+        self.geometry(f"{width}x{height}+{maxWidth - width}+0")
+        self.title("ALTER SMX Tool")
+        self.attributes("-topmost", 1)  # type: ignore
+
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+
+        self.pages: dict[TPAGES, Page] = {"JOB": JobPage(self), "TEST": TestPage(self)}
+
+        self.current_page: Page | None = None
+        self.change_page("JOB")
+
+    def change_page(self, page: TPAGES):
+        if self.current_page is not None:
+            self.current_page.frame.grid_remove()
+
+        self.current_page = self.pages[page]
+        self.current_page.setup()
+        self.current_page.frame.grid(row=0, column=0, sticky="nsew")
+
+
 def google_search(query: str):
     # Wait for a moment before starting the automation
     time.sleep(5)
@@ -31,9 +66,9 @@ def google_search(query: str):
     # Open the Start menu or Spotlight (macOS) to search for the web browser
     with pyautogui.hold("command"):
         pyautogui.press("space")
-    pyautogui.printInfo( )
+    pyautogui.printInfo()
     # pyautogui.typewrite('chrome')
-    # pyautogui.press('enter')  
+    # pyautogui.press('enter')
 
     # # Wait for the web browser to open
     # time.sleep(5)
@@ -48,7 +83,7 @@ def google_search(query: str):
     # # Scroll down to see more results (optional)
     # pyautogui.scroll(-2)
 
-if __name__ == "__main__":
-    search_query = "Hello, PyAutoGUI!"
-    google_search(search_query)
 
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()

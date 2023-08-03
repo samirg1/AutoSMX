@@ -17,15 +17,8 @@ class Job:
         self._tests.append(Test(item))
         return self._tests[-1]
 
-    def full_info(self) -> str:
-        if not self._tests:
-            return str(self)
-
-        tests = "\n".join(str(self._tests[i]) for i in range(len(self._tests) - 6, len(self._tests)))
-        return f"{str(self)}\n{tests}"
-
     def __str__(self) -> str:
-        return f"{self._number} - {self._campus} - {self._type}"
+        return f"{self._number} - {self._campus}\n{self._type}\n{self._address}"
 
     def __hash__(self) -> int:
         return hash(self._number)
