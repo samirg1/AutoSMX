@@ -1,5 +1,6 @@
 from tkinter import StringVar, ttk
 import tkinter
+from typing import cast
 # from actions import complete_test, get_item_job
 from design.Item import Item
 from design.Job import Job
@@ -124,9 +125,9 @@ class TestPage(Page):
     
     def save_test_job(self, window: tkinter.Toplevel, department: str, contact: str, comment: str):
         self.comment.insert(tkinter.END, comment)
-        print(self.comment.get("1.0", tkinter.END))
-        self.test_job = TestJob(department, contact, comment)
-        self.test.add_job(self.test_job)
+        test_job = TestJob(department, contact, comment)
+        self.test.add_job(test_job)
+        self.shared.test_job_manager.add_test_job(self.item, cast(Job, self.shared.job), test_job)
         window.destroy()
 
         ttk.Label(self.frame, text=f"Jobs").grid(column=0, row=self.job_start_row, columnspan=4)

@@ -1,7 +1,7 @@
 import tkinter
 from tkinter import ttk
 
-from design.Job import Job
+from design.TestJobManager import TestJobManager
 from pages.StartPage import StartPage
 from pages.JobPage import JobPage
 from pages.Page import TPAGES, Page, SharedPageInfo
@@ -21,9 +21,7 @@ class App(tkinter.Tk):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
-        self.jobs: dict[str, Job] = {}
-
-        shared = SharedPageInfo()
+        shared = SharedPageInfo({}, TestJobManager())
         self.pages: dict[TPAGES, Page] = {
             "START": StartPage(self._frame(), self.change_page, shared),
             "JOB": JobPage(self._frame(), self.change_page, shared),
