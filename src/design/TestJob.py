@@ -1,5 +1,8 @@
 class TestJob:
-    def __init__(self, department: str, contact_name: str | None):
+    def __init__(self, department: str, contact_name: str, description: str):
         self.department = department
-        self.contact_name = contact_name or input("Enter contact name: ")
-        self.description = input("Enter job description: ")
+        self.contact_name = contact_name
+        self.description = description
+
+    def __str__(self) -> str:
+        return f"{self.description}"

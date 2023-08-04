@@ -1,9 +1,10 @@
 from tkinter import StringVar, ttk
 import tkinter
-# from actions import get_item_job
+# from actions import complete_test, get_item_job
 from design.Item import Item
 from design.Job import Job
 from design.Test import ScriptError, Test
+from design.TestJob import TestJob
 from pages.Page import Page
 
 
@@ -22,9 +23,8 @@ class TestPage(Page):
     def get_item(self):
         # self.item, self.job = get_item_job(self.item_number.get(), self.assets_position, self.testing_position, self.job)
         self.item = Item(self.item_number.get(), "BED", "Model", "Manufacturer", "None", "None", "123456")
-        if not self.job:
-            self.job = Job("CAMPEYN", "4812/333 Clarendon St THORNBURY", "THORNBURY")
-        self.shared.job = self.job
+        if not self.shared.job:
+            self.shared.job = Job("CAMPEYN", "4812/333 Clarendon St THORNBURY", "THORNBURY")
         self.frame.focus()
         self.test = self.get_test(self.item)
         self.display_test()
@@ -39,7 +39,7 @@ class TestPage(Page):
     
     def display_test(self):
         ttk.Label(self.frame, text=f"{self.item}").grid(column=0, row=3, columnspan=4)
-        ttk.Label(self.frame, text=f"{self.job}").grid(column=0, row=4, columnspan=4)
+        ttk.Label(self.frame, text=f"{self.shared.job}").grid(column=0, row=4, columnspan=4)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=5, columnspan=4)
 
         script = self.test.script
@@ -57,37 +57,91 @@ class TestPage(Page):
         self.frame.rowconfigure(row, minsize=10)
 
         ttk.Button(self.frame, text="Add Job", command=self.add_test_job).grid(column=0, row=row+1, columnspan=4)
-        ttk.Label(self.frame, text="Comment").grid(column=0, row=row+2, columnspan=4)
+        row += 1
+        self.job_start_row = row + 1
+        row += 3
+        ttk.Label(self.frame, text="Comment").grid(column=0, row=row, columnspan=4)
+        row += 1
 
         self.comment = tkinter.Text(self.frame, height=4, width=100)
-        self.comment.grid(column=0, row=row+3, columnspan=4)
+        self.comment.grid(column=0, row=row, columnspan=4)
+        row += 1
 
-        self.frame.rowconfigure(row+4, minsize=10)
-        ttk.Label(self.frame, text="Result").grid(column=0, row=row+5, columnspan=4)
+        self.frame.rowconfigure(row, minsize=10)
+        row += 1
+        ttk.Label(self.frame, text="Result").grid(column=0, row=row, columnspan=4)
+        row += 1
         self.result = tkinter.StringVar(value="Passed")
         passed = ttk.Radiobutton(self.frame, text="Pass", variable=self.result, value="P")
-        passed.grid(column=0, row=row+6)
+        passed.grid(column=0, row=row)
         passed.invoke()
-        ttk.Radiobutton(self.frame, text="Repair", variable=self.result, value="Passed -").grid(column=1, row=row+6)
-        ttk.Radiobutton(self.frame, text="Minor", variable=self.result, value="Passed a").grid(column=2, row=row+6)
-        ttk.Radiobutton(self.frame, text="Tagged", variable=self.result, value="Faile").grid(column=3, row=row+6)
-        ttk.Radiobutton(self.frame, text="Removed", variable=self.result, value="Failed and rem").grid(column=0, row=row+7)
-        ttk.Radiobutton(self.frame, text="Untested", variable=self.result, value="Failed and rem").grid(column=1, row=row+7)
-        ttk.Radiobutton(self.frame, text="Fail-Unable", variable=self.result, value="Failed and rem").grid(column=2, row=row+7)
+        ttk.Radiobutton(self.frame, text="Repair", variable=self.result, value="Passed -").grid(column=1, row=row)
+        ttk.Radiobutton(self.frame, text="Minor", variable=self.result, value="Passed a").grid(column=2, row=row)
+        ttk.Radiobutton(self.frame, text="Tagged", variable=self.result, value="Faile").grid(column=3, row=row)
+        row += 1
+        ttk.Radiobutton(self.frame, text="Removed", variable=self.result, value="Failed and rem").grid(column=0, row=row)
+        ttk.Radiobutton(self.frame, text="Untested", variable=self.result, value="Failed and rem").grid(column=1, row=row)
+        ttk.Radiobutton(self.frame, text="Fail-Unable", variable=self.result, value="Failed and rem").grid(column=2, row=row)
+        row += 1
 
         save = ttk.Button(self.frame, text="Save", command=self.save_test)
-        save.grid(column=0, row=row+8, columnspan=4)
+        save.grid(column=0, row=row, columnspan=4)
+        row += 1
         self.frame.bind("<Return>", lambda _: save.invoke())
         
 
     def add_test_job(self):
-        ...
+        assert self.shared.job is not None
+        
+        window = tkinter.Toplevel(self.frame)
+        window.title("Add Job")
+        maxWidth = window.winfo_screenwidth()
+        width = 360
+        height = window.winfo_screenheight()
+        window.geometry(f"{width}x{height // 2}+{maxWidth - width}+{height // 4}")
+        window.attributes("-topmost", 2) # type: ignore
+        window.resizable(False, False)
+
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+
+        ttk.Label(window, text="Department").grid(column=0, row=0)
+        department = tkinter.StringVar(value=self.shared.job.department)
+        ttk.Entry(window, textvariable=department).grid(column=1, row=0)
+
+        ttk.Label(window, text="Contact Name").grid(column=0, row=1)
+        contact = tkinter.StringVar(value=self.shared.job.company)
+        ttk.Entry(window, textvariable=contact).grid(column=1, row=1)
+
+        ttk.Label(window, text="Comment").grid(column=0, row=2)
+        comment = tkinter.Text(window, height=4, width=100)
+        comment.focus()
+        comment.grid(column=0, row=3, columnspan=2)
+
+        ttk.Button(window, text="Save", command=lambda: self.save_test_job(window, department.get(), contact.get(), comment.get("1.0", tkinter.END))).grid(column=0, row=4, columnspan=2)
+
+        window.mainloop()
+    
+    def save_test_job(self, window: tkinter.Toplevel, department: str, contact: str, comment: str):
+        self.comment.insert(tkinter.END, comment)
+        print(self.comment.get("1.0", tkinter.END))
+        self.test_job = TestJob(department, contact, comment)
+        self.test.add_job(self.test_job)
+        window.destroy()
+
+        ttk.Label(self.frame, text=f"Jobs").grid(column=0, row=self.job_start_row, columnspan=4)
+        self.job_start_row += 1
+
+        for i, job in enumerate(self.test.testjobs):
+            ttk.Label(self.frame, text=f"{i+1}").grid(column=0, row=self.job_start_row)
+            ttk.Label(self.frame, text=f"{job}").grid(column=1, row=self.job_start_row, columnspan=3)
+            self.job_start_row += 1
 
 
     def save_test(self):
         self.test.complete(self.comment.get("1.0", tkinter.END), self.result.get(), [s.get() for s in self.stest_answers])
-        if self.job:
-            self.job.add_test(self.test)
+        if self.shared.job:
+            self.shared.job.add_test(self.test)
 
-        
+        # complete_test(self.test, self.shared.area_position, self.shared.comments_position)
         self.change_page("TEST")

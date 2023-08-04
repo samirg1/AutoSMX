@@ -8,8 +8,16 @@ class Job:
         self._tests: list[Test] = []
 
     @property
+    def company(self) -> str:
+        return self._company
+    
+    @property
     def campus(self) -> str:
         return self._campus
+    
+    @property
+    def department(self) -> str:
+        return self._department
 
     def add_test(self, test: Test):
         self._tests.append(test)

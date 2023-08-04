@@ -27,9 +27,8 @@ class Test:
     def testjobs(self) -> list[TestJob]:
         return self.test_jobs
 
-    def add_job(self, department: str, contact_name: str | None) -> TestJob:
-        self.test_jobs.append(TestJob(department, contact_name))
-        return self.test_jobs[-1]
+    def add_job(self, test_job: TestJob):
+        self.test_jobs.append(test_job)
 
     def complete(self, comment: str, final_result: str, stest_answers: list[str]):
         self.script_result = stest_answers
