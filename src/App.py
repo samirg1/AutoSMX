@@ -47,7 +47,6 @@ class App(tkinter.Tk):
             self.testing_position = kwargs["testing_position"]
             self.area_position = kwargs["area_position"]
             self.comments_position = kwargs["comments_position"]
-            kwargs = {}
 
         if self.current_page is not None:
             self.current_page.frame.grid_remove()

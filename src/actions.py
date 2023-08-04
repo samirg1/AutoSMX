@@ -1,7 +1,7 @@
 from enum import Enum
 import os
-import automations
-from design import Item
+from automations import click, click_key, type, get_selected_text
+from design import Item, Job
 
 WINDOWS = os.name == "nt"
     
@@ -38,8 +38,41 @@ class KEYS(Enum):
 """
 
 
-def get_item(item_number: str) -> Item:
-    automations.click()
-    automations.type(item_number)
-    automations.click_key(KEYS.enter.value)
+def get_item_job(item_number: str, asset_position: tuple[int, int], testing_position: tuple[int, int], job: Job | None = None) -> tuple[Item, Job]:
+    click()
+    type(item_number)
+    click_key(KEYS.enter.value)
+    click(asset_position)
+    click_key(KEYS.tab.value)
+    type(item_number)
+    click_key(KEYS.enter.value)
+    click_key(KEYS.tab.value, times=7)
+    serial = get_selected_text()
+    click_key(KEYS.tab.value)
+    model = get_selected_text()
+    click_key(KEYS.tab.value, times=2)
+    description = get_selected_text()
+    click_key(KEYS.tab.value, times=2)
+    manufacturer = get_selected_text()
+
+    item = Item(item_number, description, model, manufacturer, "None", "None", serial)
+
+    click_key(KEYS.tab.value)
+    company = get_selected_text()
+    click_key(KEYS.tab.value)
+    campus = get_selected_text()
+    click_key(KEYS.tab.value)
+    department = get_selected_text()
+    click_key(KEYS.tab.value, times=21)
+    click_key(KEYS.enter.value)
+
+    click(testing_position)
+
+    if job is None:
+        job = Job(company, campus, department)
+
+    return item, job
+
+
+
     

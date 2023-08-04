@@ -11,17 +11,18 @@ _SPACE = " "
 class ScriptTest:
     def __init__(self, name: str, *options: str):
         self.name = name
-        self.options = options
+        self.selected = options[0] if options else None
+        self.options = sorted(options, key=lambda x: -1 if x == _PASS else 0 if x == _N_A else 1)
 
 
 _CASTORS_Y = ScriptTest("CASTORS", _PASS, _N_A, _FAIL)
-_FRAME = ScriptTest("FRAME", _PASS, _FAIL, _N_A)
-_PAINT = ScriptTest("PAINT", _PASS, _FAIL, _N_A)
-_LABELLING = ScriptTest("LABELLING", _PASS, _FAIL, _N_A)
+_FRAME = ScriptTest("FRAME", _PASS, _N_A, _FAIL)
+_PAINT = ScriptTest("PAINT", _PASS, _N_A, _FAIL)
+_LABELLING = ScriptTest("LABELLING", _PASS, _N_A, _FAIL)
 _CHARGER_N = ScriptTest("CHARGER", _N_A, _PASS, _FAIL)
 _BATTERY_N = ScriptTest("BATTERY", _N_A, _PASS, _FAIL)
 _BATTERY_Y = ScriptTest("BATTERY", _PASS, _N_A, _FAIL)
-_CONTROL = ScriptTest("CONTROL", _PASS, _FAIL, _N_A)
+_CONTROL = ScriptTest("CONTROL", _PASS, _N_A, _FAIL)
 _CONDITION = ScriptTest("CONDITION", _ONE, _ZERO)
 _FURTHER_ATTENTION = ScriptTest("FURTHER_ATTENTION", _NO, _YES)
 _DETAILS = ScriptTest("DETAILS", _PASS, _N_A, _FAIL)
@@ -78,11 +79,11 @@ class Script:
         self.nickname = nickname
         self.name = name
         self.tests = tests
-        self.search_terms = extra_terms or []
-        self.search_terms.append(nickname)
+        self._search_terms = extra_terms or []
+        self._search_terms.append(nickname)
 
     def matches(self, search: str) -> bool:
-        return any(term in search for term in self.search_terms)
+        return any(term in search for term in self._search_terms)
 
 
 SCRIPTS: dict[str, Script] = {

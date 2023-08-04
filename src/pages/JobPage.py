@@ -11,9 +11,6 @@ class JobPage(Page):
         ttk.Button(self.frame, text="+", command=self.add_job).grid(column=3, row=0)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=1, columnspan=4)
 
-        self.jobs.append(Job("1234562445", "THORNBURY", "333 Clarendon St", "CAMPEYN"))
-        self.jobs.append(Job("1305135091", "BOX HILL", "8 Clota Ave", "BENETAS"))
-        self.jobs.append(Job("2838103810", "DONVALE", "9 Deed St", "CAMPEYN"))
 
         row = 2
         for job in self.jobs:
