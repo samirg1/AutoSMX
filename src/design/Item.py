@@ -7,6 +7,10 @@ class Item:
         self._room = room
         self._last_service = last_service
         self._serial = serial
+
+    @property
+    def number(self) -> str:
+        return self._number
     
     @property
     def description(self) -> str:
