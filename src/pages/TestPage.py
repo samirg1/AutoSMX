@@ -11,6 +11,7 @@ from pages.Page import Page
 class TestPage(Page):
     job: Job | None = None
     def setup(self, **kwargs: Any):
+        self.kwargs = kwargs
         self.assets_position = kwargs["assets_position"]
         self.testing_position = kwargs["testing_position"]
         self.area_position = kwargs["area_position"]
@@ -29,7 +30,8 @@ class TestPage(Page):
     def get_item(self):
         # self.item, self.job = get_item_job(self.item_number.get(), self.assets_position, self.testing_position, self.job)
         self.item = Item(self.item_number.get(), "BED", "Model", "Manufacturer", "None", "None", "123456")
-        self.job = Job("CAMPEYN", "4812/333 Clarendon St THORNBURY", "THORNBURY")
+        if not self.job:
+            self.job = Job("CAMPEYN", "4812/333 Clarendon St THORNBURY", "THORNBURY")
         self.frame.focus()
         self.test = self.get_test(self.item)
         self.display_test()
@@ -92,8 +94,8 @@ class TestPage(Page):
 
     def save_test(self):
         self.test.complete(self.comment.get("1.0", tkinter.END), self.result.get())
-        print([a.get() for a in self.stest_answers])
-        print(self.result.get())
-        print(self.comment.get("1.0", tkinter.END))
-        # self.test.complete(self.comment.get())
-        # self.change_page("JOB")
+        if self.job:
+            self.job.add_test(self.test)
+
+            print(self.job.full_info())
+        self.change_page("TEST", **self.kwargs)
