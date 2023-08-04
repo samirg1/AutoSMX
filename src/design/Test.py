@@ -1,7 +1,7 @@
 from typing import Literal
 
 from design.TestJob import TestJob
-from design.data import SCRIPTS
+from design.data import SCRIPTS, Script
 from design.Item import Item
 
 TTestResult = Literal["PASS", "TAGGED", "REMOVED", "FIXED", "RAISED"]
@@ -10,10 +10,17 @@ TTestResult = Literal["PASS", "TAGGED", "REMOVED", "FIXED", "RAISED"]
 class Test:
     def __init__(self, item: Item) -> None:
         self._item = item
-        self._script = (resolve() for resolve in SCRIPTS[item.description])
+        self._script = self._determine_script()
         self._test_jobs: list[TestJob] = []
         self._comment = ""
         self._final_result = ""
+
+    def _determine_script(self) -> Script:
+        for script in SCRIPTS.values():
+            if script.matches(self._item.description):
+                return script
+
+        raise ValueError("No script found")
 
     def add_job(self, department: str, contact_name: str | None) -> TestJob:
         self._test_jobs.append(TestJob(department, contact_name))
