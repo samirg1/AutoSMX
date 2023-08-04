@@ -38,6 +38,6 @@ class StartPage(Page):
         if all(hasattr(self, f"{tab.lower()}_position") for tab in ["ASSETS", "TESTING", "AREA", "COMMENTS"]):
             print("testing", self.testing_position)
             print("assets", self.assets_position)
-            self.change_page("JOB", assets_position=self.assets_position, testing_position=self.testing_position, area_position=self.area_position, comments_position=self.comments_position)
+            self.change_page("TEST", assets_position=self.assets_position, testing_position=self.testing_position, area_position=self.area_position, comments_position=self.comments_position)
 
 
