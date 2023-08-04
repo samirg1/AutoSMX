@@ -1,6 +1,5 @@
 import tkinter
 from tkinter import ttk
-from typing import Any, cast
 
 from design.Job import Job
 from pages.StartPage import StartPage
@@ -42,27 +41,14 @@ class App(tkinter.Tk):
         frame.columnconfigure(3, weight=1)
         return frame
 
-    def change_page(self, page: TPAGES, **kwargs: Any):
-        if "testing_position" in kwargs:
-            self.assets_position = kwargs["assets_position"]
-            self.testing_position = kwargs["testing_position"]
-            self.area_position = kwargs["area_position"]
-            self.comments_position = kwargs["comments_position"]
-
-        if "job" in kwargs:
-            job = cast(Job, kwargs["job"])
-            self.jobs[job.campus] = job
-
-        if "jobs" not in kwargs:
-            kwargs["jobs"] = self.jobs
-
+    def change_page(self, page: TPAGES):
         if self.current_page is not None:
             self.current_page.frame.grid_remove()
             for widget in self.current_page.frame.winfo_children():
                 widget.grid_remove()
 
         self.current_page = self.pages[page]
-        self.current_page.setup(**kwargs)
+        self.current_page.setup()
         self.current_page.frame.grid(row=0, column=0, sticky="nsew")
 
 if __name__ == "__main__":

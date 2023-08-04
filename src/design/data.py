@@ -79,6 +79,7 @@ class Script:
         self.nickname = nickname
         self.name = name
         self.tests = tests
+        self.downs = downs
         self._search_terms = extra_terms or []
         self._search_terms.append(nickname)
 

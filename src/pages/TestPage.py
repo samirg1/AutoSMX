@@ -85,7 +85,9 @@ class TestPage(Page):
 
 
     def save_test(self):
-        self.test.complete(self.comment.get("1.0", tkinter.END), self.result.get())
+        self.test.complete(self.comment.get("1.0", tkinter.END), self.result.get(), [s.get() for s in self.stest_answers])
         if self.job:
             self.job.add_test(self.test)
+
+        
         self.change_page("TEST")

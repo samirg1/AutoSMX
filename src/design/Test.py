@@ -10,10 +10,11 @@ class ScriptError(ValueError):
 class Test:
     def __init__(self, item: Item) -> None:
         self._item = item
-        self._script = self._determine_script()
-        self._test_jobs: list[TestJob] = []
-        self._comment = ""
-        self._final_result = ""
+        self.script = self._determine_script()
+        self.script_result: list[str] = []
+        self.test_jobs: list[TestJob] = []
+        self.comment = ""
+        self.final_result = ""
 
     def _determine_script(self) -> Script:
         for script in SCRIPTS.values():
@@ -23,32 +24,29 @@ class Test:
         raise ScriptError("No script found")
     
     @property
-    def script(self) -> Script:
-        return self._script
-    
-    @script.setter
-    def script(self, script: Script):
-        self._script = script
+    def testjobs(self) -> list[TestJob]:
+        return self.test_jobs
 
     def add_job(self, department: str, contact_name: str | None) -> TestJob:
-        self._test_jobs.append(TestJob(department, contact_name))
-        return self._test_jobs[-1]
+        self.test_jobs.append(TestJob(department, contact_name))
+        return self.test_jobs[-1]
 
-    def complete(self, comment: str, final_result: str):
-        self._comment = comment
-        self._final_result = final_result
+    def complete(self, comment: str, final_result: str, stest_answers: list[str]):
+        self.script_result = stest_answers
+        self.comment = comment
+        self.final_result = final_result
 
     def full_info(self) -> str:
         base = f"{str(self)}"
-        if self._comment:
-            base += f"\nComment: {self._comment}"
+        if self.comment:
+            base += f"\nComment: {self.comment}"
         
-        if self._test_jobs:
-            base += "\nJobs:\n" + "\n".join(f"\t{job}" for job in self._test_jobs)
+        if self.test_jobs:
+            base += "\nJobs:\n" + "\n".join(f"\t{job}" for job in self.test_jobs)
 
         return base
     
     def __str__(self) -> str:
-        return f"{self._item} - {self._final_result}"
+        return f"{self._item} - {self.final_result}"
 
     
