@@ -1,3 +1,4 @@
+import os
 import pyautogui
 from pynput import mouse
 import pyperclip # type: ignore
@@ -7,7 +8,14 @@ def click_key(*keys: str, times: int = 1):
         pyautogui.hotkey(*keys, interval=0.1)
         pyautogui.sleep(0.1)
 
-def click(position: tuple[int, int], /, *, times: int = 1):
+def type(text: str):
+        pyautogui.typewrite(text, interval=0.1)
+
+def click(position: tuple[int, int] | None = None, /, *, times: int = 1):
+    if position is None: # click middle if no position given
+        x, y = pyautogui.size()
+        position = x // 2, y // 2
+
     for _ in range(times):
         pyautogui.click(position)
         pyautogui.sleep(0.1)
@@ -27,6 +35,6 @@ def get_click_position() -> tuple[int, int]:
     return position
 
 def get_selected_text():
-    click_key("command", "c", times=1)
+    click_key("ctrl" if os.name == "nt" else "command", "c", times=1)
     pyautogui.sleep(0.01)
     return pyperclip.paste()
