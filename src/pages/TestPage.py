@@ -1,7 +1,6 @@
 from tkinter import StringVar, ttk
 import tkinter
-from typing import Any
-from actions import get_item_job
+# from actions import get_item_job
 from design.Item import Item
 from design.Job import Job
 from design.Test import ScriptError, Test
@@ -9,14 +8,7 @@ from pages.Page import Page
 
 
 class TestPage(Page):
-    job: Job | None = None
-    def setup(self, **kwargs: Any):
-        self.kwargs = kwargs
-        self.assets_position = kwargs["assets_position"]
-        self.testing_position = kwargs["testing_position"]
-        self.area_position = kwargs["area_position"]
-        self.comments_position = kwargs["comments_position"]
-
+    def setup(self):
         ttk.Button(self.frame, text="Back", command=lambda: self.change_page("JOB")).grid(column=0, row=0, sticky="w")
 
         ttk.Label(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
@@ -32,9 +24,18 @@ class TestPage(Page):
         self.item = Item(self.item_number.get(), "BED", "Model", "Manufacturer", "None", "None", "123456")
         if not self.job:
             self.job = Job("CAMPEYN", "4812/333 Clarendon St THORNBURY", "THORNBURY")
+        self.shared.job = self.job
         self.frame.focus()
         self.test = self.get_test(self.item)
         self.display_test()
+
+    def get_test(self, item: Item) -> Test:
+        try:
+            return Test(item)
+        except ScriptError:
+            pass #TODO: Get selection from user
+
+        return Test(item)
     
     def display_test(self):
         ttk.Label(self.frame, text=f"{self.item}").grid(column=0, row=3, columnspan=4)
@@ -81,21 +82,10 @@ class TestPage(Page):
 
     def add_test_job(self):
         ...
-        
-
-    def get_test(self, item: Item) -> Test:
-        try:
-            return Test(item)
-        except ScriptError:
-            pass #TODO: Get selection from user
-
-        return Test(item)
 
 
     def save_test(self):
         self.test.complete(self.comment.get("1.0", tkinter.END), self.result.get())
         if self.job:
             self.job.add_test(self.test)
-
-            print(self.job.full_info())
-        self.change_page("TEST", **self.kwargs)
+        self.change_page("TEST")

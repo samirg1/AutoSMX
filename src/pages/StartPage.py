@@ -20,24 +20,26 @@ class StartPage(Page):
         self.comments_button = ttk.Button(self.frame, text="Click here then on Comments box", command=lambda: self.click_position("COMMENTS"))
         self.comments_button.grid(column=0, row=4)
 
-    def click_position(self, tab: Literal["ASSETS", "TESTING", "AREA", "COMMENTS"]) -> None:
-        return self.change_page("TEST", assets_position=(0, 0), testing_position=(0, 0), area_position=(0, 0), comments_position=(0, 0))
+    def click_position(self, area: Literal["ASSETS", "TESTING", "AREA", "COMMENTS"]) -> None:
+        return self.change_page("TEST")
 
         position = get_click_position()
-        if tab == "ASSETS":
-            self.assets_position = position
+        if area == "ASSETS":
+            self.shared.assets_position = position
             self.assets_button.configure(text="Done", state="disabled")
-        elif tab == "TESTING":
-            self.testing_position = position
+        elif area == "TESTING":
+            self.shared.testing_position = position
             self.test_button.configure(text="Done", state="disabled")
-        elif tab == "AREA":
-            self.area_position = position
+        elif area == "AREA":
+            self.shared.area_position = position
             self.area_button.configure(text="Done", state="disabled")
-        elif tab == "COMMENTS":
-            self.comments_position = position
+        elif area == "COMMENTS":
+            self.shared.comments_position = position
             self.comments_button.configure(text="Done", state="disabled")
 
-        if all(hasattr(self, f"{tab.lower()}_position") for tab in ["ASSETS", "TESTING", "AREA", "COMMENTS"]):
-            self.change_page("TEST", assets_position=self.assets_position, testing_position=self.testing_position, area_position=self.area_position, comments_position=self.comments_position)
+        self.shared.position_set += 1
+
+        if self.shared.position_set == 4:
+            self.change_page("TEST")
 
 

@@ -1,11 +1,11 @@
 import tkinter
 from tkinter import ttk
-from typing import Any
+from typing import Any, cast
 
 from design.Job import Job
 from pages.StartPage import StartPage
 from pages.JobPage import JobPage
-from pages.Page import TPAGES, Page
+from pages.Page import TPAGES, Page, SharedPageInfo
 from pages.TestPage import TestPage
 
 
@@ -22,12 +22,13 @@ class App(tkinter.Tk):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
-        self.jobs: list[Job] = []
+        self.jobs: dict[str, Job] = {}
 
+        shared = SharedPageInfo()
         self.pages: dict[TPAGES, Page] = {
-            "START": StartPage(self._frame(), self.change_page),
-            "JOB": JobPage(self._frame(), self.change_page, jobs=self.jobs),
-            "TEST": TestPage(self._frame(), self.change_page),
+            "START": StartPage(self._frame(), self.change_page, shared),
+            "JOB": JobPage(self._frame(), self.change_page, shared),
+            "TEST": TestPage(self._frame(), self.change_page, shared),
         }
         self.current_page: Page | None = None
 
@@ -47,6 +48,13 @@ class App(tkinter.Tk):
             self.testing_position = kwargs["testing_position"]
             self.area_position = kwargs["area_position"]
             self.comments_position = kwargs["comments_position"]
+
+        if "job" in kwargs:
+            job = cast(Job, kwargs["job"])
+            self.jobs[job.campus] = job
+
+        if "jobs" not in kwargs:
+            kwargs["jobs"] = self.jobs
 
         if self.current_page is not None:
             self.current_page.frame.grid_remove()

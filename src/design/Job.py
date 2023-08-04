@@ -7,6 +7,10 @@ class Job:
         self._department = department
         self._tests: list[Test] = []
 
+    @property
+    def campus(self) -> str:
+        return self._campus
+
     def add_test(self, test: Test):
         self._tests.append(test)
 
