@@ -74,7 +74,7 @@ _PERFORMANCE = ScriptTest("PERFORMANCE", _PASS, _N_A, _FAIL)
 
 
 class Script:
-    def __init__(self, nickname: str, name: str, *tests: ScriptTest, extra_terms: list[str] | None = None) -> None:
+    def __init__(self, nickname: str, name: str, downs: int, *tests: ScriptTest, extra_terms: list[str] | None = None) -> None:
         self.nickname = nickname
         self.name = name
         self.tests = tests
@@ -87,12 +87,13 @@ class Script:
 
 SCRIPTS: dict[str, Script] = {
     "CHANGE TILT TABLE": Script(
-        "CHANGE TILT TABLE", "AT - CHANGE / TILT TABLE, ELECTRIC/MANUAL", _CASTORS_Y, _FRAME, _PAINT, _LABELLING, _CHARGER_N, _BATTERY_N, _CONTROL, _CONDITION, _FURTHER_ATTENTION
+        "CHANGE TILT TABLE", "AT - CHANGE / TILT TABLE, ELECTRIC/MANUAL", 2, _CASTORS_Y, _FRAME, _PAINT, _LABELLING, _CHARGER_N, _BATTERY_N, _CONTROL, _CONDITION, _FURTHER_ATTENTION
     ),
-    "SLING": Script("SLING", "AT - SLING", _DETAILS, _GENERAL_WEAR, _STITCHING, _FITTINGS, _VELCRO_N, _LABELLING, _CONDITION),
+    "SLING": Script("SLING", "AT - SLING", 4, _DETAILS, _GENERAL_WEAR, _STITCHING, _FITTINGS, _VELCRO_N, _LABELLING, _CONDITION),
     "WALKER": Script(
         "WALKER",
         "AT - WALKER / STANDER",
+        5,
         _CASTORS_Y,
         _CASTORS_Y,
         _CASTORS_Y,
@@ -109,6 +110,7 @@ SCRIPTS: dict[str, Script] = {
     "CEILING HOIST": Script(
         "CEILING",
         "AT - CEILING HOIST",
+        10,
         _OPERATION,
         _CONTROL,
         _STRAP,
@@ -131,12 +133,13 @@ SCRIPTS: dict[str, Script] = {
         _CONDITION,
         _USAGE_ENVIRONMENT,
     ),
-    "TRACK": Script("TRACK", "AT - TRACK", _FEATURES, _TRACK_DUST, _CHARGER_N, _TRACK_LOAD_KG, _LOAD_TEST, _ELECTRIC_TEST),
-    "COMMODE": Script("COMMODE", "AT - COMMODE", _CASTORS_Y, _FRAME, _PAINT, _OPERATION, _LABELLING, _CHARGER_N, _BATTERY_N, _CONTROL, _CONDITION),
-    "BED": Script("BED", "AT - ELECTRIC BED", _CASTORS_Y, _FRAME, _HARDWARE, _CONTROL, _PAINT, _OPERATION, _LABELLING, _CHARGER_N, _HELP_POLE, _CONDITION),
+    "TRACK": Script("TRACK", "AT - TRACK", 11, _FEATURES, _TRACK_DUST, _CHARGER_N, _TRACK_LOAD_KG, _LOAD_TEST, _ELECTRIC_TEST),
+    "COMMODE": Script("COMMODE", "AT - COMMODE", 12, _CASTORS_Y, _FRAME, _PAINT, _OPERATION, _LABELLING, _CHARGER_N, _BATTERY_N, _CONTROL, _CONDITION),
+    "BED": Script("BED", "AT - ELECTRIC BED", 13, _CASTORS_Y, _FRAME, _HARDWARE, _CONTROL, _PAINT, _OPERATION, _LABELLING, _CHARGER_N, _HELP_POLE, _CONDITION),
     "FLOOR HOIST": Script(
         "FLOOR",
         "AT - FLOOR HOIST",
+        15,
         _CASTORS_Y,
         _VISUAL,
         _PIVOTS,
@@ -157,11 +160,12 @@ SCRIPTS: dict[str, Script] = {
         _USAGE_ENVIRONMENT,
         extra_terms=["LIFTS"],
     ),
-    "TUB": Script("TUB", "AT - TUB / BATH CHAIRS", _CASTORS_Y, _FRAME, _PAINT, _OPERATION, _LABELLING, _CHARGER_N, _BATTERY_N, _CONTROL, _CONDITION, extra_terms=["BATH"]),
-    "SCALE": Script("SCALE", "AT - WEIGH CHAIR / SCALE", _CASTORS_Y, _FRAME, _PAINT, _OPERATION, _LABELLING, _CHARGER_N, _BATTERY_Y, _ACCURACY, _CONDITION, extra_terms=["WEIGH"]),
+    "TUB": Script("TUB", "AT - TUB / BATH CHAIRS", 26, _CASTORS_Y, _FRAME, _PAINT, _OPERATION, _LABELLING, _CHARGER_N, _BATTERY_N, _CONTROL, _CONDITION, extra_terms=["BATH"]),
+    "SCALE": Script("SCALE", "AT - WEIGH CHAIR / SCALE", 27, _CASTORS_Y, _FRAME, _PAINT, _OPERATION, _LABELLING, _CHARGER_N, _BATTERY_Y, _ACCURACY, _CONDITION, extra_terms=["WEIGH"]),
     "WHEELCHAIR": Script(
         "WHEELCHAIR",
         "AT - WHEELCHAIR",
+        28,
         _CASTORS_Y,
         _CASTORS_Y,
         _CASTORS_Y,
@@ -184,11 +188,12 @@ SCRIPTS: dict[str, Script] = {
         _ELECTRIC_N,
         _CONDITION,
     ),
-    "CHARGER": Script("CHARGER", "BATTERY OPERATED / VISUAL TEST", _BATTERY_N, _CONTROL, _VISUAL, _ATTACHMENTS),
-    "BATTERY": Script("BATTERY", "BATTER PACK", _VISUAL, _CAPACITY, _DATE),
+    "CHARGER": Script("CHARGER", "BATTERY OPERATED / VISUAL TEST", 0, _BATTERY_N, _CONTROL, _VISUAL, _ATTACHMENTS),
+    "BATTERY": Script("BATTERY", "BATTERY PACK", 1, _VISUAL, _CAPACITY, _DATE),
     "CLASS II": Script(
         "CLASS II",
         "CLASS II NO APPLIED PARTS",
+        12,
         _MAINS,
         _FUSES,
         _CONTROL,
@@ -202,6 +207,6 @@ SCRIPTS: dict[str, Script] = {
         _IEC_MAINS_LEAD,
     ),
     "FURNITURE": Script(
-        "FURNITURE", "FURNITURE GENERIC", _CONDITION, _CASTORS_Y, _CASTORS_Y, _PAINT, _CASTORS_Y, _MISSING_COMPONENTS, _POLES, _CLEAN, _ELECTRIC_N, _PERFORMANCE, extra_terms=["OVERBED"]
+        "FURNITURE", "FURNITURE GENERIC", 0, _CONDITION, _CASTORS_Y, _CASTORS_Y, _PAINT, _CASTORS_Y, _MISSING_COMPONENTS, _POLES, _CLEAN, _ELECTRIC_N, _PERFORMANCE, extra_terms=["OVERBED"]
     ),
 }
