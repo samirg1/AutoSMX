@@ -1,19 +1,12 @@
-import os
-import time
 import tkinter
 from tkinter import ttk
 from typing import Any
 
-import pyautogui
 from design.Job import Job
 from pages.StartPage import StartPage
 from pages.JobPage import JobPage
 from pages.Page import TPAGES, Page
 from pages.TestPage import TestPage
-
-if os.name == "nt":  # TODO specify path
-    pytesseract.pytesseract.tesseract_cmd = r"C:\...\AppData\Local\Programs\Tesseract-OCR\tesseract"  # needed for Windows as OS
-
 
 """
 ['\t', '\n', '\r', ' ', '!', '"', '#', '$', '%', '&',
@@ -76,7 +69,7 @@ class App(tkinter.Tk):
             self.assets_position = kwargs["assets_position"]
             self.testing_position = kwargs["testing_position"]
             self.area_position = kwargs["area_position"]
-            self.comment_position = kwargs["comment_position"]
+            self.comments_position = kwargs["comments_position"]
             kwargs = {}
 
         if self.current_page is not None:
@@ -87,34 +80,6 @@ class App(tkinter.Tk):
         self.current_page = self.pages[page]
         self.current_page.setup(**kwargs)
         self.current_page.frame.grid(row=0, column=0, sticky="nsew")
-
-
-
-
-def google_search(query: str):
-    # Wait for a moment before starting the automation
-    time.sleep(5)
-
-    # Open the Start menu or Spotlight (macOS) to search for the web browser
-    with pyautogui.hold("command"):
-        pyautogui.press("space")
-    pyautogui.printInfo()
-    # pyautogui.typewrite('chrome')
-    # pyautogui.press('enter')
-
-    # # Wait for the web browser to open
-    # time.sleep(5)
-
-    # # Type the search query into the address bar
-    # pyautogui.typewrite(f'https://www.google.com/search?q={query}')
-    # pyautogui.press('enter')
-
-    # # Wait for the search results to load
-    # time.sleep(5)
-
-    # # Scroll down to see more results (optional)
-    # pyautogui.scroll(-2)
-
 
 if __name__ == "__main__":
     App().mainloop()
