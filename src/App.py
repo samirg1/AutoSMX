@@ -1,15 +1,19 @@
+import os
 import time
 import tkinter
 from tkinter import ttk
 from typing import Any
 
 import pyautogui
-
+from design.Job import Job
+from pages.StartPage import StartPage
 from pages.JobPage import JobPage
 from pages.Page import TPAGES, Page
 from pages.TestPage import TestPage
 
-from design.Job import Job
+if os.name == "nt":  # TODO specify path
+    pytesseract.pytesseract.tesseract_cmd = r"C:\...\AppData\Local\Programs\Tesseract-OCR\tesseract"  # needed for Windows as OS
+
 
 """
 ['\t', '\n', '\r', ' ', '!', '"', '#', '$', '%', '&',
@@ -34,6 +38,7 @@ from design.Job import Job
 'win', 'winleft', 'winright', 'yen', 'command', 'option', 'optionleft', 'optionright']
 """
 
+
 class App(tkinter.Tk):
     def __init__(self):
         super().__init__()
@@ -50,11 +55,13 @@ class App(tkinter.Tk):
         self.jobs: list[Job] = []
 
         self.pages: dict[TPAGES, Page] = {
-            "JOB": JobPage(self._frame(), self.change_page, jobs=self.jobs), 
+            "START": StartPage(self._frame(), self.change_page),
+            "JOB": JobPage(self._frame(), self.change_page, jobs=self.jobs),
             "TEST": TestPage(self._frame(), self.change_page),
         }
         self.current_page: Page | None = None
-        self.change_page("JOB")
+
+        self.change_page("START")
 
     def _frame(self) -> ttk.Frame:
         frame = ttk.Frame(self, padding="3 3 12 12")
@@ -65,6 +72,13 @@ class App(tkinter.Tk):
         return frame
 
     def change_page(self, page: TPAGES, **kwargs: Any):
+        if "testing_position" in kwargs:
+            self.assets_position = kwargs["assets_position"]
+            self.testing_position = kwargs["testing_position"]
+            self.area_position = kwargs["area_position"]
+            self.comment_position = kwargs["comment_position"]
+            kwargs = {}
+
         if self.current_page is not None:
             self.current_page.frame.grid_remove()
             for widget in self.current_page.frame.winfo_children():
@@ -73,6 +87,8 @@ class App(tkinter.Tk):
         self.current_page = self.pages[page]
         self.current_page.setup(**kwargs)
         self.current_page.frame.grid(row=0, column=0, sticky="nsew")
+
+
 
 
 def google_search(query: str):
@@ -101,5 +117,4 @@ def google_search(query: str):
 
 
 if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+    App().mainloop()
