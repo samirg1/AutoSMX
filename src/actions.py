@@ -41,7 +41,7 @@ class KEYS(Enum):
 """
 
 
-def get_item_job(item_number: str, asset_position: tuple[int, int], testing_position: tuple[int, int], job: Job | None = None) -> tuple[Item, Job]:
+def get_item_job(item_number: str, asset_position: tuple[int, int], testing_position: tuple[int, int], jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:
     click()
     type(item_number)
     click_key(KEYS.enter.value)
@@ -72,8 +72,7 @@ def get_item_job(item_number: str, asset_position: tuple[int, int], testing_posi
     click(testing_position)
 
     if job is None:
-        job = Job(company, campus, department)
-
+        return item, jobs.get(campus, Job(company, campus, department))
     return item, job
 
 

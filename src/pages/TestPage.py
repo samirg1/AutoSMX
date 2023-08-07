@@ -28,7 +28,7 @@ class TestPage(Page):
     def get_item(self):
         self.entry.state(["disabled"]) # type: ignore
         self.frame.focus()
-        self.item, self.shared.job = get_item_job(self.item_number.get(), self.shared.assets_position, self.shared.testing_position, self.shared.job)
+        self.item, self.shared.job = get_item_job(self.item_number.get(), self.shared.assets_position, self.shared.testing_position, self.shared.jobs, self.shared.job)
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test()
 

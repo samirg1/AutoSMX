@@ -6,12 +6,9 @@ from pages.Page import Page
 
 class JobPage(Page):
     def setup(self):
-        ttk.Label(self.frame, text="Jobs").grid(column=0, row=0, columnspan=4)
+        ttk.Label(self.frame, text="Jobs").grid(column=0, row=0, columnspan=3)
+        ttk.Button(self.frame, text="+", command=lambda: self.add_tests()).grid(column=3, row=0, columnspan=1)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=1, columnspan=4)
-
-        if not self.shared.jobs:
-            ttk.Button(self.frame, text="Add Test", command=lambda: self.add_tests()).grid(column=0, row=2, columnspan=4)
-            return
 
         row = 2
         for job in self.shared.jobs.values():
