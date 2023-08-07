@@ -2,9 +2,9 @@ import tkinter
 from tkinter import ttk
 
 from design.TestJobManager import TestJobManager
-from pages.StartPage import StartPage
 from pages.JobPage import JobPage
 from pages.Page import TPAGES, Page, SharedPageInfo
+from pages.StartPage import StartPage
 from pages.TestPage import TestPage
 
 
@@ -48,6 +48,7 @@ class App(tkinter.Tk):
         self.current_page = self.pages[page]
         self.current_page.setup()
         self.current_page.frame.grid(row=0, column=0, sticky="nsew")
+
 
 if __name__ == "__main__":
     App().mainloop()

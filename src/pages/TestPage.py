@@ -22,9 +22,12 @@ class TestPage(Page):
         self.entry.grid(column=2, row=1, sticky="w", columnspan=2)
         self.entry.focus()
         self.entry.bind("<Return>", lambda _: self.get_item())
-        ttk.Button(self.frame, text="Go", command=self.get_item).grid(column=0, row=2, columnspan=2)
+        self.go_button = ttk.Button(self.frame, text="Go", command=self.get_item)
+        self.go_button.grid(column=0, row=2, columnspan=4)
 
     def get_item(self):
+        self.entry.state(["disabled"]) # type: ignore
+        self.frame.focus()
         self.item, self.shared.job = get_item_job(self.item_number.get(), self.shared.assets_position, self.shared.testing_position, self.shared.job)
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test()
@@ -43,9 +46,8 @@ class TestPage(Page):
 
     def display_test(self, test: Test):
         self.test = test
-        ttk.Button(self.frame, text="Cancel", command=lambda: self.change_page("TEST")).grid(column=2, row=2, columnspan=2)
+        self.go_button.configure(text="Cancel", command=lambda: self.change_page("TEST"))
         ttk.Label(self.frame, text=f"{self.item}").grid(column=0, row=3, columnspan=4)
-        ttk.Label(self.frame, text=f"{self.shared.job}").grid(column=0, row=4, columnspan=4)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=5, columnspan=4)
 
         script = self.test.script
@@ -62,11 +64,12 @@ class TestPage(Page):
                     rb.invoke()
         row = 7 + len(script.tests)
         self.frame.rowconfigure(row, minsize=10)
-
-        ttk.Button(self.frame, text="Add Job", command=self.add_testjob).grid(column=0, row=row + 1, columnspan=4)
+        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=row, columnspan=4)
         row += 1
-        self.job_start_row = row + 1
-        row += 9
+
+        self.add_job_button = ttk.Button(self.frame, text="Add Job", command=self.add_testjob)
+        self.add_job_button.grid(column=0, row=row, columnspan=4)
+        row += 2
 
         ttk.Label(self.frame, text="Comment").grid(column=0, row=row, columnspan=4)
         row += 1
@@ -94,7 +97,7 @@ class TestPage(Page):
         save = ttk.Button(self.frame, text="Save", command=self.save_test)
         save.grid(column=0, row=row, columnspan=4)
         row += 1
-        
+
         self.frame.master.bind("<Return>", lambda _: save.invoke())
         self.comment.bind("<FocusIn>", lambda _: self.frame.master.unbind("<Return>"))
         self.comment.bind("<FocusOut>", lambda _: self.frame.master.bind("<Return>", lambda _: save.invoke()))
@@ -108,14 +111,7 @@ class TestPage(Page):
         self.comment.insert(tkinter.END, ("\n" if self.test.testjobs else "") + testjob.comment)
         self.test.add_testjob(testjob)
         self.shared.testjob_manager.add_testjob(self.item, cast(Job, self.shared.job), testjob)
-
-        if len(self.test.testjobs) == 1:
-            ttk.Label(self.frame, text=f"Jobs").grid(column=0, row=self.job_start_row, columnspan=4)
-            self.job_start_row += 1
-
-        ttk.Label(self.frame, text=f"{len(self.test.testjobs)}").grid(column=0, row=self.job_start_row, rowspan=3)
-        ttk.Label(self.frame, text=f"{testjob}").grid(column=1, row=self.job_start_row, columnspan=3, rowspan=3)
-        self.job_start_row += 3
+        self.add_job_button.configure(text=f"Add Job ({len(self.test.testjobs)})")
 
     def save_test(self):
         comment = self.comment.get("1.0", tkinter.END)
