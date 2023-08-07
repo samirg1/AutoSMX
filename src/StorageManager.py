@@ -6,7 +6,7 @@ STORAGE_KEYS = Literal["testing_tab_position", "assets_tab_position", "area_scri
 
 class StorageManager:
     def __init__(self, filename: str):
-        self._storage: dict[str, Any] = {}
+        self._storage: dict[STORAGE_KEYS, Any] = {}
         with open(filename, "r") as file:
             self._storage = json.load(file)
 
@@ -15,8 +15,8 @@ class StorageManager:
     def __getitem__(self, key: STORAGE_KEYS) -> Any:
         return self._storage[key]
 
-    def __setitem__(self, key: STORAGE_KEYS, value: Any) -> None:
-        self._storage[key] = value
+    def update(self, data: dict[STORAGE_KEYS, Any | None]) -> None:
+        self._storage.update(data)
         self._save()
 
     def _save(self) -> None:
