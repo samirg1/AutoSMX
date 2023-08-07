@@ -1,14 +1,14 @@
 import tkinter
 from tkinter import StringVar, ttk
 from typing import cast
-from actions import complete_test, get_item_job
 
-# from actions import complete_test, get_item_job
-from design.Item import Item
+from actions import complete_test, get_item_job
+from design.data import Script
 from design.Job import Job
 from design.Test import ScriptError, Test
 from design.TestJob import TestJob
 from pages.Page import Page
+from pages.ScriptSelectionPopup import ScriptSelectionPopup
 from pages.TestJobPopup import TestJobPopup
 
 
@@ -22,34 +22,34 @@ class TestPage(Page):
         self.entry.grid(column=2, row=1, sticky="w", columnspan=2)
         self.entry.focus()
         self.entry.bind("<Return>", lambda _: self.get_item())
-        ttk.Button(self.frame, text="Go", command=self.get_item).grid(column=0, row=2, columnspan=4)
+        ttk.Button(self.frame, text="Go", command=self.get_item).grid(column=0, row=2, columnspan=2)
 
     def get_item(self):
         self.item, self.shared.job = get_item_job(self.item_number.get(), self.shared.assets_position, self.shared.testing_position, self.shared.job)
         self.shared.jobs[self.shared.job.campus] = self.shared.job
-        self.frame.focus()
-        self.test = self.get_test(self.item)
-        self.display_test()
+        self.get_test()
 
-    def get_test(self, item: Item) -> Test:
+    def get_test(self):
+        test = Test(self.item)
         try:
-            return Test(item)
+            test.set_script()
+            self.display_test(test)
         except ScriptError:
-            pass  # TODO: Get selection from user
-        
-        return Test(item)
-    
-    def get_script(self, item: Test) -> str:
-        ...
+            ScriptSelectionPopup(self.frame, lambda s: self.set_script(s, test)).mainloop()
 
+    def set_script(self, script: Script, test: Test):
+        test.set_script(script)
+        self.display_test(test)
 
-    def display_test(self):
+    def display_test(self, test: Test):
+        self.test = test
+        ttk.Button(self.frame, text="Cancel", command=lambda: self.change_page("TEST")).grid(column=2, row=2, columnspan=2)
         ttk.Label(self.frame, text=f"{self.item}").grid(column=0, row=3, columnspan=4)
         ttk.Label(self.frame, text=f"{self.shared.job}").grid(column=0, row=4, columnspan=4)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=5, columnspan=4)
 
         script = self.test.script
-        ttk.Label(self.frame, text=f"{script.name}").grid(column=0, row=6, columnspan=2)
+        ttk.Label(self.frame, text=f"{script.name}").grid(column=0, row=6, columnspan=4)
         self.script_answers = [StringVar(value=stest.selected) for stest in script.tests]
         for i, stest in enumerate(script.tests):
             ttk.Label(self.frame, text=f"{stest.name}").grid(column=0, row=7 + i, columnspan=1, sticky="w")

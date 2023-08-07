@@ -10,11 +10,11 @@ class ScriptError(ValueError):
 class Test:
     def __init__(self, item: Item) -> None:
         self._item = item
-        self.script = self._determine_script()
         self.script_answers: list[str] = []
         self.testjobs: list[TestJob] = []
         self.comment = ""
         self.final_result = ""
+        self.script: Script
 
     def _determine_script(self) -> Script:
         for script in SCRIPTS.values():
@@ -22,6 +22,11 @@ class Test:
                 return script
 
         raise ScriptError("No script found")
+    
+    def set_script(self, script: Script | None = None):
+        if script is None:
+            script = self._determine_script()
+        self.script = script
 
     def add_testjob(self, testjob: TestJob):
         self.testjobs.append(testjob)

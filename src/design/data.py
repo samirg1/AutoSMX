@@ -85,6 +85,9 @@ class Script:
 
     def matches(self, search: str) -> bool:
         return any(term in search for term in self._search_terms)
+    
+    def __str__(self) -> str:
+        return self.name
 
 
 SCRIPTS: dict[str, Script] = {
