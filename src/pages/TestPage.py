@@ -1,6 +1,7 @@
 import tkinter
 from tkinter import StringVar, ttk
 from typing import cast
+from actions import complete_test, get_item_job
 
 # from actions import complete_test, get_item_job
 from design.Item import Item
@@ -8,6 +9,7 @@ from design.Job import Job
 from design.Test import ScriptError, Test
 from design.TestJob import TestJob
 from pages.Page import Page
+from pages.TestJobPopup import TestJobPopup
 
 
 class TestPage(Page):
@@ -23,11 +25,7 @@ class TestPage(Page):
         ttk.Button(self.frame, text="Go", command=self.get_item).grid(column=0, row=2, columnspan=4)
 
     def get_item(self):
-        # self.item, self.job = get_item_job(self.item_number.get(), self.assets_position, self.testing_position, self.job)
-        self.item = Item(self.item_number.get(), "BED", "Model", "Manufacturer", "None", "None", "123456")
-        if not self.shared.job:
-            self.shared.job = Job("CAMPEYN", "4812/333 Clarendon St THORNBURY", "THORNBURY")
-
+        self.item, self.shared.job = get_item_job(self.item_number.get(), self.shared.assets_position, self.shared.testing_position, self.shared.job)
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.frame.focus()
         self.test = self.get_test(self.item)
@@ -38,8 +36,12 @@ class TestPage(Page):
             return Test(item)
         except ScriptError:
             pass  # TODO: Get selection from user
-
+        
         return Test(item)
+    
+    def get_script(self, item: Test) -> str:
+        ...
+
 
     def display_test(self):
         ttk.Label(self.frame, text=f"{self.item}").grid(column=0, row=3, columnspan=4)
@@ -95,42 +97,13 @@ class TestPage(Page):
 
     def add_testjob(self):
         assert self.shared.job is not None
+        testjob_popup = TestJobPopup(self.frame, self.shared.job.department, self.shared.job.company, self.save_testjob)
+        testjob_popup.mainloop()
 
-        window = tkinter.Toplevel(self.frame)
-        window.title("Add Job")
-        maxWidth = window.winfo_screenwidth()
-        width = 360
-        height = window.winfo_screenheight()
-        window.geometry(f"{width}x{height // 2}+{maxWidth - width}+{height // 4}")
-        window.attributes("-topmost", 2)  # type: ignore
-        window.resizable(False, False)
-
-        window.columnconfigure(0, weight=1)
-        window.columnconfigure(1, weight=1)
-
-        ttk.Label(window, text="Department").grid(column=0, row=0)
-        department = tkinter.StringVar(value=self.shared.job.department)
-        ttk.Entry(window, textvariable=department).grid(column=1, row=0)
-
-        ttk.Label(window, text="Contact Name").grid(column=0, row=1)
-        contact = tkinter.StringVar(value=self.shared.job.company)
-        ttk.Entry(window, textvariable=contact).grid(column=1, row=1)
-
-        ttk.Label(window, text="Comment").grid(column=0, row=2)
-        comment = tkinter.Text(window, height=4, width=100)
-        comment.focus()
-        comment.grid(column=0, row=3, columnspan=2)
-
-        ttk.Button(window, text="Save", command=lambda: self.save_testjob(window, department.get(), contact.get(), comment.get("1.0", tkinter.END))).grid(column=0, row=4, columnspan=2)
-
-        window.mainloop()
-
-    def save_testjob(self, window: tkinter.Toplevel, department: str, contact: str, comment: str):
-        self.comment.insert(tkinter.END, ("\n" if self.test.testjobs else "") + comment)
-        testjob = TestJob(department, contact, comment)
+    def save_testjob(self, testjob: TestJob):
+        self.comment.insert(tkinter.END, ("\n" if self.test.testjobs else "") + testjob.comment)
         self.test.add_testjob(testjob)
         self.shared.testjob_manager.add_testjob(self.item, cast(Job, self.shared.job), testjob)
-        window.destroy()
 
         if len(self.test.testjobs) == 1:
             ttk.Label(self.frame, text=f"Jobs").grid(column=0, row=self.job_start_row, columnspan=4)
@@ -145,5 +118,5 @@ class TestPage(Page):
         if self.shared.job:
             self.shared.job.add_test(self.test)
 
-        # complete_test(self.test, self.shared.area_position, self.shared.comments_position)
+        complete_test(self.test, self.shared.area_position, self.shared.comments_position)
         self.change_page("TEST")

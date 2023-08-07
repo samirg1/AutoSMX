@@ -21,8 +21,6 @@ class StartPage(Page):
         self.comments_button.grid(column=0, row=4)
 
     def click_position(self, area: Literal["ASSETS", "TESTING", "AREA", "COMMENTS"]) -> None:
-        return self.change_page("TEST")
-
         position = get_click_position()
         if area == "ASSETS":
             self.shared.assets_position = position
