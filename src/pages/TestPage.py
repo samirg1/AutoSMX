@@ -94,7 +94,10 @@ class TestPage(Page):
         save = ttk.Button(self.frame, text="Save", command=self.save_test)
         save.grid(column=0, row=row, columnspan=4)
         row += 1
-        self.frame.bind("<Return>", lambda _: save.invoke())
+        
+        self.frame.master.bind("<Return>", lambda _: save.invoke())
+        self.comment.bind("<FocusIn>", lambda _: self.frame.master.unbind("<Return>"))
+        self.comment.bind("<FocusOut>", lambda _: self.frame.master.bind("<Return>", lambda _: save.invoke()))
 
     def add_testjob(self):
         assert self.shared.job is not None
