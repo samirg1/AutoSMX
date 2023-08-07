@@ -1,5 +1,6 @@
 from design import Test
 
+
 class Job:
     def __init__(self, company: str, campus: str, department: str) -> None:
         self.company = company
@@ -12,7 +13,7 @@ class Job:
 
     def __str__(self) -> str:
         return f"{self.campus}\n{self.company}\n{self.department}"
-    
+
     def full_info(self) -> str:
         base = f"{str(self)}\nTests:\n"
         base += "\n".join(f"\t{test}" for test in self.tests)

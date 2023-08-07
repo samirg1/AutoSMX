@@ -39,5 +39,3 @@ class StartPage(Page):
 
         if self.shared.position_set == 4:
             self.change_page("TEST")
-
-

@@ -4,6 +4,7 @@ from typing import Callable
 
 from design.TestJob import TestJob
 
+
 class TestJobPopup(tkinter.Toplevel):
     def __init__(self, master: Misc | None, default_dept: str, default_contact: str, master_save_testjob: Callable[[TestJob], None]):
         super().__init__(master)
@@ -38,5 +39,3 @@ class TestJobPopup(tkinter.Toplevel):
         testjob = TestJob(self.department.get(), self.contact.get(), self.comment.get("1.0", tkinter.END))
         self.master_save_testjob(testjob)
         self.destroy()
-
-    

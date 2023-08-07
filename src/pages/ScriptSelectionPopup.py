@@ -1,7 +1,9 @@
 import tkinter
 from tkinter import Misc, ttk
 from typing import Callable
+
 from design.data import SCRIPTS, Script
+
 
 class ScriptSelectionPopup(tkinter.Toplevel):
     def __init__(self, master: Misc | None, master_select_script: Callable[[Script], None]):
@@ -17,7 +19,7 @@ class ScriptSelectionPopup(tkinter.Toplevel):
 
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
-        
+
         for i, script in enumerate(SCRIPTS.values()):
             ttk.Button(self, text=script.name, command=lambda script=script: self._select_script(script)).grid(column=0, row=i, columnspan=2, sticky="w")
 

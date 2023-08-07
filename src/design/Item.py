@@ -11,16 +11,16 @@ class Item:
     @property
     def number(self) -> str:
         return self._number
-    
+
     @property
     def description(self) -> str:
         return self._description
 
     def __str__(self) -> str:
         return f"{self._number} - {self._description}"
-    
+
     def full_info(self) -> str:
         return f"{str(self)}\nModel: {self._model}\nManufacturer: {self._manufacturer}\nRoom: {self._room}\nLast Service: {self._last_service}\nSerial: {self._serial}"
-    
+
     def __hash__(self) -> int:
         return hash(self._number)

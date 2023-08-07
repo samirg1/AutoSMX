@@ -26,7 +26,7 @@ class TestPage(Page):
         self.go_button.grid(column=0, row=2, columnspan=4)
 
     def get_item(self):
-        self.entry.state(["disabled"]) # type: ignore
+        self.entry.state(["disabled"])  # type: ignore
         self.frame.focus()
         self.item, self.shared.job = get_item_job(self.item_number.get(), self.shared.assets_position, self.shared.testing_position, self.shared.jobs, self.shared.job)
         self.shared.jobs[self.shared.job.campus] = self.shared.job

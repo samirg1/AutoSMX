@@ -17,7 +17,7 @@ class JobPage(Page):
             ttk.Button(self.frame, text=">", command=lambda j=job: self.add_tests(j)).grid(column=3, row=row, sticky="e")
             ttk.Label(self.frame, text=f"Tests: {len(job.tests)}").grid(column=0, row=row + 1, columnspan=3, sticky="w")
             ttk.Button(self.frame, text="X", command=lambda j=job: self.delete_job(j)).grid(column=3, row=row + 1, sticky="e")
-    
+
             row += 2
             if job_testjobs:
                 ttk.Label(self.frame, text=f"Jobs Raised:").grid(column=0, row=row, columnspan=4)

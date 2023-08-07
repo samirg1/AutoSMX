@@ -9,6 +9,7 @@ from pynput import mouse
 _RUN = False
 _PRINT = False
 
+
 def _print(default: Any | None = None) -> Callable[[Callable[..., Any]], Any]:
     def decorator(func: Callable[..., Any]):
         @functools.wraps(func)

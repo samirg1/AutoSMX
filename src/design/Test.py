@@ -22,7 +22,7 @@ class Test:
                 return script
 
         raise ScriptError("No script found")
-    
+
     def set_script(self, script: Script | None = None):
         if script is None:
             script = self._determine_script()
