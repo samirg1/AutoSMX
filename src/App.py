@@ -1,5 +1,6 @@
 import tkinter
 from tkinter import ttk
+from StorageManager import StorageManager
 
 from design.TestJobManager import TestJobManager
 from pages.JobPage import JobPage
@@ -20,8 +21,8 @@ class App(tkinter.Tk):
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
-
-        shared = SharedPageInfo({}, TestJobManager())
+        
+        shared = SharedPageInfo({}, TestJobManager(), StorageManager("src/store.json"))
         self.pages: dict[TPAGES, Page] = {
             "START": StartPage(self._frame(), self.change_page, shared),
             "JOB": JobPage(self._frame(), self.change_page, shared),
@@ -32,7 +33,7 @@ class App(tkinter.Tk):
         self.change_page("START")
 
     def _frame(self) -> ttk.Frame:
-        frame = ttk.Frame(self, padding="3 3 12 12")
+        frame = ttk.Frame(self, padding=10)
         frame.columnconfigure(0, weight=1)
         frame.columnconfigure(1, weight=1)
         frame.columnconfigure(2, weight=1)

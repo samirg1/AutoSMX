@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from tkinter import ttk
 from typing import Callable, Literal
+from StorageManager import StorageManager
 
 from design import Job
 from design.TestJobManager import TestJobManager
@@ -9,7 +10,7 @@ TPAGES = Literal["START", "JOB", "TEST", "TESTJOB"]
 
 
 class SharedPageInfo:
-    def __init__(self, jobs: dict[str, Job], testjob_manager: TestJobManager) -> None:
+    def __init__(self, jobs: dict[str, Job], testjob_manager: TestJobManager, storage: StorageManager) -> None:
         self.assets_position: tuple[int, int] = (0, 0)
         self.testing_position: tuple[int, int] = (0, 0)
         self.area_position: tuple[int, int] = (0, 0)
@@ -18,6 +19,7 @@ class SharedPageInfo:
         self.jobs = jobs
         self.testjob_manager = testjob_manager
         self.job: Job | None = None
+        self.storage = storage
 
 
 class Page(ABC):

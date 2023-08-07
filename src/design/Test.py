@@ -9,7 +9,7 @@ class ScriptError(ValueError):
 
 class Test:
     def __init__(self, item: Item) -> None:
-        self._item = item
+        self.item = item
         self.script_answers: list[str] = []
         self.testjobs: list[TestJob] = []
         self.comment = ""
@@ -18,7 +18,7 @@ class Test:
 
     def _determine_script(self) -> Script:
         for script in SCRIPTS.values():
-            if script.matches(self._item.description):
+            if script.matches(self.item.description):
                 return script
 
         raise ScriptError("No script found")
@@ -47,4 +47,4 @@ class Test:
         return base
 
     def __str__(self) -> str:
-        return f"{self._item} - {self.final_result}"
+        return f"{self.item} - {self.final_result}"
