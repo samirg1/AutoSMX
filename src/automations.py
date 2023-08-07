@@ -6,9 +6,8 @@ import pyautogui
 import pyperclip  # type: ignore
 from pynput import mouse
 
-_PRINT = True
-_PRINT_ONLY = True
-
+_RUN = False
+_PRINT = False
 
 def _print(default: Any | None = None) -> Callable[[Callable[..., Any]], Any]:
     def decorator(func: Callable[..., Any]):
@@ -16,9 +15,11 @@ def _print(default: Any | None = None) -> Callable[[Callable[..., Any]], Any]:
         def wrapper(*args: Any, **kwargs: Any):
             if _PRINT:
                 print(func.__name__, args, kwargs, end=" ")
-                if _PRINT_ONLY:
+                if not _RUN:
                     print("->", default)
                     return default
+            if not _RUN:
+                return default
             res = func(*args, **kwargs)
             if _PRINT:
                 print("->", res)
