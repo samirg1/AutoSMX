@@ -15,7 +15,7 @@ from pages.TestJobPopup import TestJobPopup
 
 class TestPage(Page):
     def setup(self):
-        ttk.Button(self.frame, text="Back", command=lambda: self.change_page("JOB")).grid(column=0, row=0, sticky="w")
+        ttk.Button(self.frame, text="< Jobs", command=lambda: self.change_page("JOB")).grid(column=0, row=0, sticky="w")
 
         ttk.Label(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
         item_number = tkinter.StringVar()

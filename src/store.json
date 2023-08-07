@@ -1,6 +1,19 @@
 {
-    "testing_tab_position": null,
-    "assets_tab_position": null,
-    "area_script_position": null,
-    "comment_box_position": null
+    "testing_tab_position": [
+        0,
+        0
+    ],
+    "assets_tab_position": [
+        0,
+        0
+    ],
+    "area_script_position": [
+        0,
+        0
+    ],
+    "comment_box_position": [
+        0,
+        0
+    ],
+    "positions_set": 4
 }
