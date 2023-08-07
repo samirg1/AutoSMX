@@ -1,19 +1,22 @@
-from enum import Enum
 import os
-from automations import click, click_key, type, get_selected_text
-from design import Item, Job, Test
+from enum import Enum
+
+from automations import click, click_key, get_selected_text, type
+from design import Item, Job, Test, TestJob
 
 WINDOWS = os.name == "nt"
-    
+
+
 class KEYS(Enum):
     enter = "enter" if WINDOWS else "return"
     tab = "tab"
     shift_tab = "shift", "tab"
-    ctrl_tab = ("ctrl" if WINDOWS else "command", "tab")
+    ctrl_tab = "ctrl" if WINDOWS else "command", "tab"
+    copy = "ctrl" if WINDOWS else "command", "c"
     right = "right"
     down = "down"
 
-    
+
 """
 ['\t', '\n', '\r', ' ', '!', '"', '#', '$', '%', '&',
 "'", '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', 
@@ -73,6 +76,7 @@ def get_item_job(item_number: str, asset_position: tuple[int, int], testing_posi
 
     return item, job
 
+
 def complete_test(test: Test, area_position: tuple[int, int], comment_position: tuple[int, int]):
     click_key(KEYS.tab.value, times=5)
     click_key(KEYS.enter.value)
@@ -80,7 +84,7 @@ def complete_test(test: Test, area_position: tuple[int, int], comment_position: 
 
     click(area_position, times=2)
     click_key(KEYS.right.value)
-    type(test.script.name[0] + test.script.name[1])
+    type(test.script.name[:2])
     click_key(KEYS.down.value, times=test.script.downs)
     click_key(KEYS.enter.value)
     click_key(*KEYS.ctrl_tab.value)
@@ -94,14 +98,37 @@ def complete_test(test: Test, area_position: tuple[int, int], comment_position: 
     click_key(*KEYS.ctrl_tab.value)
 
     if test.testjobs:
-        ...
-    
+        _navigate_to_sm_incident()
+        for testjob in test.testjobs:
+            _complete_testjob(testjob)
+
     click_key(*KEYS.ctrl_tab.value)
     if test.comment:
         click(comment_position)
         type(test.comment)
-    
-    click_key(*KEYS.shift_tab.value)
+        click_key(*KEYS.shift_tab.value)
+
     type(test.final_result)
     click_key(KEYS.tab.value, times=7)
+    click_key(KEYS.enter.value)
+
+
+def _navigate_to_sm_incident():
+    click_key(KEYS.right.value)
+    click_key(*KEYS.shift_tab.value)
+    click_key(KEYS.right.value)
+    click_key(KEYS.right.value)
+    click_key(*KEYS.shift_tab.value)
+    click_key(KEYS.right.value)
+    click_key(*KEYS.shift_tab.value)
+    click_key(KEYS.right.value)
+
+
+def _complete_testjob(testjob: TestJob):
+    type(testjob.department)
+    click_key(KEYS.enter.value)
+    type(testjob.contact_name)
+    click_key(KEYS.enter.value, times=3)
+    type(testjob.comment)
+    click_key(KEYS.tab.value, times=9)
     click_key(KEYS.enter.value)
