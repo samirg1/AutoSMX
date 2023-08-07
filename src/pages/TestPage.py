@@ -53,6 +53,8 @@ class TestPage(Page):
         self.script_answers = [StringVar(value=stest.selected) for stest in script.tests]
         for i, stest in enumerate(script.tests):
             ttk.Label(self.frame, text=f"{stest.name}").grid(column=0, row=7 + i, columnspan=1, sticky="w")
+            if not stest.options:
+                ttk.Entry(self.frame, textvariable=self.script_answers[i]).grid(column=1, row=7 + i, columnspan=3, sticky="w")
             for j, option in enumerate(stest.options):
                 rb = ttk.Radiobutton(self.frame, text=option, variable=self.script_answers[i], value=option)
                 rb.grid(column=1 + j, row=7 + i)
@@ -80,13 +82,13 @@ class TestPage(Page):
         passed = ttk.Radiobutton(self.frame, text="Pass", variable=self.result, value="P")
         passed.grid(column=0, row=row)
         passed.invoke()
-        ttk.Radiobutton(self.frame, text="Repair", variable=self.result, value="Passed -").grid(column=1, row=row)
-        ttk.Radiobutton(self.frame, text="Minor", variable=self.result, value="Passed a").grid(column=2, row=row)
+        ttk.Radiobutton(self.frame, text="Defect", variable=self.result, value="Passed -").grid(column=1, row=row)
+        ttk.Radiobutton(self.frame, text="Repaired", variable=self.result, value="Passed a").grid(column=2, row=row)
         ttk.Radiobutton(self.frame, text="Tagged", variable=self.result, value="Faile").grid(column=3, row=row)
         row += 1
         ttk.Radiobutton(self.frame, text="Removed", variable=self.result, value="Failed and rem").grid(column=0, row=row)
-        ttk.Radiobutton(self.frame, text="Untested", variable=self.result, value="Failed and rem").grid(column=1, row=row)
-        ttk.Radiobutton(self.frame, text="Fail-Unable", variable=self.result, value="Failed and rem").grid(column=2, row=row)
+        ttk.Radiobutton(self.frame, text="Untested", variable=self.result, value="N").grid(column=1, row=row)
+        ttk.Radiobutton(self.frame, text="Fail-Unable", variable=self.result, value="F").grid(column=2, row=row)
         row += 1
 
         save = ttk.Button(self.frame, text="Save", command=self.save_test)
