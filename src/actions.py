@@ -89,7 +89,7 @@ def complete_test(test: Test, area_position: tuple[int, int], comment_position: 
     click_key(KEYS.enter.value)
     click_key(*KEYS.ctrl_tab.value)
 
-    script_values = test.script_result
+    script_values = test.script_answers
     for i, value in enumerate(script_values):
         type(value)
         if i != len(script_values) - 1:

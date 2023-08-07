@@ -11,7 +11,7 @@ class Test:
     def __init__(self, item: Item) -> None:
         self._item = item
         self.script = self._determine_script()
-        self.script_result: list[str] = []
+        self.script_answers: list[str] = []
         self.testjobs: list[TestJob] = []
         self.comment = ""
         self.final_result = ""
@@ -26,8 +26,8 @@ class Test:
     def add_testjob(self, testjob: TestJob):
         self.testjobs.append(testjob)
 
-    def complete(self, comment: str, final_result: str, stest_answers: list[str]):
-        self.script_result = stest_answers
+    def complete(self, comment: str, final_result: str, script_answers: list[str]):
+        self.script_answers = script_answers
         self.comment = comment
         self.final_result = final_result
 

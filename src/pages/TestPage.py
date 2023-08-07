@@ -50,15 +50,14 @@ class TestPage(Page):
 
         script = self.test.script
         ttk.Label(self.frame, text=f"{script.name}").grid(column=0, row=6, columnspan=2)
-        self.stest_answers = [StringVar(value=stest.selected) for stest in script.tests]
+        self.script_answers = [StringVar(value=stest.selected) for stest in script.tests]
         for i, stest in enumerate(script.tests):
             ttk.Label(self.frame, text=f"{stest.name}").grid(column=0, row=7 + i, columnspan=1, sticky="w")
             for j, option in enumerate(stest.options):
-                rb = ttk.Radiobutton(self.frame, text=option, variable=self.stest_answers[i], value=option)
+                rb = ttk.Radiobutton(self.frame, text=option, variable=self.script_answers[i], value=option)
                 rb.grid(column=1 + j, row=7 + i)
                 if option == stest.selected:
                     rb.invoke()
-
         row = 7 + len(script.tests)
         self.frame.rowconfigure(row, minsize=10)
 
@@ -66,9 +65,9 @@ class TestPage(Page):
         row += 1
         self.job_start_row = row + 1
         row += 9
+
         ttk.Label(self.frame, text="Comment").grid(column=0, row=row, columnspan=4)
         row += 1
-
         self.comment = tkinter.Text(self.frame, height=4, width=100)
         self.comment.grid(column=0, row=row, columnspan=4)
         row += 1
@@ -114,7 +113,8 @@ class TestPage(Page):
         self.job_start_row += 3
 
     def save_test(self):
-        self.test.complete(self.comment.get("1.0", tkinter.END), self.result.get(), [s.get() for s in self.stest_answers])
+        comment = self.comment.get("1.0", tkinter.END)
+        self.test.complete(comment if comment != "\n" else "", self.result.get(), [s.get() for s in self.script_answers])
         if self.shared.job:
             self.shared.job.add_test(self.test)
 
