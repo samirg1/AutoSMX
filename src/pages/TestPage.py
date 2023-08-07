@@ -29,7 +29,7 @@ class TestPage(Page):
     def get_item(self, item_number: StringVar, item_entry: ttk.Entry) -> None:
         item_entry.state(["disabled"])  # type: ignore
         self.frame.focus()
-        item, self.shared.job = get_item_job(item_number.get(), self.shared.assets_position, self.shared.testing_position, self.shared.jobs, self.shared.job)
+        item, self.shared.job = get_item_job(item_number.get(), self.shared.storage["assets_tab_position"], self.shared.storage["testing_tab_position"], self.shared.storage["window_position"], self.shared.jobs, self.shared.job)
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test(item)
 
@@ -127,5 +127,5 @@ class TestPage(Page):
         if self.shared.job:
             self.shared.job.add_test(self.test)
 
-        complete_test(self.test, self.shared.area_position, self.shared.comments_position)
+        complete_test(self.test, self.shared.storage["area_script_position"], self.shared.storage["comment_box_position"])
         self.change_page("TEST")

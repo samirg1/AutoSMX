@@ -1,7 +1,7 @@
 import json
 from typing import Any, Literal
 
-STORAGE_KEYS = Literal["testing_tab_position", "assets_tab_position", "area_script_position", "comment_box_position", "positions_set"]
+STORAGE_KEYS = Literal["testing_tab_position", "assets_tab_position", "area_script_position", "comment_box_position", "positions_set", "window_position"]
 
 
 class StorageManager:

@@ -1,6 +1,8 @@
 import os
 from enum import Enum
 
+import pyautogui
+
 from automations import click, click_key, get_selected_text, type
 from design import Item, Job, Test, TestJob
 
@@ -17,7 +19,7 @@ class KEYS(Enum):
     down = "down"
 
 
-def get_item_job(item_number: str, asset_position: tuple[int, int], testing_position: tuple[int, int], jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:
+def get_item_job(item_number: str, asset_position: tuple[int, int], testing_position: tuple[int, int], window_position: tuple[int, int], jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:
     click()
     type(item_number)
     click_key(KEYS.enter.value)
@@ -46,6 +48,7 @@ def get_item_job(item_number: str, asset_position: tuple[int, int], testing_posi
     click_key(KEYS.enter.value)
 
     click(testing_position)
+    click(window_position)
 
     if job is None:
         return item, jobs.get(campus, Job(company, campus, department))
@@ -53,22 +56,22 @@ def get_item_job(item_number: str, asset_position: tuple[int, int], testing_posi
 
 
 def complete_test(test: Test, area_position: tuple[int, int], comment_position: tuple[int, int]):
+    click()
     click_key(KEYS.tab.value, times=5)
     click_key(KEYS.enter.value)
     click_key(*KEYS.ctrl_tab.value, times=2)
 
     click(area_position, times=2)
     click_key(KEYS.right.value)
-    type(test.script.name[:2])
     click_key(KEYS.down.value, times=test.script.downs)
     click_key(KEYS.enter.value)
     click_key(*KEYS.ctrl_tab.value)
 
     script_values = test.script_answers
     for i, value in enumerate(script_values):
-        type(value)
+        type(value, delay=0.5)
         if i != len(script_values) - 1:
-            click_key(KEYS.enter.value)
+            click_key(KEYS.tab.value)
 
     click_key(*KEYS.ctrl_tab.value)
 
@@ -85,7 +88,7 @@ def complete_test(test: Test, area_position: tuple[int, int], comment_position: 
 
     type(test.final_result)
     click_key(KEYS.tab.value, times=7)
-    click_key(KEYS.enter.value)
+    # click_key(KEYS.enter.value)
 
 
 def _navigate_to_sm_incident():

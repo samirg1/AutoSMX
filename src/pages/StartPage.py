@@ -15,6 +15,7 @@ class StartPage(Page):
         self.assets_position = None
         self.area_position = None
         self.comment_position = None
+        self.window_position = None
 
         ttk.Label(self.frame, text="Start Page").grid(column=0, row=0)
         self.test_button = ttk.Button(self.frame, text="Click here then on Testing tab", command=lambda: self.click_position("TESTING"))
@@ -25,8 +26,10 @@ class StartPage(Page):
         self.area_button.grid(column=0, row=3)
         self.comment_button = ttk.Button(self.frame, text="Click here then on Comments box", command=lambda: self.click_position("COMMENTS"))
         self.comment_button.grid(column=0, row=4)
+        self.window_button = ttk.Button(self.frame, text="Click here then on the window", command=lambda: self.click_position("WINDOW"))
+        self.window_button.grid(column=0, row=5)
 
-    def click_position(self, area: Literal["ASSETS", "TESTING", "AREA", "COMMENTS"]) -> None:
+    def click_position(self, area: Literal["ASSETS", "TESTING", "AREA", "COMMENTS", "WINDOW"]) -> None:
         position = get_click_position()
         if area == "ASSETS":
             self.assets_position = position
@@ -40,16 +43,20 @@ class StartPage(Page):
         elif area == "COMMENTS":
             self.comment_position = position
             self.comment_button.configure(text="Done", state="disabled")
+        elif area == "WINDOW":
+            self.window_position = position
+            self.window_button.configure(text="Done", state="disabled")
 
         self.positions_set += 1
 
-        if self.positions_set == 4:
+        if self.positions_set == 5:
             self.shared.storage.update(
                 {
                     "testing_tab_position": self.test_position,
                     "assets_tab_position": self.assets_position,
                     "area_script_position": self.area_position,
                     "comment_box_position": self.comment_position,
+                    "window_position": self.window_position,
                     "positions_set": True,
                 }
             )

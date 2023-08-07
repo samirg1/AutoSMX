@@ -6,7 +6,7 @@ import pyautogui
 import pyperclip  # type: ignore
 from pynput import mouse
 
-_RUN = False
+_RUN = True
 _PRINT = False
 
 
@@ -34,13 +34,13 @@ def _print(default: Any | None = None) -> Callable[[Callable[..., Any]], Any]:
 @_print()
 def click_key(*keys: str, times: int = 1):
     for _ in range(times):
-        pyautogui.hotkey(*keys, interval=0.1)
-        pyautogui.sleep(0.1)
+        pyautogui.hotkey(*keys)
 
 
 @_print()
-def type(text: str):
-    pyautogui.typewrite(text, interval=0.1)
+def type(text: str, /, *, delay: float = 0):
+    pyautogui.typewrite(text)
+    pyautogui.sleep(delay)
 
 
 @_print()
@@ -50,7 +50,6 @@ def click(position: tuple[int, int] | None = None, /, *, times: int = 1):
         position = x // 2, y // 2
     for _ in range(times):
         pyautogui.click(position)
-        pyautogui.sleep(0.1)
 
 
 @_print((0, 0))
@@ -73,5 +72,5 @@ def get_click_position() -> tuple[int, int]:
 @_print("selected text")
 def get_selected_text():
     click_key("ctrl" if os.name == "nt" else "command", "c")
-    pyautogui.sleep(0.01)
+    # pyautogui.sleep(0.01)
     return pyperclip.paste()
