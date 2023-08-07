@@ -50,7 +50,7 @@ class StartPage(Page):
                     "assets_tab_position": self.assets_position,
                     "area_script_position": self.area_position,
                     "comment_box_position": self.comment_position,
-                    "positions_set": self.positions_set,
+                    "positions_set": True,
                 }
             )
             self.change_page("TEST")

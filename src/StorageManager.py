@@ -13,7 +13,7 @@ class StorageManager:
         self.filename = filename
 
     def __getitem__(self, key: STORAGE_KEYS) -> Any:
-        return self._storage[key]
+        return self._storage.setdefault(key, None)
 
     def update(self, data: dict[STORAGE_KEYS, Any | None]) -> None:
         self._storage.update(data)
