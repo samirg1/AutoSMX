@@ -16,6 +16,10 @@ class Test:
         self.final_result = ""
         self.script: Script
 
+    @property
+    def item_model(self) -> str:
+        return f"{self.script.name} -> {self.item.model}"
+
     def _determine_script(self) -> Script:
         for script in SCRIPTS.values():
             if script.matches(self.item.description):

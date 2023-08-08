@@ -93,21 +93,25 @@ class TestPage(Page):
         script = self.test.script
         ttk.Label(self.frame, text=f"{script.name}").grid(column=0, row=row, columnspan=4)
         row += 1
-        script_answers = [StringVar(value=stest.selected) for stest in script.tests]
+
+        self.item_model_to_answers: dict[str, list[str]] = self.shared.storage["item_model_to_script_answers"] or {}
+        stored_answers = self.item_model_to_answers.get(self.test.item_model)
+        self.script_answers = stored_answers or [stest.selected for stest in script.tests]
+        script_answer_vars = [StringVar(value=ans) for ans in self.script_answers]
         for i, stest in enumerate(script.tests):
             ttk.Label(self.frame, text=f"{stest.name}").grid(column=0, row=row, columnspan=1, sticky="w")
             if not stest.options:
-                ttk.Entry(self.frame, textvariable=script_answers[i]).grid(column=1, row=row, columnspan=3, sticky="w")
+                ttk.Entry(self.frame, textvariable=script_answer_vars[i]).grid(column=1, row=row, columnspan=3, sticky="w")
             for j, option in enumerate(stest.options):
-                rb = ttk.Radiobutton(self.frame, text=option, variable=script_answers[i], value=option)
+                rb = ttk.Radiobutton(self.frame, text=option, variable=script_answer_vars[i], value=option)
                 rb.grid(column=1 + j, row=row)
-                if option == stest.selected:
+                if option == self.script_answers[i]:
                     rb.invoke()
             row += 1
         self.frame.rowconfigure(row, minsize=10)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=row, columnspan=4)
         row += 1
-        return row, script_answers
+        return row, script_answer_vars
 
     def add_testjob(self):
         assert self.shared.job is not None
@@ -127,4 +131,18 @@ class TestPage(Page):
             self.shared.job.add_test(self.test)
 
         complete_test(self.test, self.shared.storage["area_script_position"], self.shared.storage["comment_box_position"])
+        self.update_storage(script_answers)            
         self.change_page("TEST")
+
+    def update_storage(self, actual_script_answers: list[str]):
+        if self.script_answers == actual_script_answers:
+            return
+        
+        default = [stest.selected for stest in self.test.script.tests]
+        if actual_script_answers == default:
+            del self.item_model_to_answers[self.test.item_model]
+        else:
+            self.item_model_to_answers[self.test.item_model] = actual_script_answers
+
+        self.shared.storage.update({"item_model_to_script_answers": self.item_model_to_answers})
+        

@@ -1,7 +1,7 @@
 import json
 from typing import Any, Literal
 
-STORAGE_KEYS = Literal["testing_tab_position", "assets_tab_position", "area_script_position", "comment_box_position", "positions_set", "window_position"]
+STORAGE_KEYS = Literal["testing_tab_position", "assets_tab_position", "area_script_position", "comment_box_position", "positions_set", "window_position", "item_model_to_script_answers"]
 
 
 class StorageManager:
@@ -13,7 +13,7 @@ class StorageManager:
         self.filename = filename
 
     def __getitem__(self, key: STORAGE_KEYS) -> Any:
-        return self._storage.setdefault(key, None)
+        return self._storage.get(key, None)
 
     def update(self, data: dict[STORAGE_KEYS, Any | None]) -> None:
         self._storage.update(data)

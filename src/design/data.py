@@ -11,7 +11,7 @@ _SPACE = " "
 class ScriptTest:
     def __init__(self, name: str, *options: str):
         self.name = name
-        self.selected = options[0] if options else None
+        self.selected = options[0] if options else ""
         self.options = sorted(options, key=lambda x: -1 if x == _PASS else 0 if x == _N_A else 1)
 
 
