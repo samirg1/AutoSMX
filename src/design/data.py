@@ -122,7 +122,7 @@ SCRIPTS: dict[str, Script] = {
         _ROLLERS,
         _MOTORS,
         _CHARGER_N,
-        _BATTERY_N,
+        _BATTERY_Y,
         _CHARGING_CONTACTS,
         _STATUS_LEDS,
         _END_LIMIT,

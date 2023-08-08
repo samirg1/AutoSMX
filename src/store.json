@@ -1,23 +1,23 @@
 {
     "positions_set": true,
     "testing_tab_position": [
-        144,
+        109,
         158
     ],
     "assets_tab_position": [
-        125,
-        220
+        96,
+        219
     ],
     "area_script_position": [
-        1479,
-        237
+        1483,
+        230
     ],
     "comment_box_position": [
-        809,
-        418
+        901,
+        420
     ],
     "window_position": [
-        1739,
-        280
+        1749,
+        700
     ]
 }

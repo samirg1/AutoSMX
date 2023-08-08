@@ -10,14 +10,14 @@ _RUN = True
 _PRINT = False
 
 
-def _print(default: Any | None = None) -> Callable[[Callable[..., Any]], Any]:
+def _automation_wrapper(default: Any | None = None) -> Callable[[Callable[..., Any]], Any]:
     def decorator(func: Callable[..., Any]):
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any):
             if _PRINT:
                 print(func.__name__, args, kwargs, end=" ")
                 if not _RUN:
-                    print("->", default)
+                    print("->", default, "(default)")
                     return default
             if not _RUN:
                 return default
@@ -31,19 +31,21 @@ def _print(default: Any | None = None) -> Callable[[Callable[..., Any]], Any]:
     return decorator
 
 
-@_print()
+@_automation_wrapper()
 def click_key(*keys: str, times: int = 1):
     for _ in range(times):
         pyautogui.hotkey(*keys)
 
+@_automation_wrapper()
+def wait(seconds: float):
+    pyautogui.sleep(seconds)
 
-@_print()
-def type(text: str, /, *, delay: float = 0):
+@_automation_wrapper()
+def type(text: str):
     pyautogui.typewrite(text)
-    pyautogui.sleep(delay)
 
 
-@_print()
+@_automation_wrapper()
 def click(position: tuple[int, int] | None = None, /, *, times: int = 1):
     if position is None:  # click middle if no position given
         x, y = pyautogui.size()
@@ -52,7 +54,7 @@ def click(position: tuple[int, int] | None = None, /, *, times: int = 1):
         pyautogui.click(position)
 
 
-@_print((0, 0))
+@_automation_wrapper((0, 0))
 def get_click_position() -> tuple[int, int]:
     position: tuple[int, int] = -1, -1
 
@@ -69,8 +71,8 @@ def get_click_position() -> tuple[int, int]:
     return position
 
 
-@_print("selected text")
+@_automation_wrapper("selected text")
 def get_selected_text():
     click_key("ctrl" if os.name == "nt" else "command", "c")
-    # pyautogui.sleep(0.01)
+    pyautogui.sleep(0.01)
     return pyperclip.paste()

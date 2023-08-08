@@ -85,9 +85,8 @@ class TestPage(Page):
         save.grid(column=0, row=row, columnspan=4)
         row += 1
 
-        self.frame.master.bind("<Return>", lambda _: save.invoke())
-        self.comment.bind("<FocusIn>", lambda _: self.frame.master.unbind("<Return>"))
-        self.comment.bind("<FocusOut>", lambda _: self.frame.master.bind("<Return>", lambda _: save.invoke()))
+        self.comment.focus()
+        self.comment.bind("<Return>", lambda _: self.save_test([s.get() for s in script_answers], result.get()))
 
     def display_script(self, script: Script, row: int):
         row = 6

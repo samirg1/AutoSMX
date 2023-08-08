@@ -1,9 +1,8 @@
 import os
 from enum import Enum
+from typing import cast
 
-import pyautogui
-
-from automations import click, click_key, get_selected_text, type
+from automations import click, click_key, get_selected_text, type, wait
 from design import Item, Job, Test, TestJob
 
 WINDOWS = os.name == "nt"
@@ -24,6 +23,7 @@ def get_item_job(item_number: str, asset_position: tuple[int, int], testing_posi
     type(item_number)
     click_key(KEYS.enter.value)
     click(asset_position)
+    wait(0.5)
     click_key(KEYS.tab.value)
     type(item_number)
     click_key(KEYS.enter.value)
@@ -37,22 +37,25 @@ def get_item_job(item_number: str, asset_position: tuple[int, int], testing_posi
     manufacturer = get_selected_text()
 
     item = Item(item_number, description, model, manufacturer, "None", "None", serial)
+    if job is None:
+        click_key(KEYS.tab.value)
+        company = get_selected_text()
+        click_key(KEYS.tab.value)
+        campus = get_selected_text()
+        click_key(KEYS.tab.value)
+        department = get_selected_text()
+        job = jobs.get(campus, Job(company, campus, department))
 
-    click_key(KEYS.tab.value)
-    company = get_selected_text()
-    click_key(KEYS.tab.value)
-    campus = get_selected_text()
-    click_key(KEYS.tab.value)
-    department = get_selected_text()
-    click_key(KEYS.tab.value, times=21)
+    click(asset_position)
+    click_key(KEYS.tab.value, times=2)
     click_key(KEYS.enter.value)
 
     click(testing_position)
+    wait(1)
     click(window_position)
+    wait(0.5)
 
-    if job is None:
-        return item, jobs.get(campus, Job(company, campus, department))
-    return item, job
+    return item, cast(Job, job)
 
 
 def complete_test(test: Test, area_position: tuple[int, int], comment_position: tuple[int, int]):
@@ -66,16 +69,18 @@ def complete_test(test: Test, area_position: tuple[int, int], comment_position: 
     click_key(KEYS.down.value, times=test.script.downs)
     click_key(KEYS.enter.value)
     click_key(*KEYS.ctrl_tab.value)
+    wait(0.5)
 
     script_values = test.script_answers
     for i, value in enumerate(script_values):
-        type(value, delay=0.5)
+        type(value)
         if i != len(script_values) - 1:
             click_key(KEYS.tab.value)
 
     click_key(*KEYS.ctrl_tab.value)
 
     if test.testjobs:
+        wait(0.5)
         _navigate_to_sm_incident()
         for testjob in test.testjobs:
             _complete_testjob(testjob)
