@@ -131,7 +131,9 @@ class TestPage(Page):
             self.shared.job.add_test(self.test)
 
         complete_test(self.test, self.shared.storage["area_script_position"], self.shared.storage["comment_box_position"])
-        self.update_storage(script_answers)            
+
+        if self.test.item.model not in (".", " ", "", "-", self.test.item.description, self.test.script.nickname):
+            self.update_storage(script_answers)            
         self.change_page("TEST")
 
     def update_storage(self, actual_script_answers: list[str]):
