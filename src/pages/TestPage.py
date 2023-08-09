@@ -24,12 +24,15 @@ class TestPage(Page):
         item_entry.focus()
         item_entry.bind("<Return>", lambda _: self.get_item(item_number, item_entry))
         self.go_button = ttk.Button(self.frame, text="Go", command=lambda: self.get_item(item_number, item_entry))
-        self.go_button.grid(column=0, row=2, columnspan=4)
+        self.go_button.grid(column=0, row=2, columnspan=2)
+        self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_item(item_number, item_entry, choose_script=True))
+        self.choose_button.grid(column=2, row=2, columnspan=2)
 
-    def get_item(self, item_number: StringVar, item_entry: ttk.Entry) -> None:
+    def get_item(self, item_number: StringVar, item_entry: ttk.Entry, /, *, choose_script: bool = False) -> None:
         item_entry.state(["disabled"])  # type: ignore
         self.frame.focus()
-        item, self.shared.job = get_item_job(item_number.get(), self.shared.storage.positions, self.shared.jobs, self.shared.job)
+        item, self.shared.job = (Item(item_number.get(), "", "", "", "", "", ""), self.shared.job) if choose_script else get_item_job(item_number.get(), self.shared.storage.positions, self.shared.jobs, self.shared.job)
+        self.shared.job = Job("Unknown", "Unknown", "Unknown") if self.shared.job is None else self.shared.job
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test(item)
 
@@ -47,7 +50,9 @@ class TestPage(Page):
 
     def display_test(self, test: Test):
         self.test = test
+        self.choose_button.destroy()
         self.go_button.configure(text="Cancel", command=lambda: self.change_page("TEST"))
+        self.go_button.grid(column=0, row=2, columnspan=4)
         ttk.Label(self.frame, text=f"{test.item}").grid(column=0, row=3, columnspan=4)
         ttk.Label(self.frame, text=f"{cast(Job, self.shared.job).campus}").grid(column=0, row=4, columnspan=4)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=5, columnspan=4)
@@ -101,7 +106,7 @@ class TestPage(Page):
         for i, stest in enumerate(script.tests):
             ttk.Label(self.frame, text=f"{stest.name}").grid(column=0, row=row, columnspan=1, sticky="w")
             if len(stest.options) <= 1:
-                ttk.Entry(self.frame, textvariable=script_answer_vars[i]).grid(column=1, row=row, columnspan=3, sticky="w")
+                ttk.Entry(self.frame, textvariable=script_answer_vars[i]).grid(column=2, row=row, columnspan=2, sticky="w")
             else:
                 for j, option in enumerate(stest.options):
                     rb = ttk.Radiobutton(self.frame, text=option, variable=script_answer_vars[i], value=option)

@@ -21,9 +21,10 @@ class Test:
         return f"{self.script.name} -> {self.item.model}"
 
     def _determine_script(self) -> Script:
-        for script in SCRIPTS.values():
-            if script.matches(self.item.description):
-                return script
+        if self.item.description != "":
+            for script in SCRIPTS.values():
+                if script.matches(self.item.description):
+                    return script
 
         raise ScriptError("No script found")
 
