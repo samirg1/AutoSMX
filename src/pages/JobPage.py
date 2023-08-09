@@ -38,5 +38,6 @@ class JobPage(Page):
         self.change_page("TEST")
 
     def calibrate(self):
-        self.shared.storage.update({"positions_set":  False})
+        self.shared.storage.positions_set = False
+        self.shared.storage.save()
         self.change_page("START")

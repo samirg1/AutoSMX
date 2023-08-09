@@ -4,6 +4,7 @@ from typing import cast
 
 from automations import click, click_key, get_selected_text, type, wait
 from design import Item, Job, Test, TestJob
+from Storage import Positions
 
 WINDOWS = os.name == "nt"
 
@@ -18,11 +19,11 @@ class KEYS(Enum):
     down = "down"
 
 
-def get_item_job(item_number: str, asset_position: tuple[int, int], testing_position: tuple[int, int], window_position: tuple[int, int], jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:
+def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:
     click()
     type(item_number)
     click_key(KEYS.enter.value)
-    click(asset_position)
+    click(positions.assets_tab)
     wait(0.5)
     click_key(KEYS.tab.value)
     type(item_number)
@@ -46,25 +47,25 @@ def get_item_job(item_number: str, asset_position: tuple[int, int], testing_posi
         department = get_selected_text()
         job = jobs.get(campus, Job(company, campus, department))
 
-    click(asset_position)
+    click(positions.assets_tab)
     click_key(KEYS.tab.value, times=2)
     click_key(KEYS.enter.value)
 
-    click(testing_position)
+    click(positions.testing_tab)
     wait(1)
-    click(window_position)
+    click(positions.window)
     wait(0.5)
 
     return item, cast(Job, job)
 
 
-def complete_test(test: Test, area_position: tuple[int, int], comment_position: tuple[int, int]):
+def complete_test(test: Test, positions: Positions):
     click()
     click_key(KEYS.tab.value, times=5)
     click_key(KEYS.enter.value)
     click_key(*KEYS.ctrl_tab.value, times=2)
 
-    click(area_position, times=2)
+    click(positions.show_all_script, times=2)
     click_key(KEYS.right.value)
     click_key(KEYS.down.value, times=test.script.downs)
     click_key(KEYS.enter.value)
@@ -87,7 +88,7 @@ def complete_test(test: Test, area_position: tuple[int, int], comment_position: 
 
     click_key(*KEYS.ctrl_tab.value)
     if test.comment:
-        click(comment_position)
+        click(positions.comment_box)
         type(test.comment)
         click_key(*KEYS.shift_tab.value)
 

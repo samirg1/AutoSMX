@@ -3,8 +3,8 @@ from tkinter import StringVar, ttk
 from typing import cast
 
 from actions import complete_test, get_item_job
-from design.Item import Item
 from design.data import Script
+from design.Item import Item
 from design.Job import Job
 from design.Test import ScriptError, Test
 from design.TestJob import TestJob
@@ -29,7 +29,7 @@ class TestPage(Page):
     def get_item(self, item_number: StringVar, item_entry: ttk.Entry) -> None:
         item_entry.state(["disabled"])  # type: ignore
         self.frame.focus()
-        item, self.shared.job = get_item_job(item_number.get(), self.shared.storage["assets_tab_position"], self.shared.storage["testing_tab_position"], self.shared.storage["window_position"], self.shared.jobs, self.shared.job)
+        item, self.shared.job = get_item_job(item_number.get(), self.shared.storage.positions, self.shared.jobs, self.shared.job)
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test(item)
 
@@ -94,7 +94,7 @@ class TestPage(Page):
         ttk.Label(self.frame, text=f"{script.name}").grid(column=0, row=row, columnspan=4)
         row += 1
 
-        self.item_model_to_answers: dict[str, list[str]] = self.shared.storage["item_model_to_script_answers"] or {}
+        self.item_model_to_answers = self.shared.storage.item_model_to_script_answers
         stored_answers = self.item_model_to_answers.get(self.test.item_model)
         self.script_answers = stored_answers or [stest.selected for stest in script.tests]
         script_answer_vars = [StringVar(value=ans) for ans in self.script_answers]
@@ -130,21 +130,21 @@ class TestPage(Page):
         if self.shared.job:
             self.shared.job.add_test(self.test)
 
-        complete_test(self.test, self.shared.storage["area_script_position"], self.shared.storage["comment_box_position"])
+        complete_test(self.test, self.shared.storage.positions)
 
         if self.test.item.model not in (".", " ", "", "-", self.test.item.description, self.test.script.nickname):
-            self.update_storage(script_answers)            
+            self.update_storage(script_answers)
         self.change_page("TEST")
 
     def update_storage(self, actual_script_answers: list[str]):
         if self.script_answers == actual_script_answers:
             return
-        
+
         default = [stest.selected for stest in self.test.script.tests]
         if actual_script_answers == default:
             del self.item_model_to_answers[self.test.item_model]
         else:
             self.item_model_to_answers[self.test.item_model] = actual_script_answers
 
-        self.shared.storage.update({"item_model_to_script_answers": self.item_model_to_answers})
-        
+        self.shared.storage.item_model_to_script_answers = self.item_model_to_answers
+        self.shared.storage.save()
