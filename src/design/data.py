@@ -155,6 +155,7 @@ SCRIPTS: dict[str, Script] = {
         _BATTERY_N,
         _CONTROL_P,
         _SWIVEL_P,
+        _SLING_INSPECTION_N,
         _LOAD_TEST_P,
         _EMERGENCY_OFF_P,
         _MECHANICAL_LOWERING_P,
