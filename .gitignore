@@ -2,6 +2,7 @@ docstring.mustache
 **/**egg-info
 
 **/**.vscode
+**/store.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
