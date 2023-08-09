@@ -100,13 +100,14 @@ class TestPage(Page):
         script_answer_vars = [StringVar(value=ans) for ans in self.script_answers]
         for i, stest in enumerate(script.tests):
             ttk.Label(self.frame, text=f"{stest.name}").grid(column=0, row=row, columnspan=1, sticky="w")
-            if not stest.options:
+            if len(stest.options) <= 1:
                 ttk.Entry(self.frame, textvariable=script_answer_vars[i]).grid(column=1, row=row, columnspan=3, sticky="w")
-            for j, option in enumerate(stest.options):
-                rb = ttk.Radiobutton(self.frame, text=option, variable=script_answer_vars[i], value=option)
-                rb.grid(column=1 + j, row=row)
-                if option == self.script_answers[i]:
-                    rb.invoke()
+            else:
+                for j, option in enumerate(stest.options):
+                    rb = ttk.Radiobutton(self.frame, text=option, variable=script_answer_vars[i], value=option)
+                    rb.grid(column=1 + j, row=row)
+                    if option == self.script_answers[i]:
+                        rb.invoke()
             row += 1
         self.frame.rowconfigure(row, minsize=10)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=row, columnspan=4)
