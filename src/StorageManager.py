@@ -7,8 +7,12 @@ STORAGE_KEYS = Literal["testing_tab_position", "assets_tab_position", "area_scri
 class StorageManager:
     def __init__(self, filename: str):
         self._storage: dict[STORAGE_KEYS, Any] = {}
-        with open(filename, "r") as file:
-            self._storage = json.load(file)
+        try:
+            with open(filename, "r+") as file:
+                self._storage = json.load(file)
+        except FileNotFoundError:
+            with open(filename, "w") as file:
+                file.write("{" + "}")
 
         self.filename = filename
 
