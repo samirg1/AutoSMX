@@ -72,11 +72,14 @@ def complete_test(test: Test, positions: Positions):
     click_key(*KEYS.ctrl_tab.value)
     wait(0.5)
 
-    script_values = test.script_answers
-    for i, value in enumerate(script_values):
+    for i, value in enumerate(test.script_answers):
         type(value)
-        if i != len(script_values) - 1:
+        if i != len(test.script_answers) - 1:
             click_key(KEYS.tab.value)
+
+    if test.script.nickname == "TRACK":
+        click(positions.track_weight_field, times=2)
+        type(test.script_answers[-3])
 
     click_key(*KEYS.ctrl_tab.value)
 

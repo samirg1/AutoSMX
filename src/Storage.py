@@ -9,6 +9,7 @@ class Positions:
     show_all_script: tuple[int, int] | None = None
     comment_box: tuple[int, int] | None = None
     window: tuple[int, int] | None = None
+    track_weight_field: tuple[int, int] | None = None
 
     @classmethod
     def keys(cls):

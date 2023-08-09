@@ -23,7 +23,7 @@ class StartPage(Page):
         button.configure(text="Done", state="disabled")
 
         self.positions_set += 1
-        if self.positions_set == 5:
+        if self.positions_set == len(self.shared.storage.positions.__annotations__):
             self.shared.storage.positions_set = True
             self.shared.storage.save()
             self.change_page("TEST")
