@@ -36,9 +36,11 @@ def click_key(*keys: str, times: int = 1):
     for _ in range(times):
         pyautogui.hotkey(*keys)
 
+
 @_automation_wrapper()
 def wait(seconds: float):
     pyautogui.sleep(seconds)
+
 
 @_automation_wrapper()
 def type(text: str):

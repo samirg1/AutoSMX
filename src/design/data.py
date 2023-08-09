@@ -213,6 +213,19 @@ SCRIPTS: dict[str, Script] = {
         _IEC_MAINS_LEAD,
     ),
     "FURNITURE": Script(
-        "FURNITURE", "FURNITURE GENERIC", 14, _CONDITION_1, _CASTORS_P, _CASTORS_P, _PAINT_P, _CASTORS_P, _MISSING_COMPONENTS_N, _POLES_P, _CLEAN_P, _ELECTRIC_N, _PERFORMANCE_P, extra_terms=["OVERBED"]
+        "FURNITURE",
+        "FURNITURE GENERIC",
+        14,
+        _CONDITION_1,
+        _CASTORS_P,
+        _CASTORS_P,
+        _PAINT_P,
+        _CASTORS_P,
+        _MISSING_COMPONENTS_N,
+        _POLES_P,
+        _CLEAN_P,
+        _ELECTRIC_N,
+        _PERFORMANCE_P,
+        extra_terms=["OVERBED"],
     ),
 }

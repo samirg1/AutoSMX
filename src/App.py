@@ -1,12 +1,12 @@
 import tkinter
 from tkinter import ttk
-from Storage import Storage
 
 from design.TestJobManager import TestJobManager
 from pages.JobPage import JobPage
 from pages.Page import TPAGES, Page, SharedPageInfo
 from pages.StartPage import StartPage
 from pages.TestPage import TestPage
+from Storage import Storage
 
 
 class App(tkinter.Tk):
@@ -21,7 +21,7 @@ class App(tkinter.Tk):
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
-        
+
         shared = SharedPageInfo({}, TestJobManager(), Storage.from_json_file("src/store.json"))
         self.pages: dict[TPAGES, Page] = {
             "START": StartPage(self._frame(), self.change_page, shared),

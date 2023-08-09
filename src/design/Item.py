@@ -15,7 +15,7 @@ class Item:
     @property
     def description(self) -> str:
         return self._description
-    
+
     @property
     def model(self) -> str:
         return self._model

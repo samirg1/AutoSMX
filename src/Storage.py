@@ -13,7 +13,7 @@ class Positions:
     @classmethod
     def keys(cls):
         return cls.__annotations__.keys()
-    
+
     @classmethod
     def from_dict(cls, data: dict[str, tuple[int, int]]):
         return cls(**data)

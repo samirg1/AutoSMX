@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from tkinter import ttk
 from typing import Callable, Literal
-from Storage import Storage
 
 from design import Job
 from design.TestJobManager import TestJobManager
+from Storage import Storage
 
 TPAGES = Literal["START", "JOB", "TEST", "TESTJOB"]
 
