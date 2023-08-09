@@ -106,7 +106,7 @@ class TestPage(Page):
         for i, stest in enumerate(script.tests):
             ttk.Label(self.frame, text=f"{stest.name}").grid(column=0, row=row, columnspan=1, sticky="w")
             if len(stest.options) <= 1:
-                ttk.Entry(self.frame, textvariable=script_answer_vars[i]).grid(column=2, row=row, columnspan=2, sticky="w")
+                ttk.Entry(self.frame, textvariable=script_answer_vars[i]).grid(column=1, row=row, columnspan=3, sticky="w")
             else:
                 for j, option in enumerate(stest.options):
                     rb = ttk.Radiobutton(self.frame, text=option, variable=script_answer_vars[i], value=option)
