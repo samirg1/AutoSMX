@@ -2,7 +2,11 @@ import tkinter
 from tkinter import ttk
 
 from design import TestJobManager
+<<<<<<< HEAD
 from pages import Page, JobPage, TPAGES, SharedPageInfo, StartPage, TestPage
+=======
+from pages import JobPage, TPAGES, Page, SharedPageInfo, StartPage, TestPage
+>>>>>>> 0d417b205ec7807a2130fd9bbc0533c67e4efb7c
 from Storage import Storage
 
 
