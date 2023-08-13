@@ -88,10 +88,10 @@ class TestPage(Page):
 
         save = ttk.Button(self.frame, text="Save", command=lambda: self.save_test([s.get() for s in script_answers], result.get()))
         save.grid(column=0, row=row, columnspan=4)
+        save.focus()
+        save.bind("<Return>", lambda _: self.save_test([s.get() for s in script_answers], result.get()))
         row += 1
 
-        self.comment.focus()
-        self.comment.bind("<Return>", lambda _: self.save_test([s.get() for s in script_answers], result.get()))
 
     def display_script(self, script: Script, row: int):
         row = 6

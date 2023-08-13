@@ -28,6 +28,7 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
     click_key(KEYS.tab.value)
     type(item_number)
     click_key(KEYS.enter.value)
+    wait(0.5)
     click_key(KEYS.tab.value, times=7)
     serial = get_selected_text()
     click_key(KEYS.tab.value)
@@ -60,7 +61,7 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
 
 
 def complete_test(test: Test, positions: Positions):
-    click()
+    click(positions.testing_tab)
     click_key(KEYS.tab.value, times=5)
     click_key(KEYS.enter.value)
     click_key(*KEYS.ctrl_tab.value, times=2)
@@ -98,16 +99,23 @@ def complete_test(test: Test, positions: Positions):
     type(test.final_result)
     click_key(KEYS.tab.value, times=7)
     # click_key(KEYS.enter.value)
+    # click(positions.window)
 
 
 def _navigate_to_sm_incident():
     click_key(KEYS.right.value)
+    wait(0.1)
+    click_key(*KEYS.shift_tab.value)
+    wait(0.1)
+    click_key(KEYS.right.value)
+    wait(0.1)
+    click_key(KEYS.right.value)
+    wait(0.1)
     click_key(*KEYS.shift_tab.value)
     click_key(KEYS.right.value)
-    click_key(KEYS.right.value)
+    wait(0.1)
     click_key(*KEYS.shift_tab.value)
-    click_key(KEYS.right.value)
-    click_key(*KEYS.shift_tab.value)
+    wait(0.1)
     click_key(KEYS.right.value)
 
 
