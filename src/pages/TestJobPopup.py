@@ -2,7 +2,7 @@ import tkinter
 from tkinter import Misc, ttk
 from typing import Callable
 
-from design.TestJob import TestJob
+from design import TestJob
 
 
 class TestJobPopup(tkinter.Toplevel):

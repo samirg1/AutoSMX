@@ -1,11 +1,8 @@
 import tkinter
 from tkinter import ttk
 
-from design.TestJobManager import TestJobManager
-from pages.JobPage import JobPage
-from pages.Page import TPAGES, Page, SharedPageInfo
-from pages.StartPage import StartPage
-from pages.TestPage import TestPage
+from design import TestJobManager
+from pages import JobPage, TPAGES, Page, SharedPageInfo, StartPage, TestPage
 from Storage import Storage
 
 

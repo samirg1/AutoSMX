@@ -1,7 +1,7 @@
 from tkinter import ttk
 
 from automations import get_click_position
-from pages.Page import Page
+from pages import Page
 
 
 class StartPage(Page):
