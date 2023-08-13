@@ -2,7 +2,7 @@ import json
 from dataclasses import asdict, dataclass, field
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, repr=False, eq=False)
 class Positions:
     testing_tab: tuple[int, int] | None = None
     assets_tab: tuple[int, int] | None = None
@@ -20,7 +20,7 @@ class Positions:
         return cls(**data)
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, repr=False, eq=False)
 class Storage:
     _json_file_path: str
     positions: Positions = field(default_factory=Positions)
