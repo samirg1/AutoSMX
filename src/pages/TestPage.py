@@ -5,14 +5,8 @@ from typing import cast
 from pyautogui import FailSafeException
 
 from actions import complete_test, get_item_job
-from design.data import Script
-from design.Item import Item
-from design.Job import Job
-from design.Test import ScriptError, Test
-from design.TestJob import TestJob
-from pages.Page import Page
-from pages.ScriptSelectionPopup import ScriptSelectionPopup
-from pages.TestJobPopup import TestJobPopup
+from design import Item, Job, ScriptError, Test, TestJob, Script
+from pages import Page, ScriptSelectionPopup, TestJobPopup
 
 
 class TestPage(Page):

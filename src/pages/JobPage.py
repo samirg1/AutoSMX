@@ -1,7 +1,7 @@
 from tkinter import ttk
 
-from design.Job import Job
-from pages.Page import Page
+from design import Job
+from pages import Page
 
 
 class JobPage(Page):
