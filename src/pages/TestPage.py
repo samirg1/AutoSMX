@@ -2,6 +2,8 @@ import tkinter
 from tkinter import StringVar, ttk
 from typing import cast
 
+from pyautogui import FailSafeException
+
 from actions import complete_test, get_item_job
 from design.data import Script
 from design.Item import Item
@@ -18,10 +20,11 @@ class TestPage(Page):
         ttk.Button(self.frame, text="< Jobs", command=lambda: self.change_page("JOB")).grid(column=0, row=0, sticky="w")
 
         ttk.Label(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
-        item_number = tkinter.StringVar()
+        item_number = StringVar(value=self.shared.previous_item_number)
         item_entry = ttk.Entry(self.frame, textvariable=item_number)
         item_entry.grid(column=2, row=1, sticky="w", columnspan=2)
         item_entry.focus()
+        item_entry.icursor(tkinter.END)
         item_entry.bind("<Return>", lambda _: self.get_item(item_number, item_entry))
         self.go_button = ttk.Button(self.frame, text="Go", command=lambda: self.get_item(item_number, item_entry))
         self.go_button.grid(column=0, row=2, columnspan=2)
@@ -31,7 +34,11 @@ class TestPage(Page):
     def get_item(self, item_number: StringVar, item_entry: ttk.Entry, /, *, choose_script: bool = False) -> None:
         item_entry.state(["disabled"])  # type: ignore
         self.frame.focus()
-        item, self.shared.job = (Item(item_number.get(), "", "", "", "", "", ""), self.shared.job) if choose_script else get_item_job(item_number.get(), self.shared.storage.positions, self.shared.jobs, self.shared.job)
+        try:
+            item, self.shared.job = (Item(item_number.get(), "", "", "", "", "", ""), self.shared.job) if choose_script else get_item_job(item_number.get(), self.shared.storage.positions, self.shared.jobs, self.shared.job)
+        except FailSafeException:
+            self.shared.previous_item_number = item_number.get()
+            return self.change_page("TEST")
         self.shared.job = Job("Unknown", "Unknown", "Unknown") if self.shared.job is None else self.shared.job
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test(item)
@@ -140,6 +147,8 @@ class TestPage(Page):
 
         if self.test.item.model not in (".", " ", "", "-", self.test.item.description, self.test.script.nickname):
             self.update_storage(script_answers)
+
+        self.shared.previous_item_number = self.test.item.number
         self.change_page("TEST")
 
     def update_storage(self, actual_script_answers: list[str]):

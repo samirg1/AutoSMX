@@ -15,6 +15,7 @@ class SharedPageInfo:
         self.testjob_manager = testjob_manager
         self.job: Job | None = None
         self.storage = storage
+        self.previous_item_number: str = ""
 
 
 class Page(ABC):
