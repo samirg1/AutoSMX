@@ -1,6 +1,6 @@
-from typing import Callable
+from typing import Any, Callable
+
 import pytest
-from pynput import mouse
 
 
 @pytest.fixture
@@ -36,17 +36,23 @@ def pyautogui_fixture(monkeypatch: pytest.MonkeyPatch):
 @pytest.fixture
 def pyperclip_fixture(monkeypatch: pytest.MonkeyPatch):
     buffer: dict[str, list[str]] = {"paste_calls": []}
+
     def mock_paste() -> str:
         buffer["paste_calls"].append("Selected Text")
         return "Selected Text"
-        
+
     monkeypatch.setattr("pyperclip.paste", mock_paste)
     return buffer
 
+
 @pytest.fixture
 def pynput_fixture(monkeypatch: pytest.MonkeyPatch):
+    class AlwaysEqual:
+        def __eq__(self, other: Any):
+            return True
+
     class MockListener:
-        def __init__(self, on_click: Callable[[float, float, mouse.Button, bool], bool]) -> None:
+        def __init__(self, on_click: Callable[[float, float, AlwaysEqual, bool], bool]) -> None:
             self.on_click = on_click
             self.started = False
 
@@ -54,5 +60,6 @@ def pynput_fixture(monkeypatch: pytest.MonkeyPatch):
             self.started = True
 
         def join(self):
-            self.on_click(100, 200, mouse.Button.left, True)
+            self.on_click(100, 200, AlwaysEqual(), True)
+
     monkeypatch.setattr("pynput.mouse.Listener", MockListener)

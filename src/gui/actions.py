@@ -22,7 +22,7 @@ class KEYS(Enum):
     down = "down"
 
 
-def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]: # pragma: no cover
+def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:  # pragma: no cover
     click()
     type(item_number)
     click_key(KEYS.enter.value)
@@ -63,7 +63,7 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
     return item, cast(Job, job)  # type: ignore[redundant-cast]
 
 
-def complete_test(test: Test, positions: Positions): # pragma: no cover
+def complete_test(test: Test, positions: Positions):  # pragma: no cover
     click(positions.testing_tab)
     click_key(KEYS.tab.value, times=5)
     click_key(KEYS.enter.value)
@@ -105,7 +105,7 @@ def complete_test(test: Test, positions: Positions): # pragma: no cover
     # click(positions.window)
 
 
-def _navigate_to_sm_incident(): # pragma: no cover
+def _navigate_to_sm_incident():  # pragma: no cover
     click_key(KEYS.right.value)
     wait(0.1)
     click_key(*KEYS.shift_tab.value)
@@ -122,7 +122,7 @@ def _navigate_to_sm_incident(): # pragma: no cover
     click_key(KEYS.right.value)
 
 
-def _complete_testjob(testjob: TestJob): # pragma: no cover
+def _complete_testjob(testjob: TestJob):  # pragma: no cover
     type(testjob.department)
     click_key(KEYS.enter.value)
     type(testjob.contact_name)
