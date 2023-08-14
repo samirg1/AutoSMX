@@ -6,7 +6,7 @@ from pages.Page import Page, TPAGES, SharedPageInfo
 from pages.JobPage import JobPage
 from pages.TestPage import TestPage
 from pages.StartPage import StartPage
-from Storage import Storage
+from storage.Storage import Storage
 
 
 class App(tkinter.Tk):

@@ -4,7 +4,7 @@ from typing import Callable, Literal
 
 from design.Job import Job
 from design.TestJobManager import TestJobManager
-from Storage import Storage
+from storage.Storage import Storage
 
 TPAGES = Literal["START", "JOB", "TEST", "TESTJOB"]
 
