@@ -2,7 +2,7 @@ import os
 from enum import Enum
 from typing import cast
 
-from automations import click, click_key, get_selected_text, type, wait
+from gui.automations import click, click_key, get_selected_text, type, wait
 from design.Item import Item
 from design.Job import Job
 from design.TestJob import TestJob

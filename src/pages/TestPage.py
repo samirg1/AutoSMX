@@ -4,7 +4,7 @@ from typing import cast
 
 from pyautogui import FailSafeException
 
-from actions import complete_test, get_item_job
+from gui.actions import complete_test, get_item_job
 from design.Item import Item
 from design.Job import Job
 from design.TestJob import TestJob

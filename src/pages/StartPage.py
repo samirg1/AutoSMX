@@ -1,6 +1,6 @@
 from tkinter import ttk
 
-from automations import get_click_position
+from gui.automations import get_click_position
 from pages.Page import Page
 
 
