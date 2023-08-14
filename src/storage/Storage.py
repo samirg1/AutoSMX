@@ -38,7 +38,8 @@ class Storage:
                 except json.JSONDecodeError:
                     raise FileNotFoundError
                 data["positions"] = Positions.from_dict(data.get("positions", {}))
-                return cls(filename, **data)
+                data["_json_file_path"] = filename
+                return cls(**data)
         except FileNotFoundError:
             with open(filename, "w") as file:
                 instance = cls(filename)
