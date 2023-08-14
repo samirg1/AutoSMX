@@ -27,6 +27,6 @@ class StartPage(Page):
 
         self.positions_set += 1
         if self.positions_set == len(self.shared.storage.positions.__annotations__):
-            self.shared.storage.positions_set = True
-            self.shared.storage.save()
+            with self.shared.storage.edit() as storage:
+                storage.positions_set = True
             self.change_page("TEST")

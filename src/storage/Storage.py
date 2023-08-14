@@ -40,6 +40,13 @@ class Storage:
                 json.dump(asdict(instance), file, indent=4)
             return instance
 
-    def save(self) -> None:
+    def _save(self) -> None:
         with open(self._json_file_path, "w") as file:
             json.dump(asdict(self), file, indent=4)
+
+    @contextmanager
+    def edit(self):
+        try:
+            yield self
+        finally:
+            self._save()

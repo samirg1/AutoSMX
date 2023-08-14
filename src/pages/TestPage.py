@@ -1,15 +1,15 @@
 import tkinter
-from tkinter import StringVar, ttk, messagebox
+from tkinter import StringVar, messagebox, ttk
 from typing import cast
 
 from pyautogui import FailSafeException
 
-from gui.actions import complete_test, get_item_job
+from design.data import Script
 from design.Item import Item
 from design.Job import Job
+from design.Test import ScriptError, Test
 from design.TestJob import TestJob
-from design.Test import Test, ScriptError
-from design.data import Script
+from gui.actions import complete_test, get_item_job
 from pages.Page import Page
 from pages.ScriptSelectionPopup import ScriptSelectionPopup
 from pages.TestJobPopup import TestJobPopup
@@ -222,5 +222,5 @@ class TestPage(Page):
         else:
             self.item_model_to_answers[self.test.item_model] = actual_script_answers
 
-        self.shared.storage.item_model_to_script_answers = self.item_model_to_answers
-        self.shared.storage.save()
+        with self.shared.storage.edit() as storage:
+            storage.item_model_to_script_answers = self.item_model_to_answers
