@@ -61,9 +61,9 @@ class TestPage(Page):
                 )
             )
         except FailSafeException:
-            messagebox.showerror("Process Aborted", "Fail safe activated") # type: ignore
+            messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
             return self.reset_page(item_number.get())
-        
+
         self.shared.job = Job("Unknown", "Unknown", "Unknown") if self.shared.job is None else self.shared.job
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test(item)
@@ -74,9 +74,11 @@ class TestPage(Page):
             test.set_script()
             self.display_test(test)
         except ScriptError:
+
             def script_popup_close():
                 script_popup.destroy()
                 self.reset_page(item.number)
+
             script_popup = ScriptSelectionPopup(self.frame, lambda s: self.set_script(s, test))
             script_popup.protocol("WM_DELETE_WINDOW", script_popup_close)
             script_popup.mainloop()
@@ -188,11 +190,11 @@ class TestPage(Page):
         self.test.complete(comment if comment != "\n" else "", result, script_answers)
         if self.shared.job:
             self.shared.job.add_test(self.test)
-        
+
         try:
             complete_test(self.test, self.shared.storage.positions)
         except FailSafeException:
-            messagebox.showerror("Process Aborted", "Fail safe activated") # type: ignore
+            messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
 
         if self.test.item.model not in (
             ".",
@@ -206,7 +208,7 @@ class TestPage(Page):
 
         self.reset_page(self.test.item.number)
 
-    def reset_page(self, item_number: str):
+    def reset_page(self, item_number: str) -> None:
         self.shared.previous_item_number = item_number
         self.change_page("TEST")
 
