@@ -1,5 +1,5 @@
 import os
-
+os.environ['DISPLAY'] = ':0'
 from gui.automations import click, click_key, get_click_position, get_selected_text, type, wait
 
 
