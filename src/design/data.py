@@ -83,8 +83,8 @@ class Script:
         self._search_terms = extra_terms or []
         self._search_terms.append(nickname)
 
-    def matches(self, search: str) -> bool:
-        return any(term in search for term in self._search_terms)
+    def is_for(self, item_description: str) -> bool:
+        return any(term in item_description for term in self._search_terms)
 
     def __str__(self) -> str:
         return self.name

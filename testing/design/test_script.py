@@ -45,7 +45,7 @@ def test_script_creation_with_extra_terms():
 )
 def test_script_matches(match_description: str, expected: bool):
     script = Script("Tester", "Matching Script", 0, extra_terms=["tag3"])
-    assert script.matches(match_description) == expected
+    assert script.is_for(match_description) == expected
 
 
 def test_script_to_string():

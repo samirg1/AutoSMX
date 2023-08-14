@@ -23,7 +23,7 @@ class Test:
     def _determine_script(self) -> Script:
         if self.item.description != "":
             for script in SCRIPTS.values():
-                if script.matches(self.item.description):
+                if script.is_for(self.item.description):
                     return script
 
         raise ScriptError("No script found")

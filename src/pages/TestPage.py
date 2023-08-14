@@ -1,5 +1,5 @@
 import tkinter
-from tkinter import StringVar, ttk
+from tkinter import StringVar, ttk, messagebox
 from typing import cast
 
 from pyautogui import FailSafeException
@@ -61,8 +61,9 @@ class TestPage(Page):
                 )
             )
         except FailSafeException:
-            self.shared.previous_item_number = item_number.get()
-            return self.change_page("TEST")
+            messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
+            return self.reset_page(item_number.get())
+
         self.shared.job = Job("Unknown", "Unknown", "Unknown") if self.shared.job is None else self.shared.job
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test(item)
@@ -73,7 +74,14 @@ class TestPage(Page):
             test.set_script()
             self.display_test(test)
         except ScriptError:
-            ScriptSelectionPopup(self.frame, lambda s: self.set_script(s, test)).mainloop()
+
+            def script_popup_close():
+                script_popup.destroy()
+                self.reset_page(item.number)
+
+            script_popup = ScriptSelectionPopup(self.frame, lambda s: self.set_script(s, test))
+            script_popup.protocol("WM_DELETE_WINDOW", script_popup_close)
+            script_popup.mainloop()
 
     def set_script(self, script: Script, test: Test) -> None:
         test.set_script(script)
@@ -82,7 +90,7 @@ class TestPage(Page):
     def display_test(self, test: Test):
         self.test = test
         self.choose_button.destroy()
-        self.go_button.configure(text="Cancel", command=lambda: self.change_page("TEST"))
+        self.go_button.configure(text="Cancel", command=lambda: self.reset_page(test.item.number))
         self.go_button.grid(column=0, row=2, columnspan=4)
         ttk.Label(self.frame, text=f"{test.item}").grid(column=0, row=3, columnspan=4)
         ttk.Label(self.frame, text=f"{cast(Job, self.shared.job).campus}").grid(column=0, row=4, columnspan=4)
@@ -183,7 +191,10 @@ class TestPage(Page):
         if self.shared.job:
             self.shared.job.add_test(self.test)
 
-        complete_test(self.test, self.shared.storage.positions)
+        try:
+            complete_test(self.test, self.shared.storage.positions)
+        except FailSafeException:
+            messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
 
         if self.test.item.model not in (
             ".",
@@ -195,7 +206,10 @@ class TestPage(Page):
         ):
             self.update_storage(script_answers)
 
-        self.shared.previous_item_number = self.test.item.number
+        self.reset_page(self.test.item.number)
+
+    def reset_page(self, item_number: str) -> None:
+        self.shared.previous_item_number = item_number
         self.change_page("TEST")
 
     def update_storage(self, actual_script_answers: list[str]):
