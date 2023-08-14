@@ -32,7 +32,11 @@ class Storage:
     def from_json_file(cls, filename: str):
         try:
             with open(filename, "r") as file:
-                data = json.load(file)
+                data = {}
+                try:
+                    data = json.load(file)
+                except json.JSONDecodeError:
+                    raise FileNotFoundError
                 data["positions"] = Positions.from_dict(data.get("positions", {}))
                 return cls(filename, **data)
         except FileNotFoundError:
