@@ -1,4 +1,5 @@
 import json
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
 
 
@@ -32,8 +33,8 @@ class Storage:
         try:
             with open(filename, "r") as file:
                 data = json.load(file)
-                data["positions"] = Positions.from_dict(data["positions"])
-                return cls(**data)
+                data["positions"] = Positions.from_dict(data.get("positions", {}))
+                return cls(filename, **data)
         except FileNotFoundError:
             with open(filename, "w") as file:
                 instance = cls(filename)
