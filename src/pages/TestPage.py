@@ -73,7 +73,12 @@ class TestPage(Page):
             test.set_script()
             self.display_test(test)
         except ScriptError:
-            ScriptSelectionPopup(self.frame, lambda s: self.set_script(s, test)).mainloop()
+            def script_popup_close():
+                script_popup.destroy()
+                self.reset_page(item.number)
+            script_popup = ScriptSelectionPopup(self.frame, lambda s: self.set_script(s, test))
+            script_popup.protocol("WM_DELETE_WINDOW", script_popup_close)
+            script_popup.mainloop()
 
     def set_script(self, script: Script, test: Test) -> None:
         test.set_script(script)
