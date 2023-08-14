@@ -8,6 +8,10 @@ from pages.TestPage import TestPage
 from pages.StartPage import StartPage
 from storage.Storage import Storage
 
+import os
+
+os.environ["DISPLAY"] = ":0"
+
 
 class App(tkinter.Tk):
     def __init__(self):
