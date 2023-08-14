@@ -8,10 +8,10 @@ def test_item_creation_and_properties():
     assert item.number == "123"
     assert item.description == "Test Item"
     assert item.model == "Model123"
-    assert item._manufacturer == "Test Manufacturer"
-    assert item._room == "Room A"
-    assert item._last_service == "2022-01-01"
-    assert item._serial == "ABC456"
+    assert item.manufacturer == "Test Manufacturer"
+    assert item.room == "Room A"
+    assert item.last_service == "2022-01-01"
+    assert item.serial == "ABC456"
 
 
 def test_item_string_representation():

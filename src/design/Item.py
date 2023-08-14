@@ -1,39 +1,21 @@
+from dataclasses import dataclass, field
+
+
+@dataclass(frozen=True, repr=False, slots=True, order=True)
 class Item:
-    def __init__(
-        self,
-        number: str,
-        description: str,
-        model: str,
-        manufacturer: str,
-        room: str,
-        last_service: str,
-        serial: str,
-    ):
-        self._number = number
-        self._description = description
-        self._model = model
-        self._manufacturer = manufacturer
-        self._room = room
-        self._last_service = last_service
-        self._serial = serial
-
-    @property
-    def number(self) -> str:
-        return self._number
-
-    @property
-    def description(self) -> str:
-        return self._description
-
-    @property
-    def model(self) -> str:
-        return self._model
+    number: str = field(hash=True)
+    description: str = field(compare=False, hash=False)
+    model: str = field(compare=False, hash=False)
+    manufacturer: str = field(compare=False, hash=False)
+    room: str = field(compare=False, hash=False)
+    last_service: str = field(compare=False, hash=False)
+    serial: str = field(compare=False, hash=False)
 
     def __str__(self) -> str:
-        return f"{self._number} - {self._description}"
+        return f"{self.number} - {self.description}"
 
     def full_info(self) -> str:
-        return f"{str(self)}\nModel: {self._model}\nManufacturer: {self._manufacturer}\nRoom: {self._room}\nLast Service: {self._last_service}\nSerial: {self._serial}"
+        return f"{str(self)}\nModel: {self.model}\nManufacturer: {self.manufacturer}\nRoom: {self.room}\nLast Service: {self.last_service}\nSerial: {self.serial}"
 
     def __hash__(self) -> int:
-        return hash(self._number)
+        return hash(self.number)
