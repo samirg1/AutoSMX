@@ -1,6 +1,7 @@
 import json
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
+from pathlib import Path
 
 
 @dataclass(slots=True, repr=False, eq=False)
@@ -23,15 +24,15 @@ class Positions:
 
 @dataclass(slots=True, repr=False, eq=False)
 class Storage:
-    _json_file_path: str
+    _json_file_path: Path | str
     positions: Positions = field(default_factory=Positions)
     positions_set: bool = False
     item_model_to_script_answers: dict[str, list[str]] = field(default_factory=dict)
 
     @classmethod
-    def from_json_file(cls, filename: str):
+    def from_json_file(cls, filename: Path | str):
         try:
-            with open(filename, "r") as file:
+            with open(filename) as file:
                 data = {}
                 try:
                     data = json.load(file)
