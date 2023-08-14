@@ -1,12 +1,12 @@
+from dataclasses import dataclass, field
 from design.Test import Test
 
-
+@dataclass(frozen=True, repr=False, slots=True, order=True)
 class Job:
-    def __init__(self, company: str, campus: str, department: str) -> None:
-        self.company = company
-        self.campus = campus
-        self.department = department
-        self.tests: list[Test] = []
+    company: str = field(compare=False)
+    campus: str = field(compare=True, hash=True)
+    department: str = field(compare=False)
+    tests: list[Test] = field(compare=False, default_factory=list)
 
     def add_test(self, test: Test):
         self.tests.append(test)
@@ -18,6 +18,3 @@ class Job:
         base = f"{str(self)}\nTests:\n"
         base += "\n".join(f"\t{test}" for test in self.tests)
         return base
-
-    def __hash__(self) -> int:
-        return hash(self.campus)
