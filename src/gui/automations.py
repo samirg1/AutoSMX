@@ -12,7 +12,7 @@ _PRINT = False
 
 def _automation_wrapper(
     default: Any | None = None,
-) -> Callable[[Callable[..., Any]], Any]:
+) -> Callable[[Callable[..., Any]], Any]: # pragma: no cover
     def decorator(func: Callable[..., Any]):
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any):
