@@ -2,11 +2,17 @@ import tkinter
 from tkinter import Misc, ttk
 from typing import Callable
 
-from design import TestJob
+from design.TestJob import TestJob
 
 
 class TestJobPopup(tkinter.Toplevel):
-    def __init__(self, master: Misc | None, default_dept: str, default_contact: str, master_save_testjob: Callable[[TestJob], None]):
+    def __init__(
+        self,
+        master: Misc | None,
+        default_dept: str,
+        default_contact: str,
+        master_save_testjob: Callable[[TestJob], None],
+    ):
         super().__init__(master)
         self.master_save_testjob = master_save_testjob
         self.title("Add Job")
@@ -33,7 +39,11 @@ class TestJobPopup(tkinter.Toplevel):
         comment.focus()
         comment.grid(column=0, row=3, columnspan=2)
 
-        ttk.Button(self, text="Save", command=lambda: self._save_testjob(department.get(), contact.get(), comment.get("1.0", tkinter.END))).grid(column=0, row=4, columnspan=2)
+        ttk.Button(
+            self,
+            text="Save",
+            command=lambda: self._save_testjob(department.get(), contact.get(), comment.get("1.0", tkinter.END)),
+        ).grid(column=0, row=4, columnspan=2)
 
     def _save_testjob(self, department: str, contact: str, comment: str):
         testjob = TestJob(department, contact, comment)

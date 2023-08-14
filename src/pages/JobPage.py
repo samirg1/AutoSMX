@@ -1,7 +1,7 @@
 from tkinter import ttk
 
-from design import Job
-from pages import Page
+from design.Job import Job
+from pages.Page import Page
 
 
 class JobPage(Page):
@@ -15,25 +15,28 @@ class JobPage(Page):
         for job in self.shared.jobs.values():
             job_testjobs = self.shared.testjob_manager.job_to_testjobs.get(job, [])
             ttk.Label(self.frame, text=f"{job}").grid(column=0, row=row, columnspan=3, sticky="w")
-            ttk.Button(self.frame, text=">", command=lambda j=job: self.add_tests(j)).grid(column=3, row=row, sticky="e")
+            ttk.Button(self.frame, text=">", command=lambda j=job: self.add_tests(j)).grid(column=3, row=row, sticky="e")  # type: ignore[misc]
             ttk.Label(self.frame, text=f"Tests: {len(job.tests)}").grid(column=0, row=row + 1, columnspan=3, sticky="w")
-            ttk.Button(self.frame, text="X", command=lambda j=job: self.delete_job(j)).grid(column=3, row=row + 1, sticky="e")
+            ttk.Button(self.frame, text="X", command=lambda j=job: self.delete_job(j)).grid(column=3, row=row + 1, sticky="e")  # type: ignore[misc]
 
             row += 2
             if job_testjobs:
-                ttk.Label(self.frame, text=f"Jobs Raised:").grid(column=0, row=row, columnspan=4)
+                ttk.Label(self.frame, text="Jobs Raised:").grid(column=0, row=row, columnspan=4)
                 row += 1
             for testjob in job_testjobs:
                 item = self.shared.testjob_manager.testjob_to_item[testjob]
                 first_line = str(testjob).split("\n")[0]
-                ttk.Label(self.frame, text=f"-> {item.description} ({item.number}): {first_line}").grid(column=0, row=row, columnspan=4, sticky="w")
+                ttk.Label(
+                    self.frame,
+                    text=f"-> {item.description} ({item.number}): {first_line}",
+                ).grid(column=0, row=row, columnspan=4, sticky="w")
                 row += 1
 
-    def delete_job(self, job: Job):
+    def delete_job(self, job: Job) -> None:
         del self.shared.jobs[job.campus]
         self.change_page("JOB")
 
-    def add_tests(self, job: Job | None = None):
+    def add_tests(self, job: Job | None = None) -> None:
         self.shared.job = job
         self.change_page("TEST")
 

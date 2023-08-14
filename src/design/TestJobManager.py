@@ -1,4 +1,6 @@
-from design import Item, Job, TestJob
+from design.Item import Item
+from design.Job import Job
+from design.TestJob import TestJob
 
 
 class TestJobManager:

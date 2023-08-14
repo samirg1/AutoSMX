@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from tkinter import ttk
 from typing import Callable, Literal
 
-from design import Job, TestJobManager
+from design.Job import Job
+from design.TestJobManager import TestJobManager
 from Storage import Storage
 
 TPAGES = Literal["START", "JOB", "TEST", "TESTJOB"]
@@ -18,7 +19,12 @@ class SharedPageInfo:
 
 
 class Page(ABC):
-    def __init__(self, frame: ttk.Frame, change_page: Callable[[TPAGES], None], shared: SharedPageInfo) -> None:
+    def __init__(
+        self,
+        frame: ttk.Frame,
+        change_page: Callable[[TPAGES], None],
+        shared: SharedPageInfo,
+    ) -> None:
         self.frame = frame
         self.change_page = change_page
         self.shared = shared

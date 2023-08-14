@@ -1,5 +1,14 @@
 class Item:
-    def __init__(self, number: str, description: str, model: str, manufacturer: str, room: str, last_service: str, serial: str):
+    def __init__(
+        self,
+        number: str,
+        description: str,
+        model: str,
+        manufacturer: str,
+        room: str,
+        last_service: str,
+        serial: str,
+    ):
         self._number = number
         self._description = description
         self._model = model

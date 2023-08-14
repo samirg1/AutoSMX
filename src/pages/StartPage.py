@@ -1,7 +1,7 @@
 from tkinter import ttk
 
 from automations import get_click_position
-from pages import Page
+from pages.Page import Page
 
 
 class StartPage(Page):
@@ -13,9 +13,12 @@ class StartPage(Page):
         ttk.Label(self.frame, text="Start Page").grid(column=0, row=0)
 
         for row, key in enumerate(self.shared.storage.positions.keys(), start=1):
-            button = ttk.Button(self.frame, text=f"Click here then on {' '.join(key.split('_')).title()}")
+            button = ttk.Button(
+                self.frame,
+                text=f"Click here then on {' '.join(key.split('_')).title()}",
+            )
             button.grid(column=0, row=row)
-            button.configure(command=lambda button=button, key=key: self.click_position(button, key))
+            button.configure(command=lambda button=button, key=key: self.click_position(button, key))  # type: ignore[misc]
 
     def click_position(self, button: ttk.Button, attribute_name: str) -> None:
         position = get_click_position()

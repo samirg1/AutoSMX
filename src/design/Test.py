@@ -1,4 +1,6 @@
-from design import SCRIPTS, Script, Item, TestJob
+from design.data import SCRIPTS, Script
+from design.Item import Item
+from design.TestJob import TestJob
 
 
 class ScriptError(ValueError):
@@ -35,9 +37,7 @@ class Test:
         self.testjobs.append(testjob)
 
     def complete(self, comment: str, final_result: str, script_answers: list[str]):
-        self.script_answers = [
-            "" if a == " " else "N/A" if a == "" else a for a in script_answers
-        ]
+        self.script_answers = ["" if a == " " else "N/A" if a == "" else a for a in script_answers]
         self.comment = comment
         self.final_result = final_result
 

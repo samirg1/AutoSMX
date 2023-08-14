@@ -3,7 +3,10 @@ from enum import Enum
 from typing import cast
 
 from automations import click, click_key, get_selected_text, type, wait
-from design import Item, Job, Test, TestJob
+from design.Item import Item
+from design.Job import Job
+from design.TestJob import TestJob
+from design.Test import Test
 from Storage import Positions
 
 WINDOWS = os.name == "nt"
@@ -57,7 +60,7 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
     click(positions.window)
     wait(0.5)
 
-    return item, cast(Job, job)
+    return item, cast(Job, job)  # type: ignore[redundant-cast]
 
 
 def complete_test(test: Test, positions: Positions):

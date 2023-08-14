@@ -10,7 +10,9 @@ _RUN = True
 _PRINT = False
 
 
-def _automation_wrapper(default: Any | None = None) -> Callable[[Callable[..., Any]], Any]:
+def _automation_wrapper(
+    default: Any | None = None,
+) -> Callable[[Callable[..., Any]], Any]:
     def decorator(func: Callable[..., Any]):
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any):

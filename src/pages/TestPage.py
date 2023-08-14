@@ -5,8 +5,14 @@ from typing import cast
 from pyautogui import FailSafeException
 
 from actions import complete_test, get_item_job
-from design import Item, Job, ScriptError, Test, TestJob, Script
-from pages import Page, ScriptSelectionPopup, TestJobPopup
+from design.Item import Item
+from design.Job import Job
+from design.TestJob import TestJob
+from design.Test import Test, ScriptError
+from design.data import Script
+from pages.Page import Page
+from pages.ScriptSelectionPopup import ScriptSelectionPopup
+from pages.TestJobPopup import TestJobPopup
 
 
 class TestPage(Page):
@@ -20,16 +26,40 @@ class TestPage(Page):
         item_entry.focus()
         item_entry.icursor(tkinter.END)
         item_entry.bind("<Return>", lambda _: self.get_item(item_number, item_entry))
-        self.go_button = ttk.Button(self.frame, text="Go", command=lambda: self.get_item(item_number, item_entry))
+        self.go_button = ttk.Button(
+            self.frame,
+            text="Go",
+            command=lambda: self.get_item(item_number, item_entry),
+        )
         self.go_button.grid(column=0, row=2, columnspan=2)
-        self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_item(item_number, item_entry, choose_script=True))
+        self.choose_button = ttk.Button(
+            self.frame,
+            text="Choose",
+            command=lambda: self.get_item(item_number, item_entry, choose_script=True),
+        )
         self.choose_button.grid(column=2, row=2, columnspan=2)
 
-    def get_item(self, item_number: StringVar, item_entry: ttk.Entry, /, *, choose_script: bool = False) -> None:
+    def get_item(
+        self,
+        item_number: StringVar,
+        item_entry: ttk.Entry,
+        /,
+        *,
+        choose_script: bool = False,
+    ) -> None:
         item_entry.state(["disabled"])  # type: ignore
         self.frame.focus()
         try:
-            item, self.shared.job = (Item(item_number.get(), "", "", "", "", "", ""), self.shared.job) if choose_script else get_item_job(item_number.get(), self.shared.storage.positions, self.shared.jobs, self.shared.job)
+            item, self.shared.job = (
+                (Item(item_number.get(), "", "", "", "", "", ""), self.shared.job)
+                if choose_script
+                else get_item_job(
+                    item_number.get(),
+                    self.shared.storage.positions,
+                    self.shared.jobs,
+                    self.shared.job,
+                )
+            )
         except FailSafeException:
             self.shared.previous_item_number = item_number.get()
             return self.change_page("TEST")
@@ -37,7 +67,7 @@ class TestPage(Page):
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test(item)
 
-    def get_test(self, item: Item):
+    def get_test(self, item: Item) -> None:
         test = Test(item)
         try:
             test.set_script()
@@ -45,7 +75,7 @@ class TestPage(Page):
         except ScriptError:
             ScriptSelectionPopup(self.frame, lambda s: self.set_script(s, test)).mainloop()
 
-    def set_script(self, script: Script, test: Test):
+    def set_script(self, script: Script, test: Test) -> None:
         test.set_script(script)
         self.display_test(test)
 
@@ -87,12 +117,18 @@ class TestPage(Page):
         ttk.Radiobutton(self.frame, text="Fail-Unable", variable=result, value="F").grid(column=2, row=row)
         row += 1
 
-        save = ttk.Button(self.frame, text="Save", command=lambda: self.save_test([s.get() for s in script_answers], result.get()))
+        save = ttk.Button(
+            self.frame,
+            text="Save",
+            command=lambda: self.save_test([s.get() for s in script_answers], result.get()),
+        )
         save.grid(column=0, row=row, columnspan=4)
         save.focus()
-        save.bind("<Return>", lambda _: self.save_test([s.get() for s in script_answers], result.get()))
+        save.bind(
+            "<Return>",
+            lambda _: self.save_test([s.get() for s in script_answers], result.get()),
+        )
         row += 1
-
 
     def display_script(self, script: Script, row: int):
         row = 6
@@ -110,7 +146,12 @@ class TestPage(Page):
                 ttk.Entry(self.frame, textvariable=script_answer_vars[i]).grid(column=1, row=row, columnspan=3, sticky="w")
             else:
                 for j, option in enumerate(stest.options):
-                    rb = ttk.Radiobutton(self.frame, text=option, variable=script_answer_vars[i], value=option)
+                    rb = ttk.Radiobutton(
+                        self.frame,
+                        text=option,
+                        variable=script_answer_vars[i],
+                        value=option,
+                    )
                     rb.grid(column=1 + j, row=row)
                     if option == self.script_answers[i]:
                         rb.invoke()
@@ -122,7 +163,12 @@ class TestPage(Page):
 
     def add_testjob(self):
         assert self.shared.job is not None
-        testjob_popup = TestJobPopup(self.frame, self.shared.job.department, self.shared.job.company, self.save_testjob)
+        testjob_popup = TestJobPopup(
+            self.frame,
+            self.shared.job.department,
+            self.shared.job.company,
+            self.save_testjob,
+        )
         testjob_popup.mainloop()
 
     def save_testjob(self, testjob: TestJob):
@@ -139,7 +185,14 @@ class TestPage(Page):
 
         complete_test(self.test, self.shared.storage.positions)
 
-        if self.test.item.model not in (".", " ", "", "-", self.test.item.description, self.test.script.nickname):
+        if self.test.item.model not in (
+            ".",
+            " ",
+            "",
+            "-",
+            self.test.item.description,
+            self.test.script.nickname,
+        ):
             self.update_storage(script_answers)
 
         self.shared.previous_item_number = self.test.item.number

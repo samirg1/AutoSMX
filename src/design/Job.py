@@ -1,4 +1,4 @@
-from design import Test
+from design.Test import Test
 
 
 class Job:
