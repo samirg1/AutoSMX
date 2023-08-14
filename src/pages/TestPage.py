@@ -1,5 +1,5 @@
 import tkinter
-from tkinter import StringVar, ttk
+from tkinter import StringVar, ttk, messagebox
 from typing import cast
 
 from pyautogui import FailSafeException
@@ -61,6 +61,7 @@ class TestPage(Page):
                 )
             )
         except FailSafeException:
+            messagebox.showerror("Process Aborted", "Fail safe activated") # type: ignore
             return self.reset_page(item_number.get())
         
         self.shared.job = Job("Unknown", "Unknown", "Unknown") if self.shared.job is None else self.shared.job
@@ -187,8 +188,11 @@ class TestPage(Page):
         self.test.complete(comment if comment != "\n" else "", result, script_answers)
         if self.shared.job:
             self.shared.job.add_test(self.test)
-
-        complete_test(self.test, self.shared.storage.positions)
+        
+        try:
+            complete_test(self.test, self.shared.storage.positions)
+        except FailSafeException:
+            messagebox.showerror("Process Aborted", "Fail safe activated") # type: ignore
 
         if self.test.item.model not in (
             ".",
