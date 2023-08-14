@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from design.Test import Test
 
+
 @dataclass(frozen=True, repr=False, slots=True, order=True)
 class Job:
     company: str = field(compare=False)
