@@ -32,8 +32,18 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
     type(item_number)
     click_key(KEYS.enter.value)
     wait(0.5)
-    click_key(KEYS.tab.value, times=7)
-    serial = get_selected_text()
+
+    click_key(KEYS.tab.value, times=5)
+    previous = get_selected_text()
+    click_key(KEYS.tab.value)
+    next = get_selected_text()
+
+    if next != previous:
+        serial = next
+    else:
+        click_key(KEYS.tab.value)
+        serial = get_selected_text()
+
     click_key(KEYS.tab.value)
     model = get_selected_text()
     click_key(KEYS.tab.value, times=2)
