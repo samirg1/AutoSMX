@@ -33,10 +33,11 @@ def test_test_determine_script():
     test.set_script(custom_script)
 
     assert test.script == custom_script
+    del SCRIPTS["CustomScript"]
 
 
 def test_test_add_testjob():
-    item = Item("001", "SLING", "ModelX", "ManufacturerX", "Room A", "2022-01-01", "XYZ001")
+    item = Item("001", "SLING 123", "ModelX", "ManufacturerX", "Room A", "2022-01-01", "XYZ001")
     test = Test(item)
 
     test.set_script()
@@ -52,6 +53,12 @@ def test_test_add_testjob():
 def test_test_complete_and_full_info():
     item = Item("001", "Test Item", "ModelX", "ManufacturerX", "Room A", "2022-01-01", "XYZ001")
     test = Test(item)
+
+    custom = Script("CustomScript", "Custom Script", 2, (), exact_matches=["Test Item"])
+    SCRIPTS["CustomScript"] = custom
+    test.set_script()
+    assert test.script.nickname == "CustomScript"
+    del SCRIPTS["CustomScript"]
 
     testjob = TestJob("Quality Control", "John Doe", "Performing testing on batch 1")
     test.add_testjob(testjob)
