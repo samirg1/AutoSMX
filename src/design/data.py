@@ -108,6 +108,7 @@ SCRIPTS: dict[str, Script] = {
         "AT - SLING",
         1,
         (_DETAILS_P, _GENERAL_WEAR_P, _STITCHING_P, _FITTINGS_P, _VELCRO_N, _LABELLING_P, _CONDITION_1),
+        exact_matches=["SLING", "PATIENT TRANSFER SLING, MECHANICAL LIFT"],
     ),
     "WALKER": Script(
         "WALKER",
@@ -143,12 +144,14 @@ SCRIPTS: dict[str, Script] = {
             _CONDITION_1,
             _USAGE_ENVIRONMENT_N,
         ),
+        exact_matches=["HOIST, CEILING", "LIFTS, PATIENT TRANSFER, OVERHEAD TRACK"],
     ),
     "TRACK": Script(
         "TRACK",
         "AT - TRACK",
         4,
         (_FEATURES_P, _TRACK_DUST_P, _CHARGER_N, _TRACK_LOAD_KG, _LOAD_TEST_P, _ELECTRIC_TEST_N),
+        exact_matches=["TRACK", "TRACK, CEILING HOIST"],
     ),
     "COMMODE": Script(
         "COMMODE",
@@ -187,6 +190,7 @@ SCRIPTS: dict[str, Script] = {
             _CONDITION_1,
             _USAGE_ENVIRONMENT_N,
         ),
+        exact_matches=["HOIST, STANDING"],
         search_terms=["LIFTS"],
     ),
     "TUB": Script(
