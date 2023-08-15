@@ -1,4 +1,5 @@
 import json
+import pathlib
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -24,32 +25,32 @@ class Positions:
 
 @dataclass(slots=True, repr=False, eq=False)
 class Storage:
-    _json_file_path: Path | str
-    positions: Positions = field(default_factory=Positions)
-    positions_set: bool = False
-    item_model_to_script_answers: dict[str, list[str]] = field(default_factory=dict)
+    _json_file_path: Path | str = field(default=pathlib.Path("src", "storage", "store.json"))
+    positions: Positions = field(default_factory=Positions, init=False)
+    positions_set: bool = field(default=False, init=False)
+    item_model_to_script_answers: dict[str, list[str]] = field(default_factory=dict, init=False)
 
-    @classmethod
-    def from_json_file(cls, filename: Path | str):
+    def __post_init__(self) -> None:
         try:
-            with open(filename) as file:
+            with open(self._json_file_path) as file:
                 data = {}
                 try:
                     data = json.load(file)
                 except json.JSONDecodeError:
                     raise FileNotFoundError
-                data["positions"] = Positions.from_dict(data.get("positions", {}))
-                data["_json_file_path"] = filename
-                return cls(**data)
+
+                for key, value in data.items():
+                    data = value if key != "positions" else Positions.from_dict(value)
+                    setattr(self, key, data)
+
         except FileNotFoundError:
-            with open(filename, "w") as file:
-                instance = cls(filename)
-                json.dump(asdict(instance), file, indent=4)
-            return instance
+            self._save()
 
     def _save(self) -> None:
         with open(self._json_file_path, "w") as file:
-            json.dump(asdict(self), file, indent=4)
+            data = asdict(self)
+            data["_json_file_path"] = str(data["_json_file_path"])
+            json.dump(data, file, indent=4)
 
     @contextmanager
     def edit(self):
