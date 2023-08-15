@@ -83,6 +83,7 @@ class Script:
     name: str = field(compare=True, hash=True)
     downs: int = field(compare=False)
     tests: tuple[ScriptTest, ...] = field(compare=False, default_factory=tuple)
+    exact_matches: list[str] = field(compare=False, default_factory=list, kw_only=True)
     search_terms: list[str] = field(compare=False, default_factory=list, kw_only=True)
 
     def __post_init__(self) -> None:
