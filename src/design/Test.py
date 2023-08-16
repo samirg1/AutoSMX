@@ -25,7 +25,7 @@ class Test:
             for script in SCRIPTS.values():
                 if self.item.description in script.exact_matches:
                     return script
-            
+
             for script in SCRIPTS.values():
                 if script.is_for(self.item.description):
                     return script
