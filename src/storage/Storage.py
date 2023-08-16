@@ -26,6 +26,8 @@ class Positions:
 @dataclass(slots=True, repr=False, eq=False)
 class Storage:
     _json_file_path: Path | str = field(default=pathlib.Path("src", "storage", "store.json"))
+    total_tests: int = field(default=0, init=False)
+    test_breakdown: dict[str, int] = field(default_factory=dict, init=False)
     positions: Positions = field(default_factory=Positions, init=False)
     positions_set: bool = field(default=False, init=False)
     item_model_to_script_answers: dict[str, list[str]] = field(default_factory=dict, init=False)
