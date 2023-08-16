@@ -16,7 +16,6 @@ class JobPage(Page):
             job_testjobs = self.shared.testjob_manager.job_to_testjobs.get(job, [])
             ttk.Label(self.frame, text=f"{job}").grid(column=0, row=row, columnspan=3, sticky="w")
             ttk.Button(self.frame, text=">", command=lambda j=job: self.add_tests(j)).grid(column=3, row=row, sticky="e")  # type: ignore[misc]
-            ttk.Label(self.frame, text=f"Tests: {len(job.tests)}").grid(column=0, row=row + 1, columnspan=3, sticky="w")
             ttk.Button(self.frame, text="X", command=lambda j=job: self.delete_job(j)).grid(column=3, row=row + 1, sticky="e")  # type: ignore[misc]
 
             row += 2
@@ -30,6 +29,13 @@ class JobPage(Page):
                     self.frame,
                     text=f"-> {item.description} ({item.number}): {first_line}",
                 ).grid(column=0, row=row, columnspan=4, sticky="w")
+                row += 1
+
+            if job.tests:
+                ttk.Label(self.frame, text=f"Tests ({len(job.tests)})").grid(column=0, row=row, columnspan=4)
+                row += 1
+            for script_name, value in job.test_breakdown.items():
+                ttk.Label(self.frame, text=f"-> {script_name}: {value}").grid(column=0, row=row, columnspan=4, sticky="w")
                 row += 1
 
     def delete_job(self, job: Job) -> None:
