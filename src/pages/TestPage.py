@@ -196,6 +196,10 @@ class TestPage(Page):
         except FailSafeException:
             messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
 
+        with self.shared.storage.edit() as storage:
+            storage.total_tests += 1
+            storage.test_breakdown[self.test.script.nickname] = storage.test_breakdown.get(self.test.script.nickname, 0) + 1
+
         if self.test.item.model not in (
             ".",
             " ",

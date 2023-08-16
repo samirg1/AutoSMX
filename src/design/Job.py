@@ -8,9 +8,11 @@ class Job:
     campus: str = field(compare=True, hash=True)
     department: str = field(compare=False)
     tests: list[Test] = field(compare=False, default_factory=list)
+    test_breakdown: dict[str, int] = field(compare=False, default_factory=dict)
 
     def add_test(self, test: Test):
         self.tests.append(test)
+        self.test_breakdown[test.script.nickname] = self.test_breakdown.get(test.script.nickname, 0) + 1
 
     def __str__(self) -> str:
         return f"{self.campus}\n{self.company}\n{self.department}"
