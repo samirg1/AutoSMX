@@ -40,9 +40,11 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
 
     if next != previous:
         serial = next
+        final_tabs = 3
     else:
         click_key(KEYS.tab.value)
         serial = get_selected_text()
+        final_tabs = 2
 
     click_key(KEYS.tab.value)
     model = get_selected_text()
@@ -62,7 +64,7 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
         job = jobs.get(campus, Job(company, campus, department))
 
     click(positions.assets_tab)
-    click_key(KEYS.tab.value, times=2)
+    click_key(KEYS.tab.value, times=final_tabs)
     click_key(KEYS.enter.value)
 
     click(positions.testing_tab)
