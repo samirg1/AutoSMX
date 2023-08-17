@@ -35,19 +35,15 @@ class Storage:
     def __post_init__(self) -> None:
         try:
             with open(self._json_file_path) as file:
-                data = {}
-                try:
-                    data = json.load(file)
-                    if not data:
-                        raise FileNotFoundError
-                except json.JSONDecodeError:
-                    raise FileNotFoundError
+                data = json.load(file)
+                if not data:
+                    return self._save()
 
                 for key, value in data.items():
                     data = value if key != "positions" else Positions.from_dict(value)
                     setattr(self, key, data)
 
-        except FileNotFoundError:
+        except (FileNotFoundError, json.JSONDecodeError):
             self._save()
 
     def _save(self) -> None:
