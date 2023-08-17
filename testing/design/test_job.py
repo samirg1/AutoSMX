@@ -58,10 +58,11 @@ def test_job_full_info():
     assert str(job) in full_info
     assert "\t001 - Test Item 1 - " in full_info
 
-def test_job_hashing():
+def test_job_hashing_and_eq():
     job1 = Job("CompanyX", "CampusA", "DepartmentY")
     job2 = Job("CompanyY", "CampusB", "DepartmentZ")
-
-    jobs_set = {job1, job2}
-
-    assert len(jobs_set) == 2  # Ensure both jobs are considered distinct
+    job3 = Job("CompanyZ", "CampusA", "DepartmentZ")
+    assert len({job1, job2}) == 2
+    assert len({job1, job3}) == 1
+    assert hash(job1) != hash(job2)
+    assert hash(job1) == hash(job3)

@@ -1,21 +1,18 @@
-from dataclasses import dataclass, field
+from attrs import field, frozen
 
 
-@dataclass(frozen=True, repr=False, slots=True, order=True)
+@frozen(repr=False)
 class Item:
-    number: str = field(hash=True)
-    description: str = field(compare=False)
-    model: str = field(compare=False)
-    manufacturer: str = field(compare=False)
-    room: str = field(compare=False)
-    last_service: str = field(compare=False)
-    serial: str = field(compare=False)
+    number: str
+    description: str = field(hash=False, eq=False)
+    model: str = field(hash=False, eq=False)
+    manufacturer: str = field(hash=False, eq=False)
+    room: str = field(hash=False, eq=False)
+    last_service: str = field(hash=False, eq=False)
+    serial: str = field(hash=False, eq=False)
 
     def __str__(self) -> str:
         return f"{self.number} - {self.description}"
 
     def full_info(self) -> str:
         return f"{str(self)}\nModel: {self.model}\nManufacturer: {self.manufacturer}\nRoom: {self.room}\nLast Service: {self.last_service}\nSerial: {self.serial}"
-
-    def __hash__(self) -> int:
-        return hash(self.number)

@@ -51,3 +51,14 @@ def test_script_matches(match_description: str, expected: bool):
 def test_script_to_string():
     script = Script("MyNick", "Awesome Script", 5)
     assert str(script) == "Awesome Script"
+
+
+def test_hash_and_eq():
+    script1 = Script("Nick1", "Script 1", 1)
+    script2 = Script("Nick2", "Script 2", 2)
+    script3 = Script("Nick3", "Script 1", 3)
+    assert len({script1, script2}) == 2
+    assert len({script1, script3}) == 1
+    assert hash(script1) != hash(script2)
+    assert hash(script1) == hash(script3)
+

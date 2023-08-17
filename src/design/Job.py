@@ -1,14 +1,15 @@
-from dataclasses import dataclass, field
+from attrs import field, frozen
+
 from design.Test import Test
 
 
-@dataclass(frozen=True, repr=False, slots=True, order=True)
+@frozen(repr=False)
 class Job:
-    company: str = field(compare=False)
-    campus: str = field(compare=True, hash=True)
-    department: str = field(compare=False)
-    tests: list[Test] = field(compare=False, default_factory=list)
-    test_breakdown: dict[str, int] = field(compare=False, default_factory=dict)
+    company: str = field(hash=False, eq=False)
+    campus: str
+    department: str = field(hash=False, eq=False)
+    tests: list[Test] = field(factory=list, init=False, hash=False, eq=False)
+    test_breakdown: dict[str, int] = field(factory=dict, init=False, hash=False, eq=False)
 
     def add_test(self, test: Test):
         self.tests.append(test)

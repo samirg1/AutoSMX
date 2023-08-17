@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Mapping, Sequence
 
-from attrs import asdict, define, field
+from attr import asdict, define, field
 
 
 def _tuple_converter(value: Sequence[int] | None) -> tuple[int, ...] | None:

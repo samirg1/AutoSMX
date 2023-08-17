@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from attrs import frozen, field
 
 
 _PASS = "Pass"
@@ -77,16 +77,16 @@ _CLEAN_P = ScriptTest("CLEAN", _PASS, _N_A, _FAIL)
 _PERFORMANCE_P = ScriptTest("PERFORMANCE", _PASS, _N_A, _FAIL)
 
 
-@dataclass(frozen=True, order=True, slots=True, repr=False)
+@frozen(repr=False)
 class Script:
-    nickname: str = field(compare=False)
-    name: str = field(compare=True, hash=True)
-    downs: int = field(compare=False)
-    tests: tuple[ScriptTest, ...] = field(compare=False, default_factory=tuple)
-    exact_matches: list[str] = field(compare=False, default_factory=list, kw_only=True)
-    search_terms: list[str] = field(compare=False, default_factory=list, kw_only=True)
+    nickname: str = field(hash=False, eq=False)
+    name: str
+    downs: int = field(hash=False, eq=False)
+    tests: tuple[ScriptTest, ...] = field(factory=tuple, hash=False, eq=False)
+    exact_matches: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
+    search_terms: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
 
-    def __post_init__(self) -> None:
+    def __attrs_post_init__(self) -> None:
         self.search_terms.append(self.nickname)
 
     def is_for(self, item_description: str) -> bool:
