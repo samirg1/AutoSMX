@@ -1,2 +1,2 @@
 # pyright: reportUnusedImport=false
-from storage.Storage import Storage
+from storage.Storage import Storage, Positions

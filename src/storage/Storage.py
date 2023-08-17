@@ -38,6 +38,8 @@ class Storage:
                 data = {}
                 try:
                     data = json.load(file)
+                    if not data:
+                        raise FileNotFoundError
                 except json.JSONDecodeError:
                     raise FileNotFoundError
 
