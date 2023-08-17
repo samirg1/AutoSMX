@@ -1,46 +1,44 @@
 import json
 import pathlib
 from contextlib import contextmanager
-from dataclasses import asdict, dataclass, field
 from pathlib import Path
+from typing import Mapping, Sequence
+
+from attrs import asdict, define, field
 
 
-@dataclass(slots=True, repr=False, eq=False)
+def _tuple_converter(value: Sequence[int] | None) -> tuple[int, ...] | None:
+    return tuple(value) if value else None
+
+
+@define(repr=False, eq=False)
 class Positions:
-    testing_tab: tuple[int, int] | None = None
-    assets_tab: tuple[int, int] | None = None
-    show_all_script: tuple[int, int] | None = None
-    comment_box: tuple[int, int] | None = None
-    window: tuple[int, int] | None = None
-    track_weight_field: tuple[int, int] | None = None
-
-    def __post_init__(self):
-        for key in self.keys():
-            value = getattr(self, key)
-            if value is not None:
-                setattr(self, key, tuple(value))
+    testing_tab: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
+    assets_tab: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
+    show_all_script: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
+    comment_box: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
+    window: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
+    track_weight_field: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
 
     @classmethod
     def keys(cls):
         return cls.__annotations__.keys()
 
     @classmethod
-    def from_dict(cls, data: dict[str, tuple[int, int]]):
-        obj = cls(**data)
-        obj.__post_init__()
-        return obj
+    def from_dict(cls, data: Mapping[str, Sequence[int]]):
+        return cls(**data)
 
 
-@dataclass(slots=True, repr=False, eq=False)
+@define(repr=False, eq=False)
 class Storage:
     _json_file_path: Path | str = field(default=pathlib.Path("src", "storage", "store.json"))
     total_tests: int = field(default=0, init=False)
-    test_breakdown: dict[str, int] = field(default_factory=dict, init=False)
-    positions: Positions = field(default_factory=Positions, init=False)
+    test_breakdown: dict[str, int] = field(factory=dict, init=False)
+    positions: Positions = field(factory=Positions, init=False)
     positions_set: bool = field(default=False, init=False)
-    item_model_to_script_answers: dict[str, list[str]] = field(default_factory=dict, init=False)
+    item_model_to_script_answers: dict[str, list[str]] = field(factory=dict, init=False)
 
-    def __post_init__(self) -> None:
+    def __attrs_post_init__(self) -> None:
         try:
             with open(self._json_file_path) as file:
                 data = json.load(file)
