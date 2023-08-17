@@ -14,13 +14,21 @@ class Positions:
     window: tuple[int, int] | None = None
     track_weight_field: tuple[int, int] | None = None
 
+    def __post_init__(self):
+        for key in self.keys():
+            value = getattr(self, key)
+            if value is not None:
+                setattr(self, key, tuple(value))
+
     @classmethod
     def keys(cls):
         return cls.__annotations__.keys()
 
     @classmethod
     def from_dict(cls, data: dict[str, tuple[int, int]]):
-        return cls(**data)
+        obj = cls(**data)
+        obj.__post_init__()
+        return obj
 
 
 @dataclass(slots=True, repr=False, eq=False)
@@ -35,17 +43,15 @@ class Storage:
     def __post_init__(self) -> None:
         try:
             with open(self._json_file_path) as file:
-                data = {}
-                try:
-                    data = json.load(file)
-                except json.JSONDecodeError:
-                    raise FileNotFoundError
+                data = json.load(file)
+                if not data:
+                    return self._save()
 
                 for key, value in data.items():
                     data = value if key != "positions" else Positions.from_dict(value)
                     setattr(self, key, data)
 
-        except FileNotFoundError:
+        except (FileNotFoundError, json.JSONDecodeError):
             self._save()
 
     def _save(self) -> None:
