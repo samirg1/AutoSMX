@@ -14,13 +14,21 @@ class Positions:
     window: tuple[int, int] | None = None
     track_weight_field: tuple[int, int] | None = None
 
+    def __post_init__(self):
+        for key in self.keys():
+            value = getattr(self, key)
+            if value is not None:
+                setattr(self, key, tuple(value))
+
     @classmethod
     def keys(cls):
         return cls.__annotations__.keys()
 
     @classmethod
     def from_dict(cls, data: dict[str, tuple[int, int]]):
-        return cls(**data)
+        obj = cls(**data)
+        obj.__post_init__()
+        return obj
 
 
 @dataclass(slots=True, repr=False, eq=False)
