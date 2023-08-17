@@ -27,10 +27,12 @@ def test_item_full_info():
     assert item.full_info() == expected_info
 
 
-def test_item_hashing():
+def test_item_hashing_and_eq():
     item1 = Item("111", "Item A", "ModelA", "ManufacturerA", "Room X", "2022-01-01", "AAA111")
     item2 = Item("222", "Item B", "ModelB", "ManufacturerB", "Room Y", "2022-02-02", "BBB222")
+    item3 = Item("111", "Item C", "ModelC", "ManufacturerC", "Room Z", "2022-03-03", "CCC333")
 
-    items_set = {item1, item2}
-
-    assert len(items_set) == 2  # Ensure both items are considered distinct
+    assert len({item1, item2}) == 2
+    assert len({item1, item3}) == 1
+    assert hash(item1) != hash(item2)
+    assert hash(item1) == hash(item3)

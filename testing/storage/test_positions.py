@@ -1,6 +1,6 @@
 import pytest
 
-from storage import Positions
+from storage.Storage import Positions
 
 _POSITIONS_DATA: dict[str, tuple[int, int]] = {"testing_tab": (1, 2), "assets_tab": (3, 4), "show_all_script": (5, 6), "comment_box": (7, 8), "window": (9, 10), "track_weight_field": (11, 12)}
 
