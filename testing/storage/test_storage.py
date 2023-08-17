@@ -74,7 +74,7 @@ def test_empty_missing_invalid_json(file_name: str, get_file_for_testing: Callab
         assert data == _EMPTY_DATA
 
 
-def test_storage_edit(get_file_for_testing: Callable[[str], str]):
+def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]):
     file = get_file_for_testing("storage.json")
     storage = Storage(file)
     
@@ -105,10 +105,19 @@ def test_storage_edit(get_file_for_testing: Callable[[str], str]):
         assert data["positions_set"]
         assert data["item_model_to_script_answers"] == {"test": ["test"]}
 
+    
+    storage2 = Storage(file)
+    assert storage2.total_tests == 1
+    assert storage2.test_breakdown == {"test": 1}
+    assert storage2.positions.testing_tab == (1, 1)
+    assert storage2.positions.assets_tab == (2, 2)
+    assert storage2.positions.show_all_script == (3, 3)
+    assert storage2.positions.comment_box == (4, 4)
+    assert storage2.positions.window == (5, 5)
+    assert storage2.positions.track_weight_field == (6, 6)
+    assert storage2.positions_set
+    assert storage2.item_model_to_script_answers == {"test": ["test"]}
 
+    with pytest.raises(AttributeError):
+        storage2.x = 1 # type: ignore
 
-
-
-
-if __name__ == "__main__":
-    pytest.main()
