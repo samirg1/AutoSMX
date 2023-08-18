@@ -18,7 +18,8 @@ _TROUBLESHOOTING = [
     "If anything goes wrong while the program is running, quickly move the mouse to any corner of the screen to activate the failsafe.",
     "If the program incorrectly selects the script, press 'Cancel' and then select 'Choose' to manually select the script.",
     "If the program fails in an unexpected way, activated the failsafe and then ensure the program is reset by following the 'FIRST ITEM' step in the tutorial.",
-    "If the program it glitching or bugging and you don't believe SMX is the issue, try restarting the program. If the problem persists raise an issue using this link:\nhttps://github.com/samirg1/ALTER-SMX-Tool/issues",
+    "If the program it glitching or bugging and you don't believe SMX is the issue, try restarting the program. If the problem persists raise an issue using this link:\nhttps://github.com/samirg1/ALTER-SMX-Tool/issues\nPlease ensure you include any error messages as well as a description of the problem and how to reproduce it.",
+    "If you need to recalibrate or see this tutorial again, navigate to the 'Jobs' page and click on the respective button."
 ]
 
 _FEATURES = [
