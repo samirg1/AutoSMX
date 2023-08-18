@@ -1,6 +1,6 @@
 import os
 from enum import Enum
-from typing import cast
+from typing import Optional, cast
 
 from gui.automations import click, click_key, get_selected_text, type, wait
 from design.Item import Item
@@ -22,7 +22,7 @@ class KEYS(Enum):
     down = "down"
 
 
-def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:  # pragma: no cover
+def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], job: Optional[Job] = None) -> tuple[Item, Job]:  # pragma: no cover
     click()
     type(item_number)
     click_key(KEYS.enter.value)

@@ -1,5 +1,6 @@
 import tkinter
 from tkinter import ttk
+from typing import Optional
 
 from design.TestJobManager import TestJobManager
 from pages.Page import Page, TPAGES, SharedPageInfo
@@ -32,7 +33,7 @@ class App(tkinter.Tk):
             "JOB": JobPage(self._frame(), self.change_page, shared),
             "TEST": TestPage(self._frame(), self.change_page, shared),
         }
-        self.current_page: Page | None = None
+        self.current_page: Optional[Page] = None
 
         self.change_page("START")
 

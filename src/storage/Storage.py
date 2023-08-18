@@ -2,23 +2,23 @@ import json
 import pathlib
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Mapping, Optional, Sequence, Union
 
 from attrs import asdict, define, field
 
 
-def _tuple_converter(value: Sequence[int] | None) -> tuple[int, ...] | None:
+def _tuple_converter(value: Optional[Sequence[int]]) -> Optional[tuple[int, ...]]:
     return tuple(value) if value else None
 
 
 @define(repr=False, eq=False)
 class Positions:
-    testing_tab: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
-    assets_tab: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
-    show_all_script: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
-    comment_box: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
-    window: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
-    track_weight_field: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
+    testing_tab: Optional[tuple[int, int]] = field(default=None, converter=_tuple_converter)
+    assets_tab: Optional[tuple[int, int]] = field(default=None, converter=_tuple_converter)
+    show_all_script: Optional[tuple[int, int]] = field(default=None, converter=_tuple_converter)
+    comment_box: Optional[tuple[int, int]] = field(default=None, converter=_tuple_converter)
+    window: Optional[tuple[int, int]] = field(default=None, converter=_tuple_converter)
+    track_weight_field: Optional[tuple[int, int]] = field(default=None, converter=_tuple_converter)
 
     @classmethod
     def keys(cls):
@@ -31,7 +31,7 @@ class Positions:
 
 @define(repr=False, eq=False)
 class Storage:
-    _json_file_path: Path | str = field(default=pathlib.Path("src", "storage", "store.json"))
+    _json_file_path: Union[Path, str] = field(default=pathlib.Path("src", "storage", "store.json"))
     total_tests: int = field(default=0, init=False)
     test_breakdown: dict[str, int] = field(factory=dict, init=False)
     positions: Positions = field(factory=Positions, init=False)

@@ -1,12 +1,12 @@
 import tkinter
 from tkinter import Misc, ttk
-from typing import Callable
+from typing import Callable, Optional
 
 from design.data import SCRIPTS, Script
 
 
 class ScriptSelectionPopup(tkinter.Toplevel):
-    def __init__(self, master: Misc | None, master_select_script: Callable[[Script], None]):
+    def __init__(self, master: Optional[Misc], master_select_script: Callable[[Script], None]):
         super().__init__(master)
         self.master_select_script = master_select_script
         self.title("Select Script")

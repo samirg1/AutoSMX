@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Any, Callable, cast
+from typing import Any, Callable, Union, cast
 
 import pytest
 
@@ -24,7 +24,7 @@ _EMPTY_DATA: dict[str, Any] = {
 
 @pytest.fixture
 def get_file_for_testing():
-    original_file_content: dict[str, Any] | str = {}
+    original_file_content: Union[dict[str, Any], str] = {}
     file_name = ""
     file_exists = True
 

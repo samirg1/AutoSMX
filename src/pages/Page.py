@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from tkinter import ttk
-from typing import Callable, Literal
+from typing import Callable, Literal, Optional
 
 from design.Job import Job
 from design.TestJobManager import TestJobManager
@@ -13,7 +13,7 @@ class SharedPageInfo:
     def __init__(self, jobs: dict[str, Job], testjob_manager: TestJobManager, storage: Storage) -> None:
         self.jobs = jobs
         self.testjob_manager = testjob_manager
-        self.job: Job | None = None
+        self.job: Optional[Job] = None
         self.storage = storage
         self.previous_item_number: str = ""
 

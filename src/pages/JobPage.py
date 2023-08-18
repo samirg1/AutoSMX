@@ -1,4 +1,5 @@
 from tkinter import ttk
+from typing import Optional
 
 from design.Job import Job
 from pages.Page import Page
@@ -42,7 +43,7 @@ class JobPage(Page):
         del self.shared.jobs[job.campus]
         self.change_page("JOB")
 
-    def add_tests(self, job: Job | None = None) -> None:
+    def add_tests(self, job: Optional[Job] = None) -> None:
         self.shared.job = job
         self.change_page("TEST")
 

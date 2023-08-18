@@ -1,3 +1,4 @@
+from typing import Optional
 from design.data import SCRIPTS, Script
 from design.Item import Item
 from design.TestJob import TestJob
@@ -32,7 +33,7 @@ class Test:
 
         raise ScriptError("No script found")
 
-    def set_script(self, script: Script | None = None):
+    def set_script(self, script: Optional[Script] = None):
         if script is None:
             script = self._determine_script()
         self.script = script

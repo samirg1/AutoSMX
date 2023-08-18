@@ -1,6 +1,6 @@
 import functools
 import os
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 import pyautogui
 import pyperclip  # type: ignore
@@ -11,7 +11,7 @@ _PRINT = False
 
 
 def _automation_wrapper(
-    default: Any | None = None,
+    default: Optional[Any] = None,
 ) -> Callable[[Callable[..., Any]], Any]:  # pragma: no cover
     def decorator(func: Callable[..., Any]):
         @functools.wraps(func)
@@ -50,7 +50,7 @@ def type(text: str):
 
 
 @_automation_wrapper()
-def click(position: tuple[int, int] | None = None, /, *, times: int = 1):
+def click(position: Optional[tuple[int, int]] = None, /, *, times: int = 1):
     if position is None:  # click middle if no position given
         x, y = pyautogui.size()
         position = x // 2, y // 2

@@ -1,6 +1,6 @@
 import tkinter
 from tkinter import Misc, ttk
-from typing import Callable
+from typing import Callable, Optional
 
 from design.TestJob import TestJob
 
@@ -8,7 +8,7 @@ from design.TestJob import TestJob
 class TestJobPopup(tkinter.Toplevel):
     def __init__(
         self,
-        master: Misc | None,
+        master: Optional[Misc],
         default_dept: str,
         default_contact: str,
         master_save_testjob: Callable[[TestJob], None],
