@@ -77,7 +77,7 @@ def test_empty_missing_invalid_json(file_name: str, get_file_for_testing: Callab
 def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]):
     file = get_file_for_testing("storage.json")
     storage = Storage(file)
-    
+
     with storage.edit():
         storage.total_tests += 1
         storage.test_breakdown["test"] = 1
@@ -87,9 +87,9 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]):
         storage.positions.comment_box = (4, 4)
         storage.positions.window = (5, 5)
         storage.positions.track_weight_field = (6, 6)
-        storage.positions_set = True
+        storage.calibrated = True
         storage.item_model_to_script_answers["test"] = ["test"]
-    
+
     with open(file) as f:
         data = json.load(f)
         assert data["total_tests"] == 1
@@ -105,7 +105,6 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]):
         assert data["positions_set"]
         assert data["item_model_to_script_answers"] == {"test": ["test"]}
 
-    
     storage2 = Storage(file)
     assert storage2.total_tests == 1
     assert storage2.test_breakdown == {"test": 1}
@@ -115,9 +114,8 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]):
     assert storage2.positions.comment_box == (4, 4)
     assert storage2.positions.window == (5, 5)
     assert storage2.positions.track_weight_field == (6, 6)
-    assert storage2.positions_set
+    assert storage2.calibrated
     assert storage2.item_model_to_script_answers == {"test": ["test"]}
 
     with pytest.raises(AttributeError):
-        storage2.x = 1 # type: ignore
-
+        storage2.x = 1  # type: ignore

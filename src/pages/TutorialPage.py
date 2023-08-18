@@ -43,6 +43,8 @@ _SECTIONS = {
 
 class TutorialPage(Page):
     def setup(self):
+        if self.shared.storage.tutorial_complete:
+            return self.change_page("CALIBRATION")
         self.width = 300
         self.sections = list(_SECTIONS.keys())
         self.current_section = 0
@@ -51,7 +53,7 @@ class TutorialPage(Page):
     def setup_section(self, section_name: str, *texts: list[str]):
         self.clear()
         ttk.Label(self.frame, text=section_name).grid(row=0, column=0, columnspan=3, sticky="ns")
-        ttk.Button(self.frame, text="Skip", command=lambda: self.change_page("CALIBRATION")).grid(row=0, column=3, columnspan=1, sticky="e")
+        ttk.Button(self.frame, text="Skip", command=self.end_tutorial).grid(row=0, column=3, columnspan=1, sticky="e")
 
         row = 1
         for text_list in texts:
@@ -74,7 +76,12 @@ class TutorialPage(Page):
     def change_section(self, change: int = 1):
         self.current_section += change
         if self.current_section >= len(self.sections):
-            self.change_page("CALIBRATION")
+            self.end_tutorial()
         else:
             section = self.sections[self.current_section]
             self.setup_section(section, _SECTIONS[section])
+
+    def end_tutorial(self):
+        with self.shared.storage.edit() as storage:
+            storage.tutorial_complete = True
+        self.change_page("CALIBRATION")

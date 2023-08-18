@@ -32,10 +32,11 @@ class Positions:
 @define(repr=False, eq=False)
 class Storage:
     _json_file_path: Path | str = field(default=pathlib.Path("src", "storage", "store.json"))
+    tutorial_complete: bool = field(default=False, init=False)
+    calibrated: bool = field(default=False, init=False)
     total_tests: int = field(default=0, init=False)
     test_breakdown: dict[str, int] = field(factory=dict, init=False)
     positions: Positions = field(factory=Positions, init=False)
-    positions_set: bool = field(default=False, init=False)
     item_model_to_script_answers: dict[str, list[str]] = field(factory=dict, init=False)
 
     def __attrs_post_init__(self) -> None:
