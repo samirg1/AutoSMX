@@ -24,7 +24,7 @@ class StartHelpPopup(tkinter.Toplevel):
         panel.image = img # type: ignore
         panel.grid(column=0, row=0, sticky="nsew")
 
-        tkinter.Message(self, text="Click the button on the previous page, then click on the highlighted area in the image above").grid(column=0, row=1)
+        tkinter.Message(self, text="Click the button on the previous page, then click on the highlighted area in the image above", width=width).grid(column=0, row=1)
         ttk.Button(self, text="OK", command=self.destroy).grid(column=0, row=2)
 
         

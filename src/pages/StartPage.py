@@ -13,10 +13,10 @@ class StartPage(Page):
             return self.change_page("TEST")
         self.positions_set = 0
 
-        ttk.Label(self.frame, text="Start Page").grid(column=0, row=0)
+        ttk.Label(self.frame, text="Start Page").grid(column=0, row=0, sticky="nsew")
 
         tkinter.Message(
-            self.frame, text="Please click on the following buttons, then on the corresponding area to set the positions of the GUI elements so that the software knows where to click to navigate SMX."
+            self.frame, width=360, text="Please click on the following buttons, then on the corresponding area to set the positions of the GUI elements so that the software knows where to click to navigate SMX."
         ).grid(column=0, row=1, columnspan=4)
 
         for row, key in enumerate(self.shared.storage.positions.keys(), start=2):
