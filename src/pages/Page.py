@@ -6,7 +6,7 @@ from design.Job import Job
 from design.TestJobManager import TestJobManager
 from storage.Storage import Storage
 
-TPAGES = Literal["START", "JOB", "TEST", "TESTJOB"]
+TPAGES = Literal["CALIBRATION", "JOB", "TEST", "TUTORIAL"]
 
 
 class SharedPageInfo:

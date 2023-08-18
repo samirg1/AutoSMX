@@ -6,8 +6,9 @@ from pages.Page import Page
 
 class JobPage(Page):
     def setup(self):
-        ttk.Label(self.frame, text="Jobs").grid(column=0, row=0, columnspan=2)
-        ttk.Button(self.frame, text="+", command=lambda: self.add_tests()).grid(column=2, row=0, columnspan=1)
+        ttk.Label(self.frame, text="Jobs").grid(column=0, row=0, columnspan=1)
+        ttk.Button(self.frame, text="+", width=1, command=self.add_tests).grid(column=1, row=0, columnspan=1)
+        ttk.Button(self.frame, text="Tutorial", command=self.tutorial).grid(column=2, row=0, columnspan=1)
         ttk.Button(self.frame, text="Calibrate", command=self.calibrate).grid(column=3, row=0, columnspan=1)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=1, columnspan=4)
 
@@ -48,5 +49,10 @@ class JobPage(Page):
 
     def calibrate(self):
         with self.shared.storage.edit() as storage:
-            storage.positions_set = False
-        self.change_page("START")
+            storage.calibrated = False
+        self.change_page("CALIBRATION")
+
+    def tutorial(self):
+        with self.shared.storage.edit() as storage:
+            storage.tutorial_complete = False
+        self.change_page("TUTORIAL")
