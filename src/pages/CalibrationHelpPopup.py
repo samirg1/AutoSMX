@@ -1,10 +1,10 @@
 import tkinter
 from tkinter import ttk
+
 from PIL import Image, ImageTk
 
 
-
-class StartHelpPopup(tkinter.Toplevel):
+class CalibrationHelpPopup(tkinter.Toplevel):
     def __init__(self, master: tkinter.Misc | None, image_name: str):
         super().__init__(master)
         self.title("Help")
@@ -21,10 +21,8 @@ class StartHelpPopup(tkinter.Toplevel):
         img = img.resize((360, 500), resample=Image.LANCZOS)
         img = ImageTk.PhotoImage(img)
         panel = ttk.Label(self, image=img)
-        panel.image = img # type: ignore
+        panel.image = img  # type: ignore
         panel.grid(column=0, row=0, sticky="nsew")
 
         tkinter.Message(self, text="Click the button on the previous page, then click on the highlighted area in the image above", width=width).grid(column=0, row=1)
         ttk.Button(self, text="OK", command=self.destroy).grid(column=0, row=2)
-
-        

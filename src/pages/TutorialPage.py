@@ -5,8 +5,8 @@ from pages.Page import Page
 
 _TUTORIAL = [
     "This is the tutorial page. It will walk you through the process of setting up the program.",
-    "CALIBRATION\nFirst, you need to calibrate the software, do this on the next page by clicking the buttons, then immediately clicking on the corresponding area on the screen.",
-    "FIRST ITEM\n- make sure to enter it into SMX and hit enter first, this will allow for any delay on the first search. Also make sure that the Assets Tab does not currently have an item open (Cancel or Save the asset).\n- before you enter it into the program, ensure that the BMI/Barcode text is selected, you only need to do this once.",
+    "CALIBRATION\nThe first time you use this software, you need to calibrate it, do this on the next page by clicking the buttons, then immediately clicking on the corresponding area on the screen. You only need to do this once.",
+    "FIRST ITEM\n- make sure to enter it into SMX and hit enter first, this will allow for any delay on the first search. Also make sure that the Assets Tab does not currently have an item open (Cancel or Save the asset).\n- before you enter it into the program, ensure that the BMI/Barcode text is selected, you only need to do this once each time you close and open the software.",
     "ENTER ASSET\nEnter the item into the program, then click 'Go' / press Enter. The program will then search for the item's script. Do not press 'Choose' unless the program has failed to find the script.",
     "The program will try and determine the script needed for this item, make sure this is correct before proceeding.",
     "EDIT SCRIPT\nEdit the script value, add a job by click the 'Add Job' button, add comments and anything else that is needed for the test",
@@ -51,7 +51,7 @@ class TutorialPage(Page):
     def setup_section(self, section_name: str, *texts: list[str]):
         self.clear()
         ttk.Label(self.frame, text=section_name).grid(row=0, column=0, columnspan=3, sticky="ns")
-        ttk.Button(self.frame, text="Skip", command=lambda: self.change_page("START")).grid(row=0, column=3, columnspan=1, sticky="e")
+        ttk.Button(self.frame, text="Skip", command=lambda: self.change_page("CALIBRATION")).grid(row=0, column=3, columnspan=1, sticky="e")
 
         row = 1
         for text_list in texts:
@@ -74,7 +74,7 @@ class TutorialPage(Page):
     def change_section(self, change: int = 1):
         self.current_section += change
         if self.current_section >= len(self.sections):
-            self.change_page("START")
+            self.change_page("CALIBRATION")
         else:
             section = self.sections[self.current_section]
             self.setup_section(section, _SECTIONS[section])

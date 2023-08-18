@@ -49,4 +49,4 @@ class JobPage(Page):
     def calibrate(self):
         with self.shared.storage.edit() as storage:
             storage.positions_set = False
-        self.change_page("START")
+        self.change_page("CALIBRATION")
