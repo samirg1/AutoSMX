@@ -27,7 +27,7 @@ class CalibrationPage(Page):
             )
             button.grid(column=0, row=row, columnspan=3, sticky="w")
             button.configure(command=lambda button=button, key=key: self.click_position(button, key))  # type: ignore[misc]
-            ttk.Button(self.frame, text="?", width=1, command=lambda key=key: self.show_help(key)).grid(column=3, row=row, columnspan=1, sticky="e")
+            ttk.Button(self.frame, text="?", width=1, command=lambda key=key: self.show_help(key)).grid(column=3, row=row, columnspan=1, sticky="e")  # type: ignore[misc]
 
     def click_position(self, button: ttk.Button, attribute_name: str) -> None:
         position = get_click_position()
