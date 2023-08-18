@@ -1,14 +1,14 @@
+import os
 import tkinter
 from tkinter import ttk
 
 from design.TestJobManager import TestJobManager
-from pages.Page import Page, TPAGES, SharedPageInfo
 from pages.JobPage import JobPage
-from pages.TestPage import TestPage
+from pages.Page import TPAGES, Page, SharedPageInfo
 from pages.StartPage import StartPage
+from pages.TestPage import TestPage
+from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
-
-import os
 
 os.environ["DISPLAY"] = ":0"
 
@@ -28,13 +28,14 @@ class App(tkinter.Tk):
 
         shared = SharedPageInfo({}, TestJobManager(), Storage())
         self.pages: dict[TPAGES, Page] = {
+            "TUTORIAL": TutorialPage(self._frame(), self.change_page, shared),
             "START": StartPage(self._frame(), self.change_page, shared),
             "JOB": JobPage(self._frame(), self.change_page, shared),
             "TEST": TestPage(self._frame(), self.change_page, shared),
         }
         self.current_page: Page | None = None
 
-        self.change_page("START")
+        self.change_page("TUTORIAL")
 
     def _frame(self) -> ttk.Frame:
         frame = ttk.Frame(self, padding=10)
