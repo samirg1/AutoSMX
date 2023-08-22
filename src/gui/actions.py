@@ -22,8 +22,9 @@ class KEYS(Enum):
     down = "down"
 
 
-def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:  # pragma: no cover
-    click()
+def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:
+    click(positions.testing_tab)
+    click_key(KEYS.tab.value, times=5)
     type(item_number)
     click_key(KEYS.enter.value)
     click(positions.assets_tab)
