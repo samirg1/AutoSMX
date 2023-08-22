@@ -61,4 +61,3 @@ def test_hash_and_eq():
     assert len({script1, script3}) == 1
     assert hash(script1) != hash(script2)
     assert hash(script1) == hash(script3)
-
