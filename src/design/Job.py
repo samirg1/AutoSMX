@@ -2,12 +2,8 @@ from attrs import field, frozen
 
 from design.Test import Test
 
-_JOB_COMPANIES_SEARCH = {
-    "ABLE": "ABLE",
-    "CAMPEYN": "CAMPEYN",
-    "BENETAS": "BENETAS",
-    "JEWISH CARE": "JEWISH"
-}
+_JOB_COMPANIES_SEARCH = {"ABLE": "ABLE", "CAMPEYN": "CAMPEYN", "BENETAS": "BENETAS", "JEWISH CARE": "JEWISH"}
+
 
 def _job_company_converter(original_company: str) -> str:
     for company, search_term in _JOB_COMPANIES_SEARCH.items():

@@ -7,9 +7,9 @@ Test.__test__ = False  # type: ignore
 
 
 def test_job_creation_and_properties():
-    job = Job("CompanyX", "CampusA", "DepartmentY")
+    job = Job("CAMPEYN - ABLE VICTORIA", "CampusA", "DepartmentY")
 
-    assert job.company == "CompanyX"
+    assert job.company == "ABLE"
     assert job.campus == "CampusA"
     assert job.department == "DepartmentY"
     assert len(job.tests) == 0
@@ -39,9 +39,13 @@ def test_job_add_test():
 
 
 def test_job_string_representation():
-    job = Job("CompanyX", "CampusA", "DepartmentY")
+    job1 = Job("CAMPEYN - YOORALLA", "CampusA", "DepartmentY")
+    job2 = Job("BENETAS - ST PAULS", "CampusA", "DepartmentY")
+    job3 = Job("JEWISH ST KILDA", "CampusA", "DepartmentY")
 
-    assert str(job) == "CampusA\nCompanyX\nDepartmentY"
+    assert str(job1) == "CampusA\nCAMPEYN\nDepartmentY"
+    assert str(job2) == "CampusA\nBENETAS\nDepartmentY"
+    assert str(job3) == "CampusA\nJEWISH CARE\nDepartmentY"
 
 
 def test_job_full_info():
@@ -57,6 +61,7 @@ def test_job_full_info():
     full_info = job.full_info()
     assert str(job) in full_info
     assert "\t001 - Test Item 1 - " in full_info
+
 
 def test_job_hashing_and_eq():
     job1 = Job("CompanyX", "CampusA", "DepartmentY")
