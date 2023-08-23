@@ -23,6 +23,12 @@ def test_test_job_manager_multiple_testjobs():
     assert manager.testjob_to_item[testjob1] == item1
     assert manager.testjob_to_item[testjob2] == item1
 
+    manager.delete_testjob(item1, job1, testjob1)
+
+    assert len(manager.job_to_testjobs[job1]) == 1
+    assert len(manager.item_to_testjob[item1]) == 1
+    assert manager.testjob_to_item[testjob2] == item1
+
 
 def test_test_job_manager_multiple_items():
     manager = TestJobManager()
