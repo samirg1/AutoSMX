@@ -179,7 +179,7 @@ class TestPage(Page):
         testjob_popup.mainloop()
 
     def save_testjob(self, testjob: TestJob):
-        self.comment.insert(tkinter.END, ("\n" if self.test.testjobs else "") + testjob.comment)
+        self.comment.insert(tkinter.END, ("\n" if self.test.testjobs else "") + testjob.test_comment)
         self.test.add_testjob(testjob)
         self.shared.testjob_manager.add_testjob(self.test.item, cast(Job, self.shared.job), testjob)
         self.add_job_button.configure(text=f"Add Job ({len(self.test.testjobs)})")
@@ -228,8 +228,6 @@ class TestPage(Page):
         with self.shared.storage.edit() as storage:
             storage.item_model_to_script_answers = self.item_model_to_answers
 
-    def failsafe(self, current_item_number: str):
+    def failsafe(self, current_item_number: str) -> None:
         messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
         self.reset_page(current_item_number)
-
-
