@@ -98,6 +98,7 @@ class TestPage(Page):
         row, script_answers = self.display_script(test.script, 6)
 
         self.add_job_button = ttk.Button(self.frame, text="Add Job", command=self.add_testjob)
+        self.delete_job_button = ttk.Button(self.frame, text="X", width=1, command=self.delete_test_job)
         self.add_job_button.grid(column=0, row=row, columnspan=4)
         row += 1
 
@@ -178,15 +179,30 @@ class TestPage(Page):
         )
         testjob_popup.mainloop()
 
+    def delete_test_job(self):
+        testjob = self.test.testjobs.pop()
+        self.shared.testjob_manager.delete_testjob(self.test.item, cast(Job, self.shared.job), testjob)
+        current_comment = self.comment.get("1.0", tkinter.END).strip()
+        self.comment.delete("1.0", tkinter.END)
+        self.comment.insert(tkinter.END, current_comment.replace(testjob.test_comment, ""))
+
+        add_job_text = "Add Job"
+        if not self.test.testjobs:
+            self.delete_job_button.grid_forget()
+        else:
+            add_job_text += f" ({len(self.test.testjobs)})"
+        self.add_job_button.configure(text=add_job_text)
+
     def save_testjob(self, testjob: TestJob):
-        self.comment.insert(tkinter.END, ("\n" if self.test.testjobs else "") + testjob.test_comment)
+        self.comment.insert(tkinter.END, testjob.test_comment + "\n\n")
         self.test.add_testjob(testjob)
         self.shared.testjob_manager.add_testjob(self.test.item, cast(Job, self.shared.job), testjob)
         self.add_job_button.configure(text=f"Add Job ({len(self.test.testjobs)})")
+        self.delete_job_button.grid(column=3, row=self.add_job_button.grid_info()["row"], sticky="e")
 
     def save_test(self, script_answers: list[str], result: str):
         comment = self.comment.get("1.0", tkinter.END)
-        self.test.complete(comment if comment != "\n" else "", result, script_answers)
+        self.test.complete(comment, result, script_answers)
         if self.shared.job:
             self.shared.job.add_test(self.test)
 
