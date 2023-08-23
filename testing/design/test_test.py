@@ -36,6 +36,7 @@ def test_test_determine_script():
 
     assert test.script == custom_script
     del SCRIPTS["CustomScript"]
+    assert test.item_model == "Custom Script -> ModelX"
 
 
 def test_test_add_testjob():
@@ -69,6 +70,7 @@ def test_test_complete_and_full_info():
     assert test.comment == "Test completed successfully."
     assert test.final_result == "Pass"
     assert test.script_answers == ["N/A", "No"]
+    assert str(test) == "001 - Test Item - Pass"
 
 
 def test_test_item_model_property():
@@ -77,11 +79,3 @@ def test_test_item_model_property():
     test.script = Script("CustomScript", "Custom Script", 2)
 
     assert test.item_model == "Custom Script -> ModelX"
-
-
-# Run the tests
-test_test_creation_and_properties()
-test_test_determine_script()
-test_test_add_testjob()
-test_test_complete_and_full_info()
-test_test_item_model_property()

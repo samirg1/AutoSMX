@@ -4,7 +4,7 @@ from typing import Any, Callable, cast
 
 import pytest
 
-from storage import Positions, Storage
+from storage import Positions, Storage # type: ignore
 
 _EMPTY_DATA: dict[str, Any] = {
     "total_tests": 0,

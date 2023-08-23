@@ -6,27 +6,23 @@ import pyautogui
 import pyperclip  # type: ignore
 from pynput import mouse
 
-_RUN = True
-_PRINT = False
+_RUN = True  # actually run the automations or get default value (for testing)
+_PRINT = False  # print the automations (for testing)
+_DELAY = 0  # delay between automations (for testing)
 
 
-def _automation_wrapper(
-    default: Any | None = None,
-) -> Callable[[Callable[..., Any]], Any]:  # pragma: no cover
+def _automation_wrapper(default: Any | None = None) -> Callable[[Callable[..., Any]], Any]:  # testing decorator for printing, delaying, and returning default values
     def decorator(func: Callable[..., Any]):
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any):
+            if _DELAY:
+                pyautogui.sleep(_DELAY)
+
+            result = default if not _RUN else func(*args, **kwargs)
             if _PRINT:
-                print(func.__name__, args, kwargs, end=" ")
-                if not _RUN:
-                    print("->", default, "(default)")
-                    return default
-            if not _RUN:
-                return default
-            res = func(*args, **kwargs)
-            if _PRINT:
-                print("->", res)
-            return res
+                print(func.__name__, args, kwargs, "->", result, "(default)" if not _RUN else "")
+
+            return result
 
         return wrapper
 
@@ -50,10 +46,7 @@ def type(text: str):
 
 
 @_automation_wrapper()
-def click(position: tuple[int, int] | None = None, /, *, times: int = 1):
-    if position is None:  # click middle if no position given
-        x, y = pyautogui.size()
-        position = x // 2, y // 2
+def click(position: tuple[int, int], /, *, times: int = 1):
     for _ in range(times):
         pyautogui.click(position)
 
