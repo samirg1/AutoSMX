@@ -1,7 +1,8 @@
 from design.Item import Item
 from design.Job import Job
 from design.Test import Test
-from design.data import SCRIPTS, Script
+from design.Script import Script
+from design.data import SCRIPTS
 
 Test.__test__ = False  # type: ignore
 

@@ -1,5 +1,4 @@
-from attrs import frozen, field
-
+from design.Script import Script, ScriptTest
 
 _PASS = "Pass"
 _FAIL = "Fail"
@@ -9,14 +8,13 @@ _YES = "Yes"
 _ONE = "1"
 _ZERO = "0"
 _SPACE = " "
+_TRACK_LOAD = "200"
+_INSULATION = "199"
 
-
-class ScriptTest:
-    def __init__(self, name: str, *options: str):
-        self.name = name
-        self.selected = options[0] if options else ""
-        self.options = sorted(options, key=lambda x: -1 if x == _PASS else 0 if x == _N_A else 1)
-
+SORTING_ORDER = {
+    _PASS: -1,
+    _N_A: 0,
+}
 
 _CASTORS_P = ScriptTest("CASTORS", _PASS, _N_A, _FAIL)
 _FRAME_P = ScriptTest("FRAME", _PASS, _N_A, _FAIL)
@@ -53,7 +51,7 @@ _NUMBER_OF_LIFTS = ScriptTest("#LIFTS")
 _USAGE_ENVIRONMENT_N = ScriptTest("ENVIRONMENT", _NO, _YES)
 _FEATURES_P = ScriptTest("FEATURES", _PASS, _N_A, _FAIL)
 _TRACK_DUST_P = ScriptTest("TRACK DUST", _PASS, _N_A, _FAIL)
-_TRACK_LOAD_KG = ScriptTest("TRACK LOAD", "200")
+_TRACK_LOAD_KG = ScriptTest("TRACK LOAD", _TRACK_LOAD)
 _ELECTRIC_TEST_N = ScriptTest("ELECTRICALS", _N_A, _PASS, _FAIL)
 _HELP_POLE_N = ScriptTest("HELP POLE", _N_A, _PASS, _FAIL)
 _VISUAL_P = ScriptTest("VISUAL", _PASS, _N_A, _FAIL)
@@ -67,33 +65,16 @@ _DATE_P = ScriptTest("DATE", _PASS, _N_A, _FAIL)
 _MAINS_P = ScriptTest("MAINS", _PASS, _N_A, _FAIL)
 _FUSES_P = ScriptTest("FUSES", _PASS, _N_A, _FAIL)
 _EARTH_RESISTANCE = ScriptTest("EARTH R", _SPACE)
-_INSULATION_RESISTANCE = ScriptTest("INSULATION R", "199")
-_INSULATION_RESISTANCE_ENCLOSURE = ScriptTest("IRE", "199")
+_INSULATION_RESISTANCE = ScriptTest("INSULATION R", _INSULATION)
+_INSULATION_RESISTANCE_ENCLOSURE = ScriptTest("IRE", _INSULATION)
 _TOUCH_CURRENT = ScriptTest("CURRENT", _SPACE)
 _IEC_MAINS_LEAD = ScriptTest("IEC MAINS")
 _MISSING_COMPONENTS_N = ScriptTest("MISSING", _NO, _YES)
 _POLES_P = ScriptTest("POLES", _PASS, _N_A, _FAIL)
 _CLEAN_P = ScriptTest("CLEAN", _PASS, _N_A, _FAIL)
 _PERFORMANCE_P = ScriptTest("PERFORMANCE", _PASS, _N_A, _FAIL)
-
-
-@frozen(repr=False)
-class Script:
-    nickname: str = field(hash=False, eq=False)
-    name: str
-    downs: int = field(hash=False, eq=False)
-    tests: tuple[ScriptTest, ...] = field(factory=tuple, hash=False, eq=False)
-    exact_matches: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
-    search_terms: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
-
-    def __attrs_post_init__(self) -> None:
-        self.search_terms.append(self.nickname)
-
-    def is_for(self, item_description: str) -> bool:
-        return any(term in item_description for term in self.search_terms)
-
-    def __str__(self) -> str:
-        return self.name
+_INTEGRITY = ScriptTest("INTEGRITY", _PASS, _N_A, _FAIL)
+_ACCESSORIES = ScriptTest("ACCESSORIES", _PASS, _N_A, _FAIL)
 
 
 SCRIPTS: dict[str, Script] = {
@@ -256,4 +237,5 @@ SCRIPTS: dict[str, Script] = {
         (_CONDITION_1, _CASTORS_P, _CASTORS_P, _PAINT_P, _CASTORS_P, _MISSING_COMPONENTS_N, _POLES_P, _CLEAN_P, _ELECTRIC_N, _PERFORMANCE_P),
         search_terms=["OVERBED"],
     ),
+    "VISUAL": Script("VISUAL", "VISUAL INSPECTION ONLY", 15, (_INTEGRITY, _ACCESSORIES)),
 }

@@ -4,7 +4,7 @@ from typing import cast
 
 from pyautogui import FailSafeException
 
-from design.data import Script
+from design.Script import Script
 from design.Item import Item
 from design.Job import Job
 from design.Test import ScriptError, Test

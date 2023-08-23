@@ -1,7 +1,7 @@
 # pyright: reportPrivateUsage=false
 import pytest
 
-from design.data import Script, ScriptTest
+from design.Script import Script, ScriptTest
 
 
 def test_script_creation():

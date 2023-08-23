@@ -2,7 +2,8 @@ import tkinter
 from tkinter import Misc, ttk
 from typing import Callable
 
-from design.data import SCRIPTS, Script
+from design.Script import Script
+from design.data import SCRIPTS
 
 
 class ScriptSelectionPopup(tkinter.Toplevel):

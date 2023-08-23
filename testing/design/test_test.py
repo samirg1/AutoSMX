@@ -1,4 +1,5 @@
-from design.data import SCRIPTS, Script
+from design.Script import Script
+from design.data import SCRIPTS
 from design.Item import Item
 from design.Test import ScriptError, Test
 from design.TestJob import TestJob
