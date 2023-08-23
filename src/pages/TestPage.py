@@ -11,8 +11,8 @@ from design.Test import ScriptError, Test
 from design.TestJob import TestJob
 from gui.actions import complete_test, get_item_job
 from pages.Page import Page
-from pages.ScriptSelectionPopup import ScriptSelectionPopup
-from pages.TestJobPopup import TestJobPopup
+from popups.ScriptSelectionPopup import ScriptSelectionPopup
+from popups.TestJobPopup import TestJobPopup
 
 
 class TestPage(Page):
