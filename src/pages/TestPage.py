@@ -61,8 +61,7 @@ class TestPage(Page):
                 )
             )
         except FailSafeException:
-            messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
-            return self.reset_page(item_number.get())
+            return self.failsafe(item_number.get())
 
         self.shared.job = Job("Unknown", "Unknown", "Unknown") if self.shared.job is None else self.shared.job
         self.shared.jobs[self.shared.job.campus] = self.shared.job
@@ -194,7 +193,7 @@ class TestPage(Page):
         try:
             complete_test(self.test, self.shared.storage.positions)
         except FailSafeException:
-            messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
+            return self.failsafe(self.test.item.number)
 
         with self.shared.storage.edit() as storage:
             storage.total_tests += 1
@@ -228,3 +227,9 @@ class TestPage(Page):
 
         with self.shared.storage.edit() as storage:
             storage.item_model_to_script_answers = self.item_model_to_answers
+
+    def failsafe(self, current_item_number: str):
+        messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
+        self.reset_page(current_item_number)
+
+
