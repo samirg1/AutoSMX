@@ -51,7 +51,7 @@ class TestPage(Page):
         self.frame.focus()
         try:
             item, self.shared.job = (
-                (Item(item_number.get(), "", "", "", "", "", ""), self.shared.job)
+                (Item(item_number.get(), "", "", "", ""), self.shared.job)
                 if choose_script
                 else get_item_job(
                     item_number.get(),

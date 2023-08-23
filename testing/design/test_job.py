@@ -19,8 +19,8 @@ def test_job_creation_and_properties():
 def test_job_add_test():
     job = Job("CompanyX", "CampusA", "DepartmentY")
 
-    test1 = Test(Item("001", "Test Item 1", "ModelX", "ManufacturerX", "Room A", "2022-01-01", "XYZ001"))
-    test2 = Test(Item("002", "Test Item 2", "ModelY", "ManufacturerY", "Room B", "2022-02-01", "XYZ002"))
+    test1 = Test(Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001"))
+    test2 = Test(Item("002", "Test Item 2", "ModelY", "ManufacturerY", "XYZ002"))
 
     custom1 = Script("Custom1", "Custom Script", 2, (), exact_matches=["Test Item 1"])
     SCRIPTS["Custom1"] = custom1

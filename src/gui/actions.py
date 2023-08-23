@@ -54,7 +54,7 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
     click_key(KEYS.tab.value, times=2)
     manufacturer = get_selected_text()
 
-    item = Item(item_number, description, model, manufacturer, "None", "None", serial)
+    item = Item(item_number, description, model, manufacturer, serial)
     if job is None or job.campus == "Unknown":
         click_key(KEYS.tab.value)
         company = get_selected_text()
