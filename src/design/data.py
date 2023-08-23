@@ -199,6 +199,7 @@ SCRIPTS: dict[str, Script] = {
         8,
         (_CASTORS_P, _FRAME_P, _PAINT_P, _OPERATION_P, _LABELLING_P, _CHARGER_N, _BATTERY_N, _CONTROL_P, _CONDITION_1),
         search_terms=["BATH"],
+        exact_matches=["BATH BED"]
     ),
     "SCALE": Script(
         "SCALE",
