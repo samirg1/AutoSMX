@@ -15,7 +15,7 @@ def test_test_creation_and_properties():
     test = Test(item)
 
     with pytest.raises(ScriptError):
-        test.set_script()
+        test.determine_script()
 
     assert test.item == item
     assert test.script_answers == []
@@ -32,7 +32,7 @@ def test_test_determine_script():
     custom_script = Script("CustomScript", "Custom Script", 2)
     SCRIPTS["CustomScript"] = custom_script
 
-    test.set_script(custom_script)
+    test.script = custom_script
 
     assert test.script == custom_script
     del SCRIPTS["CustomScript"]
@@ -43,7 +43,7 @@ def test_test_add_testjob():
     item = Item("001", "SLING 123", "ModelX", "ManufacturerX", "XYZ001")
     test = Test(item)
 
-    test.set_script()
+    test.script = test.determine_script()
     assert test.script.nickname == "SLING"
 
     testjob = TestJob("Quality Control", "John Doe", "Performing testing on batch 1")
@@ -59,7 +59,7 @@ def test_test_complete_and_full_info():
 
     custom = Script("CustomScript", "Custom Script", 2, (), exact_matches=["Test Item"])
     SCRIPTS["CustomScript"] = custom
-    test.set_script()
+    test.script = test.determine_script()
     assert test.script.nickname == "CustomScript"
     del SCRIPTS["CustomScript"]
 

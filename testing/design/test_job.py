@@ -24,10 +24,10 @@ def test_job_add_test():
 
     custom1 = Script("Custom1", "Custom Script", 2, (), exact_matches=["Test Item 1"])
     SCRIPTS["Custom1"] = custom1
-    test1.set_script()
+    test1.script = test1.determine_script()
     custom2 = Script("Custom2", "Custom Script", 2, (), exact_matches=["Test Item 2"])
     SCRIPTS["Custom2"] = custom2
-    test2.set_script()
+    test2.script = test2.determine_script()
 
     job.add_test(test1)
     job.add_test(test1)

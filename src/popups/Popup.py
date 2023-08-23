@@ -17,3 +17,6 @@ class Popup(tkinter.Toplevel):
 
         for i in range(columns):
             self.columnconfigure(i, weight=1)
+
+    def grid_remove(self):  # ensure it gets cleaned up
+        self.destroy()
