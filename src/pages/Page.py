@@ -19,12 +19,7 @@ class SharedPageInfo:
 
 
 class Page(ABC):
-    def __init__(
-        self,
-        frame: ttk.Frame,
-        change_page: Callable[[TPAGES], None],
-        shared: SharedPageInfo,
-    ) -> None:
+    def __init__(self, frame: ttk.Frame, change_page: Callable[[TPAGES], None], shared: SharedPageInfo) -> None:
         self.frame = frame
         self.change_page = change_page
         self.shared = shared

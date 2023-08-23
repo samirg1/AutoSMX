@@ -1,4 +1,4 @@
-from design.data import ScriptTest
+from design.Script import ScriptTest
 
 
 def test_script_test_creation():

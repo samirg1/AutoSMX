@@ -1,7 +1,8 @@
 from design.Item import Item
 from design.Job import Job
 from design.Test import Test
-from design.data import SCRIPTS, Script
+from design.Script import Script
+from design.data import SCRIPTS
 
 Test.__test__ = False  # type: ignore
 
@@ -18,15 +19,15 @@ def test_job_creation_and_properties():
 def test_job_add_test():
     job = Job("CompanyX", "CampusA", "DepartmentY")
 
-    test1 = Test(Item("001", "Test Item 1", "ModelX", "ManufacturerX", "Room A", "2022-01-01", "XYZ001"))
-    test2 = Test(Item("002", "Test Item 2", "ModelY", "ManufacturerY", "Room B", "2022-02-01", "XYZ002"))
+    test1 = Test(Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001"))
+    test2 = Test(Item("002", "Test Item 2", "ModelY", "ManufacturerY", "XYZ002"))
 
     custom1 = Script("Custom1", "Custom Script", 2, (), exact_matches=["Test Item 1"])
     SCRIPTS["Custom1"] = custom1
-    test1.set_script()
+    test1.script = test1.determine_script()
     custom2 = Script("Custom2", "Custom Script", 2, (), exact_matches=["Test Item 2"])
     SCRIPTS["Custom2"] = custom2
-    test2.set_script()
+    test2.script = test2.determine_script()
 
     job.add_test(test1)
     job.add_test(test1)
@@ -46,21 +47,6 @@ def test_job_string_representation():
     assert str(job1) == "CampusA\nCAMPEYN\nDepartmentY"
     assert str(job2) == "CampusA\nBENETAS\nDepartmentY"
     assert str(job3) == "CampusA\nJEWISH CARE\nDepartmentY"
-
-
-def test_job_full_info():
-    job = Job("CompanyX", "CampusA", "DepartmentY")
-
-    test1 = Test(Item("001", "Test Item 1", "ModelX", "ManufacturerX", "Room A", "2022-01-01", "XYZ001"))
-    custom1 = Script("Custom1", "Custom Script", 2, (), exact_matches=["Test Item 1"])
-    SCRIPTS["Custom1"] = custom1
-    test1.set_script()
-
-    job.add_test(test1)
-
-    full_info = job.full_info()
-    assert str(job) in full_info
-    assert "\t001 - Test Item 1 - " in full_info
 
 
 def test_job_hashing_and_eq():

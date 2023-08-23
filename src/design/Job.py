@@ -26,8 +26,3 @@ class Job:
 
     def __str__(self) -> str:
         return f"{self.campus}\n{self.company}\n{self.department}"
-
-    def full_info(self) -> str:
-        base = f"{str(self)}\nTests:\n"
-        base += "\n".join(f"\t{test}" for test in self.tests)
-        return base
