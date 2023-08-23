@@ -20,13 +20,6 @@ def test_item_string_representation():
     assert str(item) == "789 - Another Item"
 
 
-def test_item_full_info():
-    item = Item(number="456", description="Yet Another Item", model="Model456", manufacturer="Yet Another Manufacturer", room="Room C", last_service="2022-03-10", serial="GHI012")
-
-    expected_info = "456 - Yet Another Item\nModel: Model456\nManufacturer: Yet Another Manufacturer\nRoom: Room C\nLast Service: 2022-03-10\nSerial: GHI012"
-    assert item.full_info() == expected_info
-
-
 def test_item_hashing_and_eq():
     item1 = Item("111", "Item A", "ModelA", "ManufacturerA", "Room X", "2022-01-01", "AAA111")
     item2 = Item("222", "Item B", "ModelB", "ManufacturerB", "Room Y", "2022-02-02", "BBB222")

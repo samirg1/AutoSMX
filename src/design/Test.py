@@ -1,6 +1,6 @@
-from design.Script import Script
 from design.data import SCRIPTS
 from design.Item import Item
+from design.Script import Script
 from design.TestJob import TestJob
 
 
@@ -45,16 +45,6 @@ class Test:
         self.script_answers = ["" if a == " " else "N/A" if a == "" else a for a in script_answers]
         self.comment = comment.strip()
         self.final_result = final_result
-
-    def full_info(self) -> str:
-        base = f"{str(self)}"
-        if self.comment:
-            base += f"\nComment: {self.comment}"
-
-        if self.testjobs:
-            base += "\nJobs:\n" + "\n".join(f"\t{job}" for job in self.testjobs)
-
-        return base
 
     def __str__(self) -> str:
         return f"{self.item} - {self.final_result}"

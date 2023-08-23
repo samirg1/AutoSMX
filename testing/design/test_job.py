@@ -49,21 +49,6 @@ def test_job_string_representation():
     assert str(job3) == "CampusA\nJEWISH CARE\nDepartmentY"
 
 
-def test_job_full_info():
-    job = Job("CompanyX", "CampusA", "DepartmentY")
-
-    test1 = Test(Item("001", "Test Item 1", "ModelX", "ManufacturerX", "Room A", "2022-01-01", "XYZ001"))
-    custom1 = Script("Custom1", "Custom Script", 2, (), exact_matches=["Test Item 1"])
-    SCRIPTS["Custom1"] = custom1
-    test1.set_script()
-
-    job.add_test(test1)
-
-    full_info = job.full_info()
-    assert str(job) in full_info
-    assert "\t001 - Test Item 1 - " in full_info
-
-
 def test_job_hashing_and_eq():
     job1 = Job("CompanyX", "CampusA", "DepartmentY")
     job2 = Job("CompanyY", "CampusB", "DepartmentZ")

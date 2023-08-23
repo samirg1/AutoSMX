@@ -1,9 +1,10 @@
-from design.Script import Script
+import pytest
+
 from design.data import SCRIPTS
 from design.Item import Item
+from design.Script import Script
 from design.Test import ScriptError, Test
 from design.TestJob import TestJob
-import pytest
 
 Test.__test__ = False  # type: ignore
 TestJob.__test__ = False  # type: ignore
@@ -65,9 +66,9 @@ def test_test_complete_and_full_info():
     test.add_testjob(testjob)
 
     test.complete("Test completed successfully.", "Pass", ["", "No"])
-
-    full_info = test.full_info()
-    assert str(test) in full_info
+    assert test.comment == "Test completed successfully."
+    assert test.final_result == "Pass"
+    assert test.script_answers == ["N/A", "No"]
 
 
 def test_test_item_model_property():
