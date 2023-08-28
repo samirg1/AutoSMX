@@ -11,11 +11,6 @@ _SPACE = " "
 _TRACK_LOAD = "200"
 _INSULATION = "199"
 
-SORTING_ORDER = {
-    _PASS: -1,
-    _N_A: 0,
-}
-
 _CASTORS_P = ScriptTest("CASTORS", _PASS, _N_A, _FAIL)
 _FRAME_P = ScriptTest("FRAME", _PASS, _N_A, _FAIL)
 _PAINT_P = ScriptTest("PAINT", _PASS, _N_A, _FAIL)
