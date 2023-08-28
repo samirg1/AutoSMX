@@ -1,4 +1,3 @@
-import os
 import tkinter
 from tkinter import ttk
 
@@ -9,8 +8,6 @@ from pages.Page import TPAGES, Page, SharedPageInfo
 from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
-
-os.environ["DISPLAY"] = ":0"
 
 
 class App(tkinter.Tk):
@@ -56,5 +53,9 @@ class App(tkinter.Tk):
         self.current_page.frame.grid(row=0, column=0, sticky="nsew")
 
 
-if __name__ == "__main__":
+def main():
     App().mainloop()
+
+
+if __name__ == "__main__":
+    main()
