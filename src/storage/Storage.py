@@ -8,7 +8,7 @@ from attrs import asdict, define, field
 
 
 def _tuple_converter(value: Sequence[int] | None) -> tuple[int, ...] | None:
-    return tuple(value) if value else None
+    return tuple(value) if value is not None else value
 
 
 @define(repr=False, eq=False)

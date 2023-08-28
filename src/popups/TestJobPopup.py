@@ -1,8 +1,7 @@
-from tkinter import Misc, ttk, END, StringVar, Text
+from tkinter import END, Misc, StringVar, Text, ttk
 from typing import Callable
 
 from design.TestJob import TestJob
-
 from popups.Popup import Popup
 
 
@@ -24,13 +23,8 @@ class TestJobPopup(Popup):
         comment.focus()
         comment.grid(column=0, row=3, columnspan=2)
 
-        ttk.Button(
-            self,
-            text="Save",
-            command=lambda: self._save_testjob(department.get(), contact.get(), comment.get("1.0", END)),
-        ).grid(column=0, row=4, columnspan=2)
+        ttk.Button(self, text="Save", command=lambda: self._save_testjob(department.get(), contact.get(), comment.get("1.0", END))).grid(column=0, row=4, columnspan=2)
 
     def _save_testjob(self, department: str, contact: str, comment: str):
-        testjob = TestJob(department, contact, comment)
-        self.master_save_testjob(testjob)
+        self.master_save_testjob(TestJob(department, contact, comment))
         self.destroy()
