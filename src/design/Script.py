@@ -12,7 +12,6 @@ class ScriptTest:
 class Script:
     nickname: str = field(hash=False, eq=False)
     name: str
-    downs: int = field(hash=False, eq=False)
     tests: tuple[ScriptTest, ...] = field(factory=tuple, hash=False, eq=False)
     exact_matches: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
     search_terms: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)

@@ -6,6 +6,7 @@ from design.Item import Item
 from design.Job import Job
 from design.Test import Test
 from design.TestJob import TestJob
+from design.data import SCRIPT_DOWNS
 from gui.automations import click, click_key, get_selected_text, type, wait
 from storage.Storage import Positions
 
@@ -84,7 +85,7 @@ def complete_test(test: Test, positions: Positions):  # pragma: no cover
 
     click(positions.show_all_script, times=2)  # find and select script
     click_key(_KEYS.right.value)
-    click_key(_KEYS.down.value, times=test.script.downs)
+    click_key(_KEYS.down.value, times=SCRIPT_DOWNS[test.script.nickname])
     click_key(_KEYS.enter.value)
     click_key(*_KEYS.ctrl_tab.value)
     wait(0.5)
