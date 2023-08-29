@@ -1,5 +1,6 @@
 import os
 import subprocess
+from ctypes import c_uint, cdll
 from enum import Enum
 from typing import cast
 
@@ -11,7 +12,6 @@ from gui.automations import click, click_key, get_selected_text, type, wait
 from storage.Storage import Positions
 
 _WINDOWS = os.name == "nt"
-_MAC = os.name == "posix"
 
 
 class _KEYS(Enum):
@@ -148,5 +148,10 @@ def _complete_testjob(testjob: TestJob):
 
 
 def turn_off_capslock():
-    if _MAC:
+    try:
+        X11 = cdll.LoadLibrary("libX11.so.6")
+        display = X11.XOpenDisplay(None)
+        X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0))
+        X11.XCloseDisplay(display)
+    except OSError:
         subprocess.run(["osascript", "-l", "JavaScript", "src/gui/capslock_off.applescript"])
