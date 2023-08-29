@@ -29,7 +29,7 @@ def test_test_determine_script():
     test = Test(item)
 
     # Adding a custom script for testing
-    custom_script = Script("CustomScript", "Custom Script", 2)
+    custom_script = Script("CustomScript", "Custom Script")
     SCRIPTS["CustomScript"] = custom_script
 
     test.script = custom_script
@@ -57,7 +57,7 @@ def test_test_complete_and_full_info():
     item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001")
     test = Test(item)
 
-    custom = Script("CustomScript", "Custom Script", 2, (), exact_matches=["Test Item"])
+    custom = Script("CustomScript", "Custom Script", (), exact_matches=["Test Item"])
     SCRIPTS["CustomScript"] = custom
     test.script = test.determine_script()
     assert test.script.nickname == "CustomScript"
@@ -76,6 +76,6 @@ def test_test_complete_and_full_info():
 def test_test_item_model_property():
     item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001")
     test = Test(item)
-    test.script = Script("CustomScript", "Custom Script", 2)
+    test.script = Script("CustomScript", "Custom Script")
 
     assert test.item_model == "Custom Script -> ModelX"
