@@ -68,8 +68,9 @@ _MISSING_COMPONENTS_N = ScriptTest("MISSING", _NO, _YES)
 _POLES_P = ScriptTest("POLES", _PASS, _N_A, _FAIL)
 _CLEAN_P = ScriptTest("CLEAN", _PASS, _N_A, _FAIL)
 _PERFORMANCE_P = ScriptTest("PERFORMANCE", _PASS, _N_A, _FAIL)
-_INTEGRITY = ScriptTest("INTEGRITY", _PASS, _N_A, _FAIL)
-_ACCESSORIES = ScriptTest("ACCESSORIES", _PASS, _N_A, _FAIL)
+_INTEGRITY_P = ScriptTest("INTEGRITY", _PASS, _N_A, _FAIL)
+_ACCESSORIES_P = ScriptTest("ACCESSORIES", _PASS, _N_A, _FAIL)
+_ACTUATOR_P = ScriptTest("ACTUATOR", _PASS, _N_A, _FAIL)
 
 
 SCRIPTS: dict[str, Script] = {
@@ -161,6 +162,11 @@ SCRIPTS: dict[str, Script] = {
         exact_matches=["HOIST, STANDING"],
         search_terms=["LIFTS"],
     ),
+    "RECLINER": Script(
+        "RECLINER",
+        "AT - LIFT RECLINER",
+        (_HARDWARE_P, _ACTUATOR_P, _CONTROL_P, _FRAME_P, _PAINT_P, _OPERATION_P, _LABELLING_P, _BATTERY_N, _CONDITION_1),
+    ),
     "TUB": Script(
         "TUB",
         "AT - TUB / BATH CHAIRS",
@@ -218,7 +224,7 @@ SCRIPTS: dict[str, Script] = {
         (_CONDITION_1, _CASTORS_P, _CASTORS_P, _PAINT_P, _CASTORS_P, _MISSING_COMPONENTS_N, _POLES_P, _CLEAN_P, _ELECTRIC_N, _PERFORMANCE_P),
         search_terms=["OVERBED"],
     ),
-    "VISUAL": Script("VISUAL", "VISUAL INSPECTION ONLY", (_INTEGRITY, _ACCESSORIES)),
+    "VISUAL": Script("VISUAL", "VISUAL INSPECTION ONLY", (_INTEGRITY_P, _ACCESSORIES_P)),
 }
 
 SCRIPT_DOWNS: dict[str, int] = {name: i for i, name in enumerate(SCRIPTS)}
