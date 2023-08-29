@@ -1,4 +1,5 @@
 import os
+import subprocess
 from enum import Enum
 from typing import cast
 
@@ -10,6 +11,7 @@ from gui.automations import click, click_key, get_selected_text, type, wait
 from storage.Storage import Positions
 
 _WINDOWS = os.name == "nt"
+_MAC = os.name == "posix"
 
 
 class _KEYS(Enum):
@@ -143,3 +145,8 @@ def _complete_testjob(testjob: TestJob):
     type(testjob.comment)
     click_key(_KEYS.tab.value, times=9)
     click_key(_KEYS.enter.value)
+
+
+def turn_off_capslock():
+    if _MAC:
+        subprocess.run(["osascript", "-l", "JavaScript", "src/gui/capslock_off.applescript"])
