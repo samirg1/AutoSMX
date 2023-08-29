@@ -227,4 +227,4 @@ SCRIPTS: dict[str, Script] = {
     "VISUAL": Script("VISUAL", "VISUAL INSPECTION ONLY", (_INTEGRITY_P, _ACCESSORIES_P)),
 }
 
-SCRIPT_DOWNS: dict[str, int] = {name: i for i, name in enumerate(SCRIPTS)}
+SCRIPT_DOWNS: dict[str, int] = {script.nickname: i for i, script in enumerate(SCRIPTS.values())}
