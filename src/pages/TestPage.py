@@ -9,7 +9,7 @@ from design.Job import Job
 from design.Script import Script
 from design.Test import TEST_RESULTS, ScriptError, Test
 from design.TestJob import TestJob
-from gui.actions import complete_test, get_item_job
+from gui.actions import complete_test, get_item_job, turn_off_capslock
 from pages.Page import Page
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.TestJobPopup import TestJobPopup
@@ -151,6 +151,7 @@ class TestPage(Page):
         self.add_job_button.configure(text=add_job_text)
 
     def save_test(self, script_answers: list[str], result: str):
+        turn_off_capslock()
         comment = self.comment.get("1.0", tkinter.END)
         self.test.complete(comment, result, script_answers)
         if self.shared.job:
