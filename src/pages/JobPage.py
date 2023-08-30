@@ -44,6 +44,9 @@ class JobPage(Page):
                 ttk.Label(self.frame, text=f"-> {script_name}: {value}").grid(column=0, row=row, columnspan=4, sticky="w")
                 row += 1
 
+            ttk.Label(self.frame, text=f"{'-' * 60}").grid(column=0, row=row, columnspan=4)
+            row += 1
+
     def delete_job(self, job: Job) -> None:
         del self.shared.jobs[job.campus]
         self.change_page("JOB")
