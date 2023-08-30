@@ -24,6 +24,10 @@ class JobPage(Page):
         tree.heading("text", text="Jobs")
         tree.heading("number", text="#")
 
+        if not self.shared.jobs:
+            tree.insert("", tkinter.END, values=("No jobs yet, click '+' to add",))
+            tree.configure(selectmode="none")
+
         for campus, job in self.shared.jobs.items():
             job_node = tree.insert("", tkinter.END, campus, values=(f"{job}",))
 
@@ -46,10 +50,10 @@ class JobPage(Page):
         tree.grid(row=row, column=0, columnspan=4, sticky=tkinter.EW)
         row += 1
 
-        button1 = ttk.Button(self.frame, text=">", command=lambda: self.add_tests(tree), width=1, state="disabled")
-        button1.grid(row=row, column=0)
-        button2 = ttk.Button(self.frame, text="X", command=lambda: self.delete_job(tree), width=1, state="disabled")
-        button2.grid(row=row, column=1)
+        button1 = ttk.Button(self.frame, text="Enter job", command=lambda: self.add_tests(tree), state="disabled")
+        button1.grid(row=row, column=0, columnspan=4)
+        button2 = ttk.Button(self.frame, text="Delete job", command=lambda: self.delete_job(tree), state="disabled")
+        button2.grid(row=row+1, column=0, columnspan=4)
 
         tree.bind("<<TreeviewSelect>>", lambda _: self.on_first_select(tree, button1, button2))
 
