@@ -159,7 +159,7 @@ SCRIPTS: dict[str, Script] = {
             _CONDITION_1,
             _USAGE_ENVIRONMENT_N,
         ),
-        exact_matches=["HOIST, STANDING"],
+        exact_matches=["HOIST, STANDING", "STANDING HOIST"],
         search_terms=["LIFTS"],
     ),
     "RECLINER": Script(
