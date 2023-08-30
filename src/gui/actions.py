@@ -157,7 +157,7 @@ def turn_off_capslock():
         ...
 
     try:
-        if ctypes.WinDLL("User32.dll").GetKeyState(0x14):
+        if ctypes.WinDLL("User32.dll").GetKeyState(0x14):  # type: ignore
             click_key("capslock")
     except AttributeError:
-        ... 
+        ...
