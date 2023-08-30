@@ -1,3 +1,4 @@
+import tkinter
 from tkinter import ttk
 
 from design.Job import Job
@@ -38,11 +39,31 @@ class JobPage(Page):
 
             # display job's tests
             if job.tests:
-                ttk.Label(self.frame, text=f"Tests ({len(job.tests)})").grid(column=0, row=row, columnspan=4)
+                columns = (f"Tests ({len(job.tests)})", "#")
+                column_names = [f"#{i+1}" for i in range(len(columns))]
+                tree = ttk.Treeview(self.frame, columns=column_names, height=3, selectmode=tkinter.NONE, show="headings")
+                for i, column in enumerate(columns, start=1):
+                    if i == 1:
+                        tree.column(f"#{i}", anchor=tkinter.W)
+                    else:
+                        tree.column(f"#{i}", width=100, anchor=tkinter.CENTER)
+                    tree.heading(f"#{i}", text=column)
+
+                for script_name, value in job.test_breakdown.items():
+                    tree.insert("", tkinter.END, values=(script_name, value))
+
+                scrollbar = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # type: ignore
+                tree.configure(yscroll=scrollbar.set)  # type: ignore
+                scrollbar.grid(row=row, column=4, sticky=tkinter.NS)
+
+                tree.grid(column=0, row=row, columnspan=4)
                 row += 1
-            for script_name, value in job.test_breakdown.items():
-                ttk.Label(self.frame, text=f"-> {script_name}: {value}").grid(column=0, row=row, columnspan=4, sticky="w")
-                row += 1
+
+            #     ttk.Label(self.frame, text=f"Tests ({len(job.tests)})").grid(column=0, row=row, columnspan=4)
+            #     row += 1
+            # for script_name, value in job.test_breakdown.items():
+            #     ttk.Label(self.frame, text=f"-> {script_name}: {value}").grid(column=0, row=row, columnspan=4, sticky="w")
+            #     row += 1
 
             ttk.Label(self.frame, text=f"{'-' * 60}").grid(column=0, row=row, columnspan=4)
             row += 1
