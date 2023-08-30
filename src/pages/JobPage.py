@@ -15,6 +15,7 @@ class JobPage(Page):
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=1, columnspan=4)
         row = 2
 
+        # tree setup
         tree = ttk.Treeview(self.frame, columns=("text", "number"), show="tree headings", height=10, selectmode="browse")
         style = ttk.Style(self.frame)
         style.configure("Treeview", rowheight=50)  # type: ignore
@@ -24,10 +25,12 @@ class JobPage(Page):
         tree.heading("text", text="Jobs")
         tree.heading("number", text="#")
 
+        # default
         if not self.shared.jobs:
             tree.insert("", tkinter.END, values=("No jobs yet, click '+' to add",))
             tree.configure(selectmode="none")
 
+        # add each job to the tree
         for campus, job in self.shared.jobs.items():
             job_node = tree.insert("", tkinter.END, campus, values=(f"{job}",))
 
@@ -44,25 +47,25 @@ class JobPage(Page):
                 for script_name, value in job.test_breakdown.items():
                     tree.insert(test_node, tkinter.END, values=(f"{script_name}", value))
 
+        # completing tree setup
         scrollbar = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # type: ignore
         tree.configure(yscroll=scrollbar.set)  # type: ignore
         scrollbar.grid(row=row, column=4, sticky=tkinter.NS)
         tree.grid(row=row, column=0, columnspan=4, sticky=tkinter.EW)
         row += 1
 
+        # add job manipulation buttons
         button1 = ttk.Button(self.frame, text="Enter job", command=lambda: self.add_tests(tree), state="disabled")
         button1.grid(row=row, column=0, columnspan=4)
         button2 = ttk.Button(self.frame, text="Delete job", command=lambda: self.delete_job(tree), state="disabled")
-        button2.grid(row=row+1, column=0, columnspan=4)
+        button2.grid(row=row + 1, column=0, columnspan=4)
 
         tree.bind("<<TreeviewSelect>>", lambda _: self.on_first_select(tree, button1, button2))
-
 
     def on_first_select(self, tree: ttk.Treeview, *buttons: ttk.Button):
         for button in buttons:
             button.configure(state="normal")
         tree.unbind("<<TreeviewSelect>>")
-
 
     def get_selected_job(self, tree: ttk.Treeview) -> Job | None:
         item = tree.focus()
