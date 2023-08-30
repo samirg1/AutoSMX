@@ -9,71 +9,64 @@ class JobPage(Page):
     def setup(self):
         # top row
         ttk.Label(self.frame, text="Jobs").grid(column=0, row=0, columnspan=1)
-        ttk.Button(self.frame, text="+", width=1, command=self.add_tests).grid(column=1, row=0, columnspan=1)
+        ttk.Button(self.frame, text="+", width=1, command=lambda: self.add_tests(add_new_job=True)).grid(column=1, row=0, columnspan=1)
         ttk.Button(self.frame, text="Tutorial", command=self.tutorial).grid(column=2, row=0, columnspan=1)
         ttk.Button(self.frame, text="Calibrate", command=self.calibrate).grid(column=3, row=0, columnspan=1)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=1, columnspan=4)
-
-        # job infos
         row = 2
-        for job in self.shared.jobs.values():
-            # display job
+
+        self.tree = ttk.Treeview(self.frame, columns=("text", "number"), show="tree headings", height=10, selectmode="browse")
+        style = ttk.Style(self.frame)
+        style.configure("Treeview", rowheight=50)  # type: ignore
+        self.tree.column("#0", width=0)
+        self.tree.column("text", anchor=tkinter.W)
+        self.tree.column("number", width=10, anchor=tkinter.CENTER)
+        self.tree.heading("text", text="Jobs")
+        self.tree.heading("number", text="#")
+
+        for campus, job in self.shared.jobs.items():
+            job_node = self.tree.insert("", tkinter.END, campus, values=(f"{job}",))
+
             job_testjobs = self.shared.testjob_manager.job_to_testjobs.get(job, [])
-            ttk.Label(self.frame, text=f"{job}").grid(column=0, row=row, columnspan=3, sticky="w")
-            ttk.Button(self.frame, text=">", command=lambda j=job: self.add_tests(j)).grid(column=3, row=row, sticky="e")  # type: ignore[misc]
-            ttk.Button(self.frame, text="X", command=lambda j=job: self.delete_job(j)).grid(column=3, row=row + 1, sticky="e")  # type: ignore[misc]
-
-            # display job's raised testjobs
-            row += 2
             if job_testjobs:
-                ttk.Label(self.frame, text="Jobs Raised:").grid(column=0, row=row, columnspan=4)
-                row += 1
-            for testjob in job_testjobs:
-                item = self.shared.testjob_manager.testjob_to_item[testjob]
-                first_line = str(testjob).split("\n")[0]
-                ttk.Label(
-                    self.frame,
-                    text=f"-> {item.description.split(' ')[0]} ({item.number}): {first_line}",
-                ).grid(column=0, row=row, columnspan=4, sticky="w")
-                row += 1
+                testjob_node = self.tree.insert(job_node, tkinter.END, values=("Jobs Raised", len(job_testjobs)))
+                for testjob in job_testjobs:
+                    item = self.shared.testjob_manager.testjob_to_item[testjob]
+                    first_line = str(testjob).split("\n")[0]
+                    self.tree.insert(testjob_node, tkinter.END, values=(f"{first_line}", item.number))
 
-            # display job's tests
             if job.tests:
-                columns = (f"Tests ({len(job.tests)})", "#")
-                column_names = [f"#{i+1}" for i in range(len(columns))]
-                tree = ttk.Treeview(self.frame, columns=column_names, height=3, selectmode=tkinter.NONE, show="headings")
-                for i, column in enumerate(columns, start=1):
-                    if i == 1:
-                        tree.column(f"#{i}", anchor=tkinter.W)
-                    else:
-                        tree.column(f"#{i}", width=100, anchor=tkinter.CENTER)
-                    tree.heading(f"#{i}", text=column)
-
+                test_node = self.tree.insert(job_node, tkinter.END, values=("Tests", f"{len(job.tests)}"))
                 for script_name, value in job.test_breakdown.items():
-                    tree.insert("", tkinter.END, values=(script_name, value))
+                    self.tree.insert(test_node, tkinter.END, values=(f"{script_name}", value))
 
-                scrollbar = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # type: ignore
-                tree.configure(yscroll=scrollbar.set)  # type: ignore
-                scrollbar.grid(row=row, column=4, sticky=tkinter.NS)
+        scrollbar = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=self.tree.yview)  # type: ignore
+        self.tree.configure(yscroll=scrollbar.set)  # type: ignore
+        scrollbar.grid(row=row, column=4, sticky=tkinter.NS)
+        self.tree.grid(row=row, column=0, columnspan=4, sticky=tkinter.EW)
+        row += 1
 
-                tree.grid(column=0, row=row, columnspan=4)
-                row += 1
+        ttk.Button(self.frame, text=">", command=self.add_tests, width=1).grid(row=row, column=0)
+        ttk.Button(self.frame, text="X", command=self.delete_job, width=1).grid(row=row, column=1)
 
-            #     ttk.Label(self.frame, text=f"Tests ({len(job.tests)})").grid(column=0, row=row, columnspan=4)
-            #     row += 1
-            # for script_name, value in job.test_breakdown.items():
-            #     ttk.Label(self.frame, text=f"-> {script_name}: {value}").grid(column=0, row=row, columnspan=4, sticky="w")
-            #     row += 1
+    def get_selected_job(self) -> Job | None:
+        item = self.tree.focus()
+        possible_parent1 = self.tree.parent(item)
+        parent1 = possible_parent1 if possible_parent1 else item
+        possible_parent2 = self.tree.parent(parent1)
+        parent2 = possible_parent2 if possible_parent2 else parent1
 
-            ttk.Label(self.frame, text=f"{'-' * 60}").grid(column=0, row=row, columnspan=4)
-            row += 1
+        return self.shared.jobs[parent2] if parent2 else None
 
-    def delete_job(self, job: Job) -> None:
+    def delete_job(self) -> None:
+        job = self.get_selected_job()
+        if job is None:
+            return
         del self.shared.jobs[job.campus]
         self.change_page("JOB")
 
-    def add_tests(self, job: Job | None = None) -> None:
-        self.shared.job = job
+    def add_tests(self, /, *, add_new_job: bool = False) -> None:
+        self.shared.job = None if add_new_job else self.get_selected_job()
         self.change_page("TEST")
 
     def calibrate(self):
