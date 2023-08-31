@@ -19,6 +19,7 @@ class Positions:
     comment_box: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
     window: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
     track_weight_field: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
+    sm_incident_tab: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
 
     @classmethod
     def keys(cls):

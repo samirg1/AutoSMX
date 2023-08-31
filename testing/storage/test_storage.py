@@ -16,6 +16,7 @@ _EMPTY_DATA: dict[str, Any] = {
         "comment_box": None,
         "window": None,
         "track_weight_field": None,
+        "sm_incident_tab": None,
     },
     "calibrated": False,
     "tutorial_complete": False,
@@ -88,6 +89,7 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]):
         storage.positions.comment_box = (4, 4)
         storage.positions.window = (5, 5)
         storage.positions.track_weight_field = (6, 6)
+        storage.positions.sm_incident_tab = (7, 7)
         storage.calibrated = True
         storage.tutorial_complete = True
         storage.item_model_to_script_answers["test"] = ["test"]
@@ -103,6 +105,7 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]):
             "comment_box": [4, 4],
             "window": [5, 5],
             "track_weight_field": [6, 6],
+            "sm_incident_tab": [7, 7]
         }
         assert data["calibrated"]
         assert data["tutorial_complete"]
@@ -117,6 +120,7 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]):
     assert storage2.positions.comment_box == (4, 4)
     assert storage2.positions.window == (5, 5)
     assert storage2.positions.track_weight_field == (6, 6)
+    assert storage2.positions.sm_incident_tab == (7, 7)
     assert storage2.calibrated
     assert storage2.tutorial_complete
     assert storage2.item_model_to_script_answers == {"test": ["test"]}
