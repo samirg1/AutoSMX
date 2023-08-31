@@ -40,7 +40,7 @@ class JobPage(Page):
                 for testjob in job_testjobs:
                     item = self.shared.testjob_manager.testjob_to_item[testjob]
                     first_line = str(testjob).split("\n")[0]
-                    tree.insert(testjob_node, tkinter.END, values=(f"{first_line}\n{item.description}\n{item.number}", ))
+                    tree.insert(testjob_node, tkinter.END, values=(f"{first_line}\n{item.description}\n{item.number}",))
 
             if job.tests:
                 test_node = tree.insert(job_node, tkinter.END, values=("Tests", f"{len(job.tests)}"))
