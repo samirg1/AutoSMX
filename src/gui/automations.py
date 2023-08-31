@@ -70,6 +70,9 @@ def get_click_position() -> tuple[int, int]:
 
 @_automation_wrapper("selected text")
 def get_selected_text():
-    click_key("ctrl" if os.name == "nt" else "command", "c")
+    old = pyperclip.paste()
+    pyautogui.hotkey("ctrl" if os.name == "nt" else "command", "c", interval=0.05)
     pyautogui.sleep(0.01)
-    return pyperclip.paste()
+    selected = pyperclip.paste()
+    pyperclip.copy(old)  # type: ignore
+    return selected
