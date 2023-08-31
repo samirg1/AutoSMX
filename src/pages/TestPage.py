@@ -25,20 +25,23 @@ class TestPage(Page):
         item_entry.grid(column=2, row=1, sticky="w", columnspan=2)
         item_entry.focus()
         item_entry.icursor(tkinter.END)
-        item_entry.bind("<Return>", lambda _: self.get_item(item_number, item_entry))
-        self.go_button = ttk.Button(self.frame, text="Go", command=lambda: self.get_item(item_number, item_entry))
+        self.go_button = ttk.Button(self.frame, text="Go", command=lambda: self.get_item(item_number.get(), item_entry))
+        item_entry.bind("<Return>", lambda _: self.go_button.invoke())
         self.go_button.grid(column=0, row=2, columnspan=2)
-        self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_item(item_number, item_entry, choose_script=True))
+        self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_item(item_number.get(), item_entry, choose_script=True))
         self.choose_button.grid(column=2, row=2, columnspan=2)
 
-    def get_item(self, item_number: StringVar, item_entry: ttk.Entry, /, *, choose_script: bool = False) -> None:
+    def get_item(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False) -> None:
         item_entry.state(["disabled"])  # type: ignore
         self.frame.focus()
 
-        try:
-            item, self.shared.job = get_item_job(item_number.get(), self.shared.storage.positions, self.shared.jobs, self.shared.job)
-        except FailSafeException:
-            return self.failsafe(item_number.get())
+        if choose_script and self.shared.job:
+            item = Item(item_number, "", "", "", "")
+        else:
+            try:
+                item, self.shared.job = get_item_job(item_number, self.shared.storage.positions, self.shared.jobs, self.shared.job)
+            except FailSafeException:
+                return self.failsafe(item_number)
 
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test(item, choose_script=choose_script)
