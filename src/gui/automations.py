@@ -32,7 +32,7 @@ def _automation_wrapper(default: Any | None = None) -> Callable[[Callable[..., A
 @_automation_wrapper()
 def click_key(*keys: str, times: int = 1):
     for _ in range(times):
-        pyautogui.hotkey(*keys, interval=0.1)
+        pyautogui.hotkey(*keys)
 
 
 @_automation_wrapper()
@@ -71,7 +71,7 @@ def get_click_position() -> tuple[int, int]:
 @_automation_wrapper("selected text")
 def get_selected_text():
     old = pyperclip.paste()
-    pyautogui.hotkey("ctrl" if os.name == "nt" else "command", "c", interval=0.1)
+    pyautogui.hotkey("ctrl" if os.name == "nt" else "command", "c", interval=0.05)
     pyautogui.sleep(0.01)
     selected = pyperclip.paste()
     pyperclip.copy(old)  # type: ignore
