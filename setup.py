@@ -16,5 +16,5 @@ setup(
     version="1.0",
     description="GUI Automater for SMX",
     options={"build_exe": build_exe_options},
-    executables=[Executable("src/App.py", base=base, target_name="AutoSMX", icon="a.ico")],
+    executables=[Executable("src/App.py", base=base, target_name="AutoSMX", icon="autosmx.ico")],
 )
