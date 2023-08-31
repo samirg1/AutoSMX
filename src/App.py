@@ -1,5 +1,5 @@
 import tkinter
-from tkinter import ttk
+from tkinter import PhotoImage, ttk
 
 from design.TestJobManager import TestJobManager
 from pages.CalibrationPage import CalibrationPage
@@ -19,6 +19,7 @@ class App(tkinter.Tk):
         self.geometry(f"{width}x{height}+{maxWidth - width}+0")
         self.title("ALTER SMX Tool")
         self.attributes("-topmost", 1)  # type: ignore
+        self.iconphoto(False, PhotoImage(file="a.png"))
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
