@@ -17,9 +17,9 @@ class App(tkinter.Tk):
         width = 360
         height = self.winfo_screenheight()
         self.geometry(f"{width}x{height}+{maxWidth - width}+0")
-        self.title("ALTER SMX Tool")
+        self.title("AutoSMX")
         self.attributes("-topmost", 1)  # type: ignore
-        self.iconphoto(False, PhotoImage(file="a.png"))
+        self.iconphoto(False, PhotoImage(file="autosmx.png"))
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
