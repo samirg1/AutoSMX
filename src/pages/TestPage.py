@@ -141,7 +141,7 @@ class TestPage(Page):
 
     def delete_test_job(self):
         testjob = self.test.testjobs.pop()
-        self.shared.testjob_manager.delete_testjob(self.test.item, cast(Job, self.shared.job), testjob)
+        self.shared.testjob_manager.delete_testjob(cast(Job, self.shared.job), testjob)
         current_comment = self.comment.get("1.0", tkinter.END).strip()
         self.comment.delete("1.0", tkinter.END)
         self.comment.insert(tkinter.END, current_comment.replace(testjob.test_comment, ""))
