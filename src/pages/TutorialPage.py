@@ -22,7 +22,8 @@ _TUTORIAL = {
         The defaulted script values are those deemed to be the most common for the specific script. \
             If you change the script values from the default for a specifc item model, the program will remember this next time you text that item model.",
     "Adding a Job": "Adding a job is made easier as the location information is used to fill in the contact and department fields. \
-        Saving a job also pastes the comments from that job into the overall comments for the test (without any part numbers it can find). ",
+        Saving a job also pastes the comments from that job into the overall comments for the test (without any part numbers it can find). \
+            If you accidentally add a job, press the 'X' button to delete the most recently added job. ",
     "Save Test": "Ensure values of the script are correct before clicking 'Save' (or press Enter straight away), the program will now input the test. \
         The program will wait for the test to complete, once it has, it will save the results and return to the item entry screen.",
     "Job Page": "When entering items, the location information of the items are taken into account to form the Job Page, this can be accessed by clicking the 'Jobs' button on the item entry screen. \
@@ -55,7 +56,7 @@ class TutorialPage(Page):
         # tree setup
         tree = ttk.Treeview(self.frame, columns=("#1"), show="tree", height=15, selectmode=tkinter.NONE)
         style = ttk.Style(self.frame)
-        style.configure("Treeview", rowheight=50)  # type: ignore
+        style.configure("Treeview", rowheight=60)  # type: ignore
         tree.column("#0", width=0)
         column = tree.column(tree["columns"][0])
         assert column
@@ -63,10 +64,10 @@ class TutorialPage(Page):
         for section_name, section in _TUTORIAL.items():
             section_node = tree.insert("", tkinter.END, values=(section_name,), open=True)
             text_lines = self.adjust_newlines(section, column["width"])
-            for group in zip_longest(*(iter(text_lines),) * 3, fillvalue=""):
+            for group in zip_longest(*(iter(text_lines),) * 3, fillvalue=" "):
                 text = StringIO()
                 for i, line in enumerate(group):
-                    text.write(line + ("\n" if i != len(group) - 1 and line else ""))
+                    text.write(line + ("\n" if i != len(group) - 1 else ""))
                 tree.insert(section_node, tkinter.END, values=(text.getvalue(),))
 
         scrollbar_y = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # type: ignore
