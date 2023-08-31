@@ -1,4 +1,3 @@
-from setuptools import setup # type: ignore
 import sys
 from cx_Freeze import setup, Executable # type: ignore
 
@@ -18,6 +17,3 @@ setup(
     options={"build_exe": build_exe_options},
     executables=[Executable("src/App.py", base=base)],
 )
-
-if __name__ == "__main__":
-    setup()
