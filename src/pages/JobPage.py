@@ -18,7 +18,7 @@ class JobPage(Page):
         # tree setup
         tree = ttk.Treeview(self.frame, columns=("text", "number"), show="tree headings", height=10, selectmode="browse")
         style = ttk.Style(self.frame)
-        style.configure("Treeview", rowheight=50)  # type: ignore
+        style.configure("Treeview", rowheight=60)  # type: ignore
         tree.column("#0", width=0)
         tree.column("text", anchor=tkinter.W)
         tree.column("number", width=10, anchor=tkinter.CENTER)
@@ -40,7 +40,7 @@ class JobPage(Page):
                 for testjob in job_testjobs:
                     item = self.shared.testjob_manager.testjob_to_item[testjob]
                     first_line = str(testjob).split("\n")[0]
-                    tree.insert(testjob_node, tkinter.END, values=(f"{first_line}", item.number))
+                    tree.insert(testjob_node, tkinter.END, values=(f"{first_line}\n{item.description}\n{item.number}", ))
 
             if job.tests:
                 test_node = tree.insert(job_node, tkinter.END, values=("Tests", f"{len(job.tests)}"))
@@ -55,9 +55,9 @@ class JobPage(Page):
         row += 1
 
         # add job manipulation buttons
-        button1 = ttk.Button(self.frame, text="Enter job", command=lambda: self.add_tests(tree), state="disabled")
+        button1 = ttk.Button(self.frame, text="Enter Job", command=lambda: self.add_tests(tree), state="disabled")
         button1.grid(row=row, column=0, columnspan=4)
-        button2 = ttk.Button(self.frame, text="Delete job", command=lambda: self.delete_job(tree), state="disabled")
+        button2 = ttk.Button(self.frame, text="Delete Job", command=lambda: self.delete_job(tree), state="disabled")
         button2.grid(row=row + 1, column=0, columnspan=4)
 
         tree.bind("<<TreeviewSelect>>", lambda _: self.on_first_select(tree, button1, button2))
