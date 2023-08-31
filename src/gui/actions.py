@@ -1,14 +1,14 @@
-import os
 import ctypes
+import os
 import subprocess
 from enum import Enum
 from typing import cast
 
+from design.data import SCRIPT_DOWNS
 from design.Item import Item
 from design.Job import Job
 from design.Test import Test
 from design.TestJob import TestJob
-from design.data import SCRIPT_DOWNS
 from gui.automations import click, click_key, get_selected_text, type, wait
 from storage.Storage import Positions
 
@@ -105,7 +105,7 @@ def complete_test(test: Test, positions: Positions):  # pragma: no cover
     click_key(*_KEYS.ctrl_tab.value)  # enter testjobs if needed
     if test.testjobs:
         wait(0.5)
-        _navigate_to_sm_incident()
+        click(positions.sm_incident_tab)
         for testjob in test.testjobs:
             _complete_testjob(testjob)
 
@@ -119,24 +119,6 @@ def complete_test(test: Test, positions: Positions):  # pragma: no cover
     click_key(_KEYS.tab.value, times=7)
     # click_key(KEYS.enter.value)
     # click(positions.window)
-
-
-def _navigate_to_sm_incident():
-    delay = 0.1
-    click_key(_KEYS.right.value)
-    wait(delay)
-    click_key(*_KEYS.shift_tab.value)
-    wait(delay)
-    click_key(_KEYS.right.value)
-    wait(delay)
-    click_key(_KEYS.right.value)
-    wait(delay)
-    click_key(*_KEYS.shift_tab.value)
-    click_key(_KEYS.right.value)
-    wait(delay)
-    click_key(*_KEYS.shift_tab.value)
-    wait(delay)
-    click_key(_KEYS.right.value)
 
 
 def _complete_testjob(testjob: TestJob):
