@@ -23,6 +23,10 @@ jobs:
             - name: Install dependencies
               run: |
                   python -m pip install --upgrade pip
-                  pip install tox tox-gh-actions
-            - name: Test with tox
-              run: tox
+                  pip install -r ./requirements.txt
+            - name: Tests
+              run: pytest src
+            - name: Typing
+              run: mypy src
+            - name: Formatting
+              run: black src
