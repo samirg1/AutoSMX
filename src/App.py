@@ -1,5 +1,8 @@
+import os
+import pathlib
+import sys
 import tkinter
-from tkinter import ttk
+from tkinter import PhotoImage, ttk
 
 from design.TestJobManager import TestJobManager
 from pages.CalibrationPage import CalibrationPage
@@ -9,6 +12,8 @@ from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
 
+_APPLICATION_PATH = os.path.dirname(sys.executable)
+
 
 class App(tkinter.Tk):
     def __init__(self):
@@ -17,13 +22,14 @@ class App(tkinter.Tk):
         width = 360
         height = self.winfo_screenheight()
         self.geometry(f"{width}x{height}+{maxWidth - width}+0")
-        self.title("ALTER SMX Tool")
+        self.title("AutoSMX")
         self.attributes("-topmost", 1)  # type: ignore
+        self.iconphoto(True, PhotoImage(file=pathlib.Path(_APPLICATION_PATH, "autosmx.png")))
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
-        shared = SharedPageInfo({}, TestJobManager(), Storage())
+        shared = SharedPageInfo({}, TestJobManager(), Storage(pathlib.Path(_APPLICATION_PATH, "store.json")))
         self.pages: dict[TPAGES, Page] = {
             "TUTORIAL": TutorialPage(self._frame(), self.change_page, shared),
             "CALIBRATION": CalibrationPage(self._frame(), self.change_page, shared),

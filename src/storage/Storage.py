@@ -1,5 +1,4 @@
 import json
-import pathlib
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -32,7 +31,7 @@ class Positions:
 
 @define(repr=False, eq=False)
 class Storage:
-    _json_file_path: Path | str = field(default=pathlib.Path("src", "storage", "store.json"))
+    _json_file_path: Path | str
     tutorial_complete: bool = field(default=False, init=False)
     calibrated: bool = field(default=False, init=False)
     total_tests: int = field(default=0, init=False)
