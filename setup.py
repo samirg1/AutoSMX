@@ -6,7 +6,7 @@ build_exe_options = {
     "excludes": ["pytest", "PyQt6", "PyQt5", "cv2", "numpy", "mypy"],
     "packages": ["pyautogui", "pyperclip", "attrs", "pynput"],
     "include_msvcr": True,
-    "include_files": ["src/storage/store.json", "autosmx.png"],
+    "include_files": ["autosmx.png"],
 }
 
 base = "Win32GUI" if sys.platform == "win32" else None

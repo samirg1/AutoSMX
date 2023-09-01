@@ -1,14 +1,9 @@
 import json
-import os
-import pathlib
-import sys
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Mapping, Sequence
 
 from attrs import asdict, define, field
-
-_APPLICATION_PATH = os.path.dirname(sys.executable)
 
 
 def _tuple_converter(value: Sequence[int] | None) -> tuple[int, ...] | None:
@@ -36,7 +31,7 @@ class Positions:
 
 @define(repr=False, eq=False)
 class Storage:
-    _json_file_path: Path | str = field(default=pathlib.Path(_APPLICATION_PATH, "store.json"))
+    _json_file_path: Path | str
     tutorial_complete: bool = field(default=False, init=False)
     calibrated: bool = field(default=False, init=False)
     total_tests: int = field(default=0, init=False)
