@@ -3,7 +3,7 @@ import sys
 from cx_Freeze import Executable, setup  # type: ignore
 
 build_exe_options = {
-    "excludes": ["pytest", "PyQt6", "PyQt5", "cv2", "numpy", "mypy"],
+    "excludes": ["pytest", "PyQt6", "PyQt5", "cv2", "numpy", "mypy", "test", "email", "pydoc_data", "multiprocessing", "rubicon"],
     "packages": ["pyautogui", "pyperclip", "attrs", "pynput"],
     "include_msvcr": True,
     "include_files": ["autosmx.png"],
