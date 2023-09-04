@@ -4,7 +4,9 @@
 
 | Last done | Result |
 | ----------- | ----------- |
-| v1.7.0 | pass |
+| beta v1.7.0 | pass |
+| v1.0.0 | some fails |
+| v1.0.1 | pass |
 
 ---
 
@@ -76,7 +78,7 @@
 2. Ensure the program goes to the *Asset Tab* and takes all the information in before cancelling the asset edit
 3. Ensure the program matches the correct script to the item (the exact matching is tested automatically)
 4. Attempt to add a job and ensure that the contact name and department have been auto-filled, don't add the job
-5. Press save
+5. Press *Save*
 6. Ensure the previous item number is saved
 6. Go to the *Job Page* and ensure that there is a job there that matches the item's location information
 7. Enter an item number that has a description that cannot be identified by the program
