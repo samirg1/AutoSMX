@@ -6,7 +6,7 @@ build_exe = {
     "excludes": ["pytest", "PyQt6", "PyQt5", "cv2", "numpy", "mypy", "test", "email", "pydoc_data", "multiprocessing", "rubicon"],
     "packages": ["pyautogui", "pyperclip", "attrs", "pynput"],
     "include_msvcr": True,
-    "include_files": ["autosmx.png"],
+    "include_files": ["autosmx.png", "src/img"],
 }
 
 bdist_mac = {"iconfile": "autosmx.ico", "bundle_name": "AutoSMX"}

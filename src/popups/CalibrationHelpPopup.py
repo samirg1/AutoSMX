@@ -1,8 +1,12 @@
+import os
+import sys
 from tkinter import Message, Misc, ttk
 
 from PIL import Image, ImageTk
 
 from popups.Popup import Popup
+
+_APPLICATION_PATH = os.path.dirname(sys.executable)
 
 
 class CalibrationHelpPopup(Popup):
@@ -10,7 +14,7 @@ class CalibrationHelpPopup(Popup):
         width = 360
         super().__init__(master, "Calibration Help", width=width)
 
-        img = Image.open(f"src/img/{image_name}.png")
+        img = Image.open(f"{_APPLICATION_PATH}/img/{image_name}.png")
         img = img.resize((width, 500), resample=Image.LANCZOS)
         img = ImageTk.PhotoImage(img)  # type: ignore
         panel = ttk.Label(self, image=img)  # type: ignore
