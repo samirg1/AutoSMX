@@ -15,7 +15,7 @@ base = "Win32GUI" if sys.platform == "win32" else None
 
 setup(
     name="AutoSMX",
-    version="1.0.0",
+    version="1.0.1",
     description="GUI Automater for SMX",
     author="Samir Gupta",
     options={"build_exe": build_exe, "bdist_mac": bdist_mac},
