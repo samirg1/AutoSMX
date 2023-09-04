@@ -71,6 +71,7 @@ _PERFORMANCE_P = ScriptTest("PERFORMANCE", _PASS, _N_A, _FAIL)
 _INTEGRITY_P = ScriptTest("INTEGRITY", _PASS, _N_A, _FAIL)
 _ACCESSORIES_P = ScriptTest("ACCESSORIES", _PASS, _N_A, _FAIL)
 _ACTUATOR_P = ScriptTest("ACTUATOR", _PASS, _N_A, _FAIL)
+_POWER_P = ScriptTest("POWER", _PASS, _N_A, _FAIL)
 
 
 SCRIPTS: dict[str, Script] = {
@@ -165,7 +166,7 @@ SCRIPTS: dict[str, Script] = {
     "RECLINER": Script(
         "RECLINER",
         "AT - LIFT RECLINER",
-        (_HARDWARE_P, _ACTUATOR_P, _CONTROL_P, _FRAME_P, _PAINT_P, _OPERATION_P, _LABELLING_P, _BATTERY_N, _CONDITION_1),
+        (_HARDWARE_P, _ACTUATOR_P, _CONTROL_P, _FRAME_P, _PAINT_P, _OPERATION_P, _LABELLING_P, _BATTERY_N, _POWER_P, _CONDITION_1),
     ),
     "TUB": Script(
         "TUB",
