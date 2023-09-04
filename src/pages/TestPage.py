@@ -154,15 +154,17 @@ class TestPage(Page):
         self.add_job_button.configure(text=add_job_text)
 
     def save_test(self, script_answers: list[str], result: str):
+        assert self.shared.job # must have created a job by now
         turn_off_capslock()
         comment = self.comment.get("1.0", tkinter.END)
         self.test.complete(comment, result, script_answers)
-        if self.shared.job:
-            self.shared.job.add_test(self.test)
+        self.shared.job.add_test(self.test)
 
         try:
             complete_test(self.test, self.shared.storage.positions)
         except FailSafeException:
+            test = self.shared.job.tests.pop()
+            self.shared.job.test_breakdown[test.script.nickname] -= 1
             return self.failsafe(self.test.item.number)
 
         with self.shared.storage.edit() as storage:
