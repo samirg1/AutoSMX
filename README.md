@@ -5,6 +5,7 @@ Automation tool for SMX.
 
 Download the correct file for your OS below:
 - [Windows](https://github.com/samirg1/ALTER-SMX-Tool//releases/latest/download/AutoSMX.zip) (.exe)
+    - Ensure to open and install the certificate in the zip `'code_sign.crt'`
 - [Mac](https://github.com/samirg1/ALTER-SMX-Tool//releases/latest/download/AutoSMX.dmg) (.dmg)
 
 ---
