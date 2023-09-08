@@ -16,6 +16,7 @@ class SharedPageInfo:
         self.job: Job | None = None
         self.storage = storage
         self.previous_item_number: str = ""
+        self.item_number_to_description: dict[str, str] = {}
 
 
 class Page(ABC):

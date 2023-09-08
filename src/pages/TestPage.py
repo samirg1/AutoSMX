@@ -37,13 +37,15 @@ class TestPage(Page):
         self.frame.focus()
 
         if choose_script and self.shared.job:
-            item = Item(item_number, "", "", "", "")
+            description = self.shared.item_number_to_description.get(item_number, "")
+            item = Item(item_number, description, "", "", "")
         else:
             try:
                 item, self.shared.job = get_item_job(item_number, self.shared.storage.positions, self.shared.jobs, self.shared.job)
             except FailSafeException:
                 return self.failsafe(item_number)
 
+        self.shared.item_number_to_description[item_number] = item.description
         self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.get_test(item, choose_script=choose_script)
 
@@ -155,7 +157,7 @@ class TestPage(Page):
         self.add_job_button.configure(text=add_job_text)
 
     def save_test(self, script_answers: list[str], result: str):
-        assert self.shared.job # must have created a job by now
+        assert self.shared.job  # must have created a job by now
         turn_off_capslock()
         comment = self.comment.get("1.0", tkinter.END)
         self.test.complete(comment, result, script_answers)
