@@ -26,11 +26,16 @@ class _KEYS(Enum):
     down = "down"
 
 
-def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:
-    click(positions.testing_tab)  # enter item number into testing tab
+def _enter_item_number(item_number: str, testing_tab_position: tuple[int, int] | None) -> None:
+    click(testing_tab_position)  # enter item number into testing tab
     click_key(_KEYS.tab.value, times=5)
     type(item_number)
     click_key(_KEYS.enter.value)
+    wait(0.5)
+
+
+def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:
+    _enter_item_number(item_number, positions.testing_tab)
 
     click(positions.assets_tab)  # enter item number into assets tab
     wait(0.5)
@@ -81,9 +86,7 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
 
 
 def complete_test(test: Test, positions: Positions):  # pragma: no cover
-    click(positions.testing_tab)  # go to scripts tab
-    click_key(_KEYS.tab.value, times=5)
-    click_key(_KEYS.enter.value)
+    _enter_item_number(test.item.number, positions.testing_tab)
     click_key(*_KEYS.ctrl_tab.value, times=2)
 
     click(positions.show_all_script, times=2)  # find and select script
