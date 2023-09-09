@@ -146,3 +146,17 @@
 
 ###
 ---
+
+### Test Editing
+
+1. Attempt to edit an item with no job currently available, ensure it fails
+1. Enter an item and run a normal test on it
+2. Enter the same item and attempt to edit the test, ensure that
+    - The script is not looked up but found
+    - The details show up the same before
+    - Changing the values and pressing save changes the values in the test successfully
+
+###
+---
+
+
