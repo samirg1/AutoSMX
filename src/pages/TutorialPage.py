@@ -32,6 +32,9 @@ _TUTORIAL = {
         The program will wait for the test to complete, once it has, it will save the results and return to the item entry screen. \
             The program will purposely not save the test in SMX to allow any last minute changes to be made. \
                 To save the test in SMX without making any other changes, click the 'Enter' button before clicking back on the program's window.",
+    "Edit Test": "If you need to edit a test, enter the item number before clicking the 'Edit Test' button. \
+        The program will ensure that you cannot edit a test that you have not completed. \
+            Once you select edit, the script values will show as normal and you can edit and save them just like you would normally.",
     "Job Page": "When entering items, the location information of the items are taken into account to form the Job Page, this can be accessed by clicking the 'Jobs' button on the item entry screen. \
         Each job you have entered while the program is open will show all the details including the amount of tests, with a breakdown by script, and any jobs raised. \
               Select a job (or anything inside of it) and press the 'Enter Job' button to keep adding items into that job. \
