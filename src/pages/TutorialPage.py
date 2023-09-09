@@ -5,8 +5,12 @@ from tkinter import ttk
 from tkinter.font import Font
 
 from pages.Page import Page
+from design.data import SCRIPTS
 
 _TUTORIAL = {
+    "Setup": f"Ensure you have the latest version of SMX installed, the version needs to include the favourites tab. \
+        Before starting, ensure that you have all of the main tests added to favourites, these include: \
+            {', '.join(val.name for val in SCRIPTS.values())}.",
     "Calibration": "The first time you use this software, you need to calibrate it. \
         Do this on the calibration page by clicking each button, then immediately clicking on thier corresponding areas on the screen. \
             This allows this program to be able to click on certain fields and areas of SMX while it is running. \
@@ -25,7 +29,12 @@ _TUTORIAL = {
         Saving a job also pastes the comments from that job into the overall comments for the test (without any part numbers it can find). \
             If you accidentally add a job, press the 'X' button to delete the most recently added job. ",
     "Save Test": "Ensure values of the script are correct before clicking 'Save' (or press Enter straight away), the program will now input the test. \
-        The program will wait for the test to complete, once it has, it will save the results and return to the item entry screen.",
+        The program will wait for the test to complete, once it has, it will save the results and return to the item entry screen. \
+            The program will purposely not save the test in SMX to allow any last minute changes to be made. \
+                To save the test in SMX without making any other changes, click the 'Enter' button before clicking back on the program's window.",
+    "Edit Test": "If you need to edit a test, enter the item number before clicking the 'Edit Test' button. \
+        The program will ensure that you cannot edit a test that you have not completed. \
+            Once you select edit, the script values will show as normal and you can edit and save them just like you would normally.",
     "Job Page": "When entering items, the location information of the items are taken into account to form the Job Page, this can be accessed by clicking the 'Jobs' button on the item entry screen. \
         Each job you have entered while the program is open will show all the details including the amount of tests, with a breakdown by script, and any jobs raised. \
               Select a job (or anything inside of it) and press the 'Enter Job' button to keep adding items into that job. \

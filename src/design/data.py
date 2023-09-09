@@ -78,7 +78,7 @@ _CHASIS_P = ScriptTest("CHASIS", _PASS, _N_A, _FAIL)
 SCRIPTS: dict[str, Script] = {
     "CHANGE TILT TABLE": Script(
         "CHANGE TILT TABLE",
-        "AT - CHANGE / TILT TABLE, ELECTRIC/MANUAL",
+        "AT - CHANGE / TILT TABLE",
         (_CASTORS_P, _FRAME_P, _PAINT_P, _LABELLING_P, _CHARGER_N, _BATTERY_N, _CONTROL_P, _CONDITION_1, _FURTHER_ATTENTION_N),
     ),
     "SLING": Script(
