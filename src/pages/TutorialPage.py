@@ -5,8 +5,12 @@ from tkinter import ttk
 from tkinter.font import Font
 
 from pages.Page import Page
+from design.data import SCRIPTS
 
 _TUTORIAL = {
+    "Setup": f"Ensure you have the latest version of SMX installed, the version needs to include the favourites tab. \
+        Before starting, ensure that you have all of the main tests added to favourites, these include: \
+            {', '.join(val.name for val in SCRIPTS.values())}.",
     "Calibration": "The first time you use this software, you need to calibrate it. \
         Do this on the calibration page by clicking each button, then immediately clicking on thier corresponding areas on the screen. \
             This allows this program to be able to click on certain fields and areas of SMX while it is running. \
