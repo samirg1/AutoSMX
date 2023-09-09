@@ -85,16 +85,21 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
     return item, cast(Job, job)  # type: ignore[redundant-cast]
 
 
-def complete_test(test: Test, positions: Positions):  # pragma: no cover
+def complete_test(test: Test, positions: Positions, is_editing: bool):  # pragma: no cover
     _enter_item_number(test.item.number, positions.testing_tab)
-    click_key(*_KEYS.ctrl_tab.value, times=2)
-
-    click(positions.show_all_script, times=2)  # find and select script
-    click_key(_KEYS.right.value)
-    click_key(_KEYS.down.value, times=SCRIPT_DOWNS[test.script.nickname])
-    click_key(_KEYS.enter.value)
     click_key(*_KEYS.ctrl_tab.value)
-    wait(0.5)
+    if is_editing:
+        click_key(_KEYS.enter.value)
+        wait(0.5)
+        click_key(_KEYS.tab.value, times=5)
+    else:
+        click_key(*_KEYS.ctrl_tab.value)
+        click(positions.show_all_script, times=2)  # find and select script
+        click_key(_KEYS.right.value)
+        click_key(_KEYS.down.value, times=SCRIPT_DOWNS[test.script.nickname])
+        click_key(_KEYS.enter.value)
+        click_key(*_KEYS.ctrl_tab.value)
+        wait(0.5)
 
     for i, value in enumerate(test.script_answers):  # enter script answers
         type(value)

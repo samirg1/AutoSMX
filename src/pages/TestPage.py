@@ -17,7 +17,6 @@ from popups.TestJobPopup import TestJobPopup
 
 class TestPage(Page):
     def setup(self):
-        self.jobs_added = 0
         ttk.Button(self.frame, text="< Jobs", command=lambda: self.change_page("JOB")).grid(column=0, row=0, sticky="w")
 
         ttk.Label(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
@@ -57,9 +56,10 @@ class TestPage(Page):
 
         self.shared.item_number_to_description[item_number] = item.description
         self.shared.jobs[self.shared.job.campus] = self.shared.job
+        self.is_editing = editing
         self.get_test(item, choose_script=choose_script)
 
-    def get_test(self, item: Item, choose_script: bool = False) -> None:
+    def get_test(self, item: Item, *, choose_script: bool = False) -> None:
         test = Test(item)
         try:
             if choose_script:
@@ -175,7 +175,7 @@ class TestPage(Page):
         self.shared.job.add_test(self.test)
 
         try:
-            complete_test(self.test, self.shared.storage.positions)
+            complete_test(self.test, self.shared.storage.positions, self.is_editing)
         except FailSafeException:
             test = self.shared.job.tests.pop()
             self.shared.job.test_breakdown[test.script.nickname] -= 1
