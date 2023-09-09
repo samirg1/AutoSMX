@@ -17,7 +17,6 @@ from popups.TestJobPopup import TestJobPopup
 
 class TestPage(Page):
     def setup(self):
-        self.jobs_added = 0
         ttk.Button(self.frame, text="< Jobs", command=lambda: self.change_page("JOB")).grid(column=0, row=0, sticky="w")
 
         ttk.Label(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
@@ -30,24 +29,44 @@ class TestPage(Page):
         item_entry.bind("<Return>", lambda _: self.go_button.invoke())
         self.go_button.grid(column=0, row=2, columnspan=2)
         self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_item(item_number.get(), item_entry, choose_script=True))
-        self.choose_button.grid(column=2, row=2, columnspan=2)
+        self.choose_button.grid(column=2, row=2)
+        button_state = "disabled" if self.shared.job is None else "normal"
+        self.edit_button = ttk.Button(self.frame, text="Edit Test", command=lambda: self.get_item(item_number.get(), item_entry, editing=True), state=button_state)
+        self.edit_button.grid(column=3, row=2)
 
-    def get_item(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False) -> None:
+        item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
+
+    def edit_button_reconfigure(self, item_number: StringVar):
+        tested = item_number.get() in self.shared.item_number_to_description
+        self.edit_button.configure(state=("normal" if tested else "disabled"))
+
+    def get_item(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False, editing: bool = False) -> None:
         item_entry.state(["disabled"])  # type: ignore
         self.frame.focus()
 
-        if choose_script and self.shared.job:
-            item = Item(item_number, "", "", "", "")
-        else:
+        if editing:
             try:
-                item, self.shared.job = get_item_job(item_number, self.shared.storage.positions, self.shared.jobs, self.shared.job)
-            except FailSafeException:
-                return self.failsafe(item_number)
+                assert self.shared.job
+                description = self.shared.item_number_to_description[item_number]
+                item = Item(item_number, description, "", "", "")
+            except (AssertionError, KeyError):
+                return self.item_not_found(item_number)
+        else:
+            if choose_script and self.shared.job:
+                description = self.shared.item_number_to_description.get(item_number, "")
+                item = Item(item_number, description, "", "", "")
+            else:
+                try:
+                    item, self.shared.job = get_item_job(item_number, self.shared.storage.positions, self.shared.jobs, self.shared.job)
+                except FailSafeException:
+                    return self.failsafe(item_number)
 
+        self.shared.item_number_to_description[item_number] = item.description
         self.shared.jobs[self.shared.job.campus] = self.shared.job
+        self.is_editing = editing
         self.get_test(item, choose_script=choose_script)
 
-    def get_test(self, item: Item, choose_script: bool = False) -> None:
+    def get_test(self, item: Item, *, choose_script: bool = False) -> None:
         test = Test(item)
         try:
             if choose_script:
@@ -63,6 +82,7 @@ class TestPage(Page):
         test.script = script
         self.test = test
         self.choose_button.destroy()
+        self.edit_button.destroy()
         self.go_button.configure(text="Cancel", command=lambda: self.reset_page(test.item.number))
         self.go_button.grid(column=0, row=2, columnspan=4)
 
@@ -155,14 +175,14 @@ class TestPage(Page):
         self.add_job_button.configure(text=add_job_text)
 
     def save_test(self, script_answers: list[str], result: str):
-        assert self.shared.job # must have created a job by now
+        assert self.shared.job  # must have created a job by now
         turn_off_capslock()
         comment = self.comment.get("1.0", tkinter.END)
         self.test.complete(comment, result, script_answers)
         self.shared.job.add_test(self.test)
 
         try:
-            complete_test(self.test, self.shared.storage.positions)
+            complete_test(self.test, self.shared.storage.positions, self.is_editing)
         except FailSafeException:
             test = self.shared.job.tests.pop()
             self.shared.job.test_breakdown[test.script.nickname] -= 1
@@ -196,4 +216,8 @@ class TestPage(Page):
 
     def failsafe(self, current_item_number: str) -> None:
         messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
+        self.reset_page(current_item_number)
+
+    def item_not_found(self, current_item_number: str) -> None:
+        messagebox.showerror("Not Found", f"Item number '{current_item_number}' not tested yet")  # type: ignore
         self.reset_page(current_item_number)
