@@ -30,8 +30,15 @@ class TestPage(Page):
         self.go_button.grid(column=0, row=2, columnspan=2)
         self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_item(item_number.get(), item_entry, choose_script=True))
         self.choose_button.grid(column=2, row=2)
-        self.edit_button = ttk.Button(self.frame, text="Edit Test", command=lambda: self.get_item(item_number.get(), item_entry, editing=True))
+        button_state = "disabled" if self.shared.job is None else "normal"
+        self.edit_button = ttk.Button(self.frame, text="Edit Test", command=lambda: self.get_item(item_number.get(), item_entry, editing=True), state=button_state)
         self.edit_button.grid(column=3, row=2)
+
+        item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
+
+    def edit_button_reconfigure(self, item_number: StringVar):
+        tested = item_number.get() in self.shared.item_number_to_description
+        self.edit_button.configure(state=("normal" if tested else "disabled"))
 
     def get_item(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False, editing: bool = False) -> None:
         item_entry.state(["disabled"])  # type: ignore
