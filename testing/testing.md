@@ -7,6 +7,7 @@
 | beta v1.7.0 | pass |
 | v1.0.0 | some fails |
 | v1.0.1 | pass |
+| v1.0.3 | pass |
 
 ---
 
