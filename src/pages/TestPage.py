@@ -30,20 +30,30 @@ class TestPage(Page):
         item_entry.bind("<Return>", lambda _: self.go_button.invoke())
         self.go_button.grid(column=0, row=2, columnspan=2)
         self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_item(item_number.get(), item_entry, choose_script=True))
-        self.choose_button.grid(column=2, row=2, columnspan=2)
+        self.choose_button.grid(column=2, row=2)
+        self.edit_button = ttk.Button(self.frame, text="Edit Test", command=lambda: self.get_item(item_number.get(), item_entry, editing=True))
+        self.edit_button.grid(column=3, row=2)
 
-    def get_item(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False) -> None:
+    def get_item(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False, editing: bool = False) -> None:
         item_entry.state(["disabled"])  # type: ignore
         self.frame.focus()
 
-        if choose_script and self.shared.job:
-            description = self.shared.item_number_to_description.get(item_number, "")
-            item = Item(item_number, description, "", "", "")
-        else:
+        if editing:
             try:
-                item, self.shared.job = get_item_job(item_number, self.shared.storage.positions, self.shared.jobs, self.shared.job)
-            except FailSafeException:
-                return self.failsafe(item_number)
+                assert self.shared.job
+                description = self.shared.item_number_to_description[item_number]
+                item = Item(item_number, description, "", "", "")
+            except (AssertionError, KeyError):
+                return self.item_not_found(item_number)
+        else:
+            if choose_script and self.shared.job:
+                description = self.shared.item_number_to_description.get(item_number, "")
+                item = Item(item_number, description, "", "", "")
+            else:
+                try:
+                    item, self.shared.job = get_item_job(item_number, self.shared.storage.positions, self.shared.jobs, self.shared.job)
+                except FailSafeException:
+                    return self.failsafe(item_number)
 
         self.shared.item_number_to_description[item_number] = item.description
         self.shared.jobs[self.shared.job.campus] = self.shared.job
@@ -65,6 +75,7 @@ class TestPage(Page):
         test.script = script
         self.test = test
         self.choose_button.destroy()
+        self.edit_button.destroy()
         self.go_button.configure(text="Cancel", command=lambda: self.reset_page(test.item.number))
         self.go_button.grid(column=0, row=2, columnspan=4)
 
@@ -198,4 +209,8 @@ class TestPage(Page):
 
     def failsafe(self, current_item_number: str) -> None:
         messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
+        self.reset_page(current_item_number)
+
+    def item_not_found(self, current_item_number: str) -> None:
+        messagebox.showerror("Not Found", f"Item number '{current_item_number}' not tested yet")  # type: ignore
         self.reset_page(current_item_number)
