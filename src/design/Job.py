@@ -27,6 +27,8 @@ class Job:
     def remove_test(self, test: Test) -> None:
         self.tests.remove(test)
         self.test_breakdown[test.script.nickname] -= 1
+        if self.test_breakdown[test.script.nickname] == 0:
+            del self.test_breakdown[test.script.nickname]
 
     def __str__(self) -> str:
         return f"{self.campus}\n{self.company}\n{self.department}"
