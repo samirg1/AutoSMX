@@ -128,12 +128,17 @@ class TestPage(Page):
         self.add_job_button = ttk.Button(self.frame, text="Add Job", command=self.add_testjob)
         self.delete_job_button = ttk.Button(self.frame, text="X", width=1, command=self.delete_test_job)
         self.add_job_button.grid(column=0, row=row, columnspan=4)
+        if len(self.test.testjobs):
+            self.add_job_button.configure(text=f"Add Job ({len(self.test.testjobs)})")
+            self.delete_job_button.grid(column=3, row=self.add_job_button.grid_info()["row"], sticky="e")
         row += 1
 
         # test comment
         ttk.Label(self.frame, text="Comment").grid(column=0, row=row, columnspan=4)
         row += 1
         self.comment = tkinter.Text(self.frame, height=4, width=100)
+        if self.test.comment:
+            self.comment.insert(tkinter.END, self.test.comment + "\n\n")
         self.comment.grid(column=0, row=row, columnspan=4)
         row += 1
         self.frame.rowconfigure(row, minsize=10)
