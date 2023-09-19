@@ -81,7 +81,8 @@ class JobPage(Page):
         if job is None:
             return
         del self.shared.jobs[job.campus]
-        del self.shared.testjob_manager.job_to_testjobs[job]
+        if job in self.shared.testjob_manager.job_to_testjobs:
+            del self.shared.testjob_manager.job_to_testjobs[job]
         self.change_page("JOB")
 
     def add_tests(self, tree: ttk.Treeview | None = None) -> None:
