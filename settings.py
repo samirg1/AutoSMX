@@ -1,5 +1,4 @@
 # Use like this: dmgbuild -s settings.py "Test Volume" test.dmg
-filename = "AutoSMX.dmg"
 volume_name = "AutoSMX"
 format = "UDBZ"
 size = None
