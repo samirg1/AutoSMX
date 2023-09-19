@@ -67,7 +67,13 @@ class TestPage(Page):
         self.get_test(item, choose_script=choose_script)
 
     def get_test(self, item: Item, *, choose_script: bool = False) -> None:
-        test = Test(item)
+        if self.is_editing:
+            assert self.shared.job
+            test = next(test for test in reversed(self.shared.job.tests) if test.item.number == item.number)
+            self.shared.job.remove_test(test)
+        else:
+            test = Test(item)
+
         try:
             if choose_script:
                 raise ScriptError
