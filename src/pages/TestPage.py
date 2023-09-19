@@ -103,8 +103,11 @@ class TestPage(Page):
         ttk.Label(self.frame, text=f"{script.name}").grid(column=0, row=row, columnspan=4)
         row += 1
 
-        stored_answers = self.shared.storage.item_model_to_script_answers.get(self.test.item_model)
-        self.saved_script_answers = stored_answers or [stest.selected for stest in script.tests]
+        if test.script_answers:
+            self.saved_script_answers = test.script_answers
+        else:
+            stored_answers = self.shared.storage.item_model_to_script_answers.get(self.test.item_model)
+            self.saved_script_answers = stored_answers or [stest.selected for stest in script.tests]
         actual_answers = [StringVar(value=ans) for ans in self.saved_script_answers]
         for i, stest in enumerate(script.tests):
             ttk.Label(self.frame, text=f"{stest.name}").grid(column=0, row=row, columnspan=1, sticky="w")
