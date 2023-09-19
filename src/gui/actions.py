@@ -13,7 +13,6 @@ from gui.automations import click, click_key, get_selected_text, type, wait
 from storage.Storage import Positions
 
 _WINDOWS = os.name == "nt"
-_MAC = os.name == "posix"
 
 
 class _KEYS(Enum):
@@ -85,7 +84,7 @@ def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], j
     return item, cast(Job, job)  # type: ignore[redundant-cast]
 
 
-def complete_test(test: Test, positions: Positions, is_editing: bool):  # pragma: no cover
+def complete_test(test: Test, positions: Positions, is_editing: bool) -> None:  # pragma: no cover
     _enter_item_number(test.item.number, positions.testing_tab)
     click_key(*_KEYS.ctrl_tab.value)
     if is_editing:
@@ -125,11 +124,9 @@ def complete_test(test: Test, positions: Positions, is_editing: bool):  # pragma
 
     type(test.final_result)  # finish test
     click_key(_KEYS.tab.value, times=7)
-    # click_key(KEYS.enter.value)
-    # click(positions.window)
 
 
-def _complete_testjob(testjob: TestJob):
+def _complete_testjob(testjob: TestJob) -> None:
     type(testjob.department)
     click_key(_KEYS.enter.value)
     type(testjob.contact_name)
@@ -139,7 +136,7 @@ def _complete_testjob(testjob: TestJob):
     click_key(_KEYS.enter.value)
 
 
-def turn_off_capslock():
+def turn_off_capslock() -> None:
     try:
         subprocess.run(["osascript", "-l", "JavaScript", "src/gui/capslock_off.applescript"])
         return
