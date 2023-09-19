@@ -90,7 +90,7 @@ def complete_test(test: Test, positions: Positions, is_editing: bool):  # pragma
     click_key(*_KEYS.ctrl_tab.value)
     if is_editing:
         click_key(_KEYS.enter.value)
-        wait(0.5)
+        wait(1)
         click_key(_KEYS.tab.value, times=5)
     else:
         click_key(*_KEYS.ctrl_tab.value)
@@ -99,7 +99,7 @@ def complete_test(test: Test, positions: Positions, is_editing: bool):  # pragma
         click_key(_KEYS.down.value, times=SCRIPT_DOWNS[test.script.nickname])
         click_key(_KEYS.enter.value)
         click_key(*_KEYS.ctrl_tab.value)
-        wait(0.5)
+        wait(1)
 
     for i, value in enumerate(test.script_answers):  # enter script answers
         type(value)
