@@ -67,7 +67,16 @@ class TestPage(Page):
         self.get_test(item, choose_script=choose_script)
 
     def get_test(self, item: Item, *, choose_script: bool = False) -> None:
-        test = Test(item)
+        if self.is_editing:
+            assert self.shared.job
+            try:
+                test = next(test for test in reversed(self.shared.job.tests) if test.item.number == item.number)
+            except StopIteration:
+                return self.item_not_found(item.number)
+
+        else:
+            test = Test(item)
+
         try:
             if choose_script:
                 raise ScriptError
@@ -97,8 +106,11 @@ class TestPage(Page):
         ttk.Label(self.frame, text=f"{script.name}").grid(column=0, row=row, columnspan=4)
         row += 1
 
-        stored_answers = self.shared.storage.item_model_to_script_answers.get(self.test.item_model)
-        self.saved_script_answers = stored_answers or [stest.selected for stest in script.tests]
+        if test.script_answers:
+            self.saved_script_answers = test.script_answers
+        else:
+            stored_answers = self.shared.storage.item_model_to_script_answers.get(self.test.item_model)
+            self.saved_script_answers = stored_answers or [stest.selected for stest in script.tests]
         actual_answers = [StringVar(value=ans) for ans in self.saved_script_answers]
         for i, stest in enumerate(script.tests):
             ttk.Label(self.frame, text=f"{stest.name}").grid(column=0, row=row, columnspan=1, sticky="w")
@@ -119,12 +131,17 @@ class TestPage(Page):
         self.add_job_button = ttk.Button(self.frame, text="Add Job", command=self.add_testjob)
         self.delete_job_button = ttk.Button(self.frame, text="X", width=1, command=self.delete_test_job)
         self.add_job_button.grid(column=0, row=row, columnspan=4)
+        if len(self.test.testjobs):
+            self.add_job_button.configure(text=f"Add Job ({len(self.test.testjobs)})")
+            self.delete_job_button.grid(column=3, row=self.add_job_button.grid_info()["row"], sticky="e")
         row += 1
 
         # test comment
         ttk.Label(self.frame, text="Comment").grid(column=0, row=row, columnspan=4)
         row += 1
         self.comment = tkinter.Text(self.frame, height=4, width=100)
+        if self.test.comment:
+            self.comment.insert(tkinter.END, self.test.comment + "\n\n")
         self.comment.grid(column=0, row=row, columnspan=4)
         row += 1
         self.frame.rowconfigure(row, minsize=10)
@@ -133,13 +150,11 @@ class TestPage(Page):
         # final results
         ttk.Label(self.frame, text="Result").grid(column=0, row=row, columnspan=4)
         row += 1
-        result = tkinter.StringVar()
+        result = tkinter.StringVar(value=self.test.final_result or TEST_RESULTS[0].result)
         for i, (name, test_result) in enumerate(TEST_RESULTS):
             button = ttk.Radiobutton(self.frame, text=name, variable=result, value=test_result)
             button.grid(column=i % 4, row=row)
             row = row + 1 if i % 4 == 3 else row
-            if i == 0:
-                button.invoke()
         row += 1
 
         save = ttk.Button(self.frame, text="Save", command=lambda: self.save_test([s.get() for s in actual_answers], result.get()))
@@ -179,6 +194,8 @@ class TestPage(Page):
         turn_off_capslock()
         comment = self.comment.get("1.0", tkinter.END)
         self.test.complete(comment, result, script_answers)
+        if self.is_editing:
+            self.shared.job.remove_test(self.test)
         self.shared.job.add_test(self.test)
 
         try:
