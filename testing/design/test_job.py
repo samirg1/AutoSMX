@@ -39,6 +39,21 @@ def test_job_add_test():
     assert job.test_breakdown["Custom2"] == 1
 
 
+def test_job_remove_test() -> None:
+    custom1 = Script("Custom1", "Custom Script", (), exact_matches=["Test Item 1"])
+    SCRIPTS["Custom1"] = custom1
+    test1 = Test(Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001"))
+    test1.script = test1.determine_script()
+    job = Job("CompanyX", "CampusA", "DepartmentY")
+    job.add_test(test1)
+    job.remove_test(test1)
+
+    assert len(job.tests) == 0
+    assert len(job.test_breakdown) == 0
+    assert "Custom1" not in job.test_breakdown
+
+
+
 def test_job_string_representation():
     job1 = Job("CAMPEYN - YOORALLA", "CampusA", "DepartmentY")
     job2 = Job("BENETAS - ST PAULS", "CampusA", "DepartmentY")
