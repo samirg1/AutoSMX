@@ -147,13 +147,11 @@ class TestPage(Page):
         # final results
         ttk.Label(self.frame, text="Result").grid(column=0, row=row, columnspan=4)
         row += 1
-        result = tkinter.StringVar()
+        result = tkinter.StringVar(value=self.test.final_result or TEST_RESULTS[0].result)
         for i, (name, test_result) in enumerate(TEST_RESULTS):
             button = ttk.Radiobutton(self.frame, text=name, variable=result, value=test_result)
             button.grid(column=i % 4, row=row)
             row = row + 1 if i % 4 == 3 else row
-            if i == 0:
-                button.invoke()
         row += 1
 
         save = ttk.Button(self.frame, text="Save", command=lambda: self.save_test([s.get() for s in actual_answers], result.get()))
