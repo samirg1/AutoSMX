@@ -69,8 +69,11 @@ class TestPage(Page):
     def get_test(self, item: Item, *, choose_script: bool = False) -> None:
         if self.is_editing:
             assert self.shared.job
-            test = next(test for test in reversed(self.shared.job.tests) if test.item.number == item.number)
-            self.shared.job.remove_test(test)
+            try:
+                test = next(test for test in reversed(self.shared.job.tests) if test.item.number == item.number)
+            except StopIteration:
+                return self.item_not_found(item.number)
+
         else:
             test = Test(item)
 
@@ -191,6 +194,8 @@ class TestPage(Page):
         turn_off_capslock()
         comment = self.comment.get("1.0", tkinter.END)
         self.test.complete(comment, result, script_answers)
+        if self.is_editing:
+            self.shared.job.remove_test(self.test)
         self.shared.job.add_test(self.test)
 
         try:
