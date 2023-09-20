@@ -6,7 +6,7 @@ files = ["build/AutoSMX.app"]
 symlinks = {"Applications": "/Applications"}
 icon = "autosmx.ico"
 
-icon_locations = {"AutoSMX": (140, 120), "Applications": (500, 100)}
+icon_locations = {"AutoSMX": (140, 120), "Applications": (500, 100), ".background.tiff": (100, 300), ".VolumeIcon.icns": (500, 300)}
 background = "builtin-arrow"
 show_status_bar = False
 show_tab_view = False
@@ -37,7 +37,7 @@ list_scroll_position = (0, 0)
 list_sort_by = "name"
 list_use_relative_dates = True
 list_calculate_all_sizes = (False,)
-list_columns = ("name", "date-modified", "size", "kind", "date-added")
+list_columns = ("name", "date-modified", "size", "kind", "date-added", "label")
 list_column_widths = {
     "name": 300,
     "date-modified": 181,
