@@ -2,7 +2,11 @@ import functools
 import os
 from typing import Any, Callable
 
-import pyautogui
+try:
+    import pyautogui
+except KeyError:
+    os.environ["DISPLAY"] = ":0"
+    import pyautogui
 import pyperclip  # type: ignore
 from pynput import mouse
 

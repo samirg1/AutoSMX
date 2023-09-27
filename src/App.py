@@ -13,8 +13,6 @@ from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
 
-os.environ["DISPLAY"] = ":0"
-
 _APPLICATION_PATH = os.path.dirname(sys.executable)
 
 
