@@ -1,5 +1,5 @@
 # pyright: reportUnusedImport=false
-from gui.actions import complete_test, get_item_job
+from gui.actions import complete_test
 from gui.automations import (
     click,
     click_key,

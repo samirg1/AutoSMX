@@ -3,6 +3,7 @@ from tkinter import ttk
 
 from design.Job import Job
 from pages.Page import Page
+from popups.JobEntryPopup import JobEntryPopup
 
 
 class JobPage(Page):
@@ -66,24 +67,28 @@ class JobPage(Page):
             button.configure(state="normal")
         tree.unbind("<<TreeviewSelect>>")
 
-    def get_selected_job(self, tree: ttk.Treeview) -> Job | None:
+    def get_selected_job(self, tree: ttk.Treeview) -> Job:
         item = tree.focus()
         possible_parent1 = tree.parent(item)
         parent1 = possible_parent1 if possible_parent1 else item
         possible_parent2 = tree.parent(parent1)
         parent2 = possible_parent2 if possible_parent2 else parent1
 
-        return self.shared.jobs[parent2] if parent2 else None
+        return self.shared.jobs[parent2]
 
     def delete_job(self, tree: ttk.Treeview) -> None:
         job = self.get_selected_job(tree)
-        if job is None:
-            return
         del self.shared.jobs[job.campus]
         if job in self.shared.testjob_manager.job_to_testjobs:
             del self.shared.testjob_manager.job_to_testjobs[job]
         self.change_page("JOB")
 
     def add_tests(self, tree: ttk.Treeview | None = None) -> None:
-        self.shared.job = None if tree is None else self.get_selected_job(tree)
+        if tree is None:
+            JobEntryPopup(self.frame, lambda job: self.add_job(job))
+        else:
+            self.shared.job = self.get_selected_job(tree)
+
+    def add_job(self, job: Job) -> None:
+        self.shared.job = job
         self.change_page("TEST")

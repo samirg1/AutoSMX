@@ -9,7 +9,8 @@ from design.Job import Job
 from design.Script import Script
 from design.Test import TEST_RESULTS, ScriptError, Test
 from design.TestJob import TestJob
-from gui.actions import complete_test, get_item_job, turn_off_capslock
+from gui.actions import complete_test, turn_off_capslock
+from gui.db_functions import get_item
 from pages.Page import Page
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.TestJobPopup import TestJobPopup
@@ -43,23 +44,12 @@ class TestPage(Page):
     def get_item(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False, editing: bool = False) -> None:
         item_entry.state(["disabled"])  # type: ignore
         self.frame.focus()
+        assert self.shared.job
 
-        if editing:
-            try:
-                assert self.shared.job
-                description = self.shared.item_number_to_description[item_number]
-                item = Item(item_number, description, "", "", "")
-            except (AssertionError, KeyError):
-                return self.item_not_found(item_number)
-        else:
-            if choose_script and self.shared.job:
-                description = self.shared.item_number_to_description.get(item_number, "")
-                item = Item(item_number, description, "", "", "")
-            else:
-                try:
-                    item, self.shared.job = get_item_job(item_number, self.shared.storage.positions, self.shared.jobs, self.shared.job)
-                except FailSafeException:
-                    return self.failsafe(item_number)
+        if editing and item_number not in self.shared.item_number_to_description:
+            return self.item_not_found(item_number)
+
+        item = get_item(item_number)
 
         self.shared.item_number_to_description[item_number] = item.description
         self.shared.jobs[self.shared.job.campus] = self.shared.job
