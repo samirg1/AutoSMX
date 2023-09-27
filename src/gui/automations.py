@@ -4,10 +4,14 @@ from typing import Any, Callable
 
 try:
     import pyautogui
+    import pyperclip  # type: ignore
+    from pynput import mouse
 except KeyError:
     pyautogui = None
-import pyperclip  # type: ignore
-from pynput import mouse
+    pyperclip = None
+    mouse = None
+
+
 
 _RUN = True  # actually run the automations or get default value (for testing)
 _PRINT = False  # print the automations (for testing)
