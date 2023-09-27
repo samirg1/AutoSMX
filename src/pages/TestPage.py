@@ -50,6 +50,8 @@ class TestPage(Page):
             return self.item_not_found(item_number)
 
         item = get_item(item_number)
+        if item is None:
+            return self.reset_page(item_number)
 
         self.shared.item_number_to_description[item_number] = item.description
         self.is_editing = editing

@@ -16,7 +16,7 @@ def _get_connection(filename: str) -> Generator[sqlite3.Connection, None, None]:
     connection.close()
 
 
-def get_item(item_number: str) -> Item:
+def get_item(item_number: str) -> Item | None:
     with _get_connection("SCMTests") as connection:
         fields = connection.execute(
             """
@@ -27,10 +27,13 @@ def get_item(item_number: str) -> Item:
             (item_number,),
         ).fetchone()
 
+    if fields is None:
+        return None
+
     return Item(*fields)
 
 
-def get_job(job_number: str) -> Job:
+def get_job(job_number: str) -> Job | None:
     if not job_number.startswith("PM"):
         job_number = f"PM{job_number}"
 
@@ -43,5 +46,8 @@ def get_job(job_number: str) -> Job:
             """,
             (job_number,),
         ).fetchone()
+
+    if fields is None:
+        return None
 
     return Job(*fields)

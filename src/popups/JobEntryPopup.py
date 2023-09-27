@@ -21,5 +21,8 @@ class JobEntryPopup(Popup):
         entry.bind("<Return>", lambda _: self._get_job(number.get()))
 
     def _get_job(self, number: str) -> None:
-        self.callback(get_job(number))
+        job = get_job(number)
+        if job is None:
+            return
+        self.callback(job)
         self.destroy()
