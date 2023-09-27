@@ -5,6 +5,7 @@ import tkinter
 from tkinter import PhotoImage, ttk
 
 from design.TestJobManager import TestJobManager
+from pages.SettingsPage import SettingsPage
 from pages.CalibrationPage import CalibrationPage
 from pages.JobPage import JobPage
 from pages.Page import TPAGES, Page, SharedPageInfo
@@ -33,6 +34,7 @@ class App(tkinter.Tk):
         self.pages: dict[TPAGES, Page] = {
             "TUTORIAL": TutorialPage(self._frame(), self.change_page, shared),
             "CALIBRATION": CalibrationPage(self._frame(), self.change_page, shared),
+            "SETTINGS": SettingsPage(self._frame(), self.change_page, shared),
             "JOB": JobPage(self._frame(), self.change_page, shared),
             "TEST": TestPage(self._frame(), self.change_page, shared),
         }

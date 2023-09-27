@@ -125,7 +125,7 @@ SCRIPTS: dict[str, Script] = {
         "TRACK",
         "AT - TRACK",
         (_FEATURES_P, _TRACK_DUST_P, _CHARGER_N, _TRACK_LOAD_KG, _LOAD_TEST_P, _ELECTRIC_TEST_N),
-        exact_matches=["TRACK", "TRACK, CEILING HOIST"],
+        exact_matches=["TRACK", "TRACK, CEILING HOIST", "CEILING TRACK"],
     ),
     "COMMODE": Script(
         "COMMODE",
