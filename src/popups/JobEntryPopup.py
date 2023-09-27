@@ -12,9 +12,13 @@ class JobEntryPopup(Popup):
 
         ttk.Label(self, text="Job Number").grid(column=0, row=0)
         number = StringVar()
-        ttk.Entry(self, textvariable=number).grid(column=1, row=0)
+        entry = ttk.Entry(self, textvariable=number)
+        entry.grid(column=1, row=0)
+        entry.focus()
 
-        ttk.Button(self, text="Add", command=lambda: self._get_job(number.get())).grid(column=0, row=4, columnspan=2)
+        add_button = ttk.Button(self, text="Add", command=lambda: self._get_job(number.get()))
+        add_button.grid(column=0, row=4, columnspan=2)
+        entry.bind("<Return>", lambda _: self._get_job(number.get()))
 
     def _get_job(self, number: str) -> None:
         self.callback(get_job(number))

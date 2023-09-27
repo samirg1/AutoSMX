@@ -31,7 +31,7 @@ class TestPage(Page):
         self.go_button.grid(column=0, row=2, columnspan=2)
         self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_item(item_number.get(), item_entry, choose_script=True))
         self.choose_button.grid(column=2, row=2)
-        button_state = "disabled" if self.shared.job is None else "normal"
+        button_state = "normal" if item_number.get() in self.shared.item_number_to_description else "disabled"
         self.edit_button = ttk.Button(self.frame, text="Edit Test", command=lambda: self.get_item(item_number.get(), item_entry, editing=True), state=button_state)
         self.edit_button.grid(column=3, row=2)
 
@@ -52,7 +52,6 @@ class TestPage(Page):
         item = get_item(item_number)
 
         self.shared.item_number_to_description[item_number] = item.description
-        self.shared.jobs[self.shared.job.campus] = self.shared.job
         self.is_editing = editing
         self.get_test(item, choose_script=choose_script)
 

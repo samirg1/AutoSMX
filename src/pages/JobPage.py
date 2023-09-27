@@ -87,8 +87,9 @@ class JobPage(Page):
         if tree is None:
             JobEntryPopup(self.frame, lambda job: self.add_job(job))
         else:
-            self.shared.job = self.get_selected_job(tree)
+            self.add_job(self.get_selected_job(tree))
 
     def add_job(self, job: Job) -> None:
         self.shared.job = job
+        self.shared.jobs[job.campus] = job
         self.change_page("TEST")
