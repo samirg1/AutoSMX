@@ -70,6 +70,7 @@ def mock_sql_item(monkeypatch: pytest.MonkeyPatch) -> sql_item:
 @pytest.mark.parametrize("job_number", ("23314115", "PM1242522"))
 def test_get_job(job_number: str, mock_sql_job: sql_job) -> None:
     job = get_job(job_number)
+    assert job
     assert job.campus == "location"
     assert job.department == "dept"
     assert job.number == "number"
@@ -80,7 +81,7 @@ def test_get_job(job_number: str, mock_sql_job: sql_job) -> None:
 
 def test_get_item(mock_sql_item: sql_job) -> None:
     item = get_item("123456")
-
+    assert item
     assert item.description == "description"
     assert item.number == "number"
     assert item.last_update == "last_update"
