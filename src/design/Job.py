@@ -17,6 +17,7 @@ class Job:
     company: str = field(hash=False, eq=False, converter=_job_company_converter)
     campus: str
     department: str = field(hash=False, eq=False)
+    number: str = field(hash=False, eq=False, default="")
     tests: list[Test] = field(factory=list, init=False, hash=False, eq=False)
     test_breakdown: dict[str, int] = field(factory=dict, init=False, hash=False, eq=False)
 
