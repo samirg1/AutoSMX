@@ -4,3 +4,6 @@ tox==4.8.0
 black==22.10.0
 pytest-cov==4.1.0
 attrs==23.1.0
+pyautogui==0.9.54
+pyperclip==1.8.2
+pynput==1.7.6

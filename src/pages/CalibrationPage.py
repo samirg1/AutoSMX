@@ -9,7 +9,7 @@ from pages.Page import Page
 class CalibrationPage(Page):
     def setup(self):
         if self.shared.storage.calibrated:
-            return self.change_page("TEST")
+            return self.change_page("JOB")
         self.positions_set = 0
 
         ttk.Label(self.frame, text="Calibration").grid(column=0, row=0, sticky="nsew")

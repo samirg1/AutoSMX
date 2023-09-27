@@ -5,10 +5,10 @@ import tkinter
 from tkinter import PhotoImage, ttk
 
 from design.TestJobManager import TestJobManager
-from pages.SettingsPage import SettingsPage
 from pages.CalibrationPage import CalibrationPage
 from pages.JobPage import JobPage
 from pages.Page import TPAGES, Page, SharedPageInfo
+from pages.SettingsPage import SettingsPage
 from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage

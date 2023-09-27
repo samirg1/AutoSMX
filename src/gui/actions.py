@@ -2,14 +2,11 @@ import ctypes
 import os
 import subprocess
 from enum import Enum
-from typing import cast
 
 from design.data import SCRIPT_DOWNS
-from design.Item import Item
-from design.Job import Job
 from design.Test import Test
 from design.TestJob import TestJob
-from gui.automations import click, click_key, get_selected_text, type, wait
+from gui.automations import click, click_key, type, wait
 from storage.Storage import Positions
 
 _WINDOWS = os.name == "nt"
@@ -31,57 +28,6 @@ def _enter_item_number(item_number: str, testing_tab_position: tuple[int, int] |
     type(item_number)
     click_key(_KEYS.enter.value)
     wait(0.5)
-
-
-def get_item_job(item_number: str, positions: Positions, jobs: dict[str, Job], job: Job | None = None) -> tuple[Item, Job]:
-    _enter_item_number(item_number, positions.testing_tab)
-
-    click(positions.assets_tab)  # enter item number into assets tab
-    wait(0.5)
-    click_key(_KEYS.tab.value)
-    type(item_number)
-    click_key(_KEYS.enter.value)
-    wait(0.5)
-
-    click_key(_KEYS.tab.value, times=5)  # get to serial number
-    previous = get_selected_text()
-    click_key(_KEYS.tab.value)
-    next = get_selected_text()
-    if next != previous:
-        serial = next
-        final_tabs = 3
-    else:
-        click_key(_KEYS.tab.value)
-        serial = get_selected_text()
-        final_tabs = 2
-
-    click_key(_KEYS.tab.value)  # get rest of information
-    model = get_selected_text()
-    click_key(_KEYS.tab.value, times=2)
-    description = get_selected_text()
-    click_key(_KEYS.tab.value, times=2)
-    manufacturer = get_selected_text()
-
-    item = Item(item_number, description, model, manufacturer, serial)
-    if job is None or job.campus == "Unknown":  # get job if needed
-        click_key(_KEYS.tab.value)
-        company = get_selected_text()
-        click_key(_KEYS.tab.value)
-        campus = get_selected_text()
-        click_key(_KEYS.tab.value)
-        department = get_selected_text()
-        job = jobs.get(campus, Job(company, campus, department))
-
-    click(positions.assets_tab)  # exit assets tab
-    click_key(_KEYS.tab.value, times=final_tabs)
-    click_key(_KEYS.enter.value)
-
-    click(positions.testing_tab)  # reset
-    wait(1)
-    click(positions.window)
-    wait(0.5)
-
-    return item, cast(Job, job)  # type: ignore[redundant-cast]
 
 
 def complete_test(test: Test, positions: Positions, is_editing: bool) -> None:  # pragma: no cover

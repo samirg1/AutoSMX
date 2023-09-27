@@ -2,9 +2,16 @@ import functools
 import os
 from typing import Any, Callable
 
-import pyautogui
-import pyperclip  # type: ignore
-from pynput import mouse
+try:
+    import pyautogui
+    import pyperclip  # type: ignore
+    from pynput import mouse
+except KeyError:
+    pyautogui = None
+    pyperclip = None
+    mouse = None
+
+
 
 _RUN = True  # actually run the automations or get default value (for testing)
 _PRINT = False  # print the automations (for testing)
@@ -16,7 +23,7 @@ def _automation_wrapper(default: Any | None = None) -> Callable[[Callable[..., A
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any):
             if _DELAY:
-                pyautogui.sleep(_DELAY)
+                pyautogui.sleep(_DELAY)  # pyright: ignore[reportOptionalMemberAccess]
 
             result = default if not _RUN else func(*args, **kwargs)
             if _PRINT:
@@ -32,23 +39,23 @@ def _automation_wrapper(default: Any | None = None) -> Callable[[Callable[..., A
 @_automation_wrapper()
 def click_key(*keys: str, times: int = 1):
     for _ in range(times):
-        pyautogui.hotkey(*keys)
+        pyautogui.hotkey(*keys)  # pyright: ignore[reportOptionalMemberAccess]
 
 
 @_automation_wrapper()
 def wait(seconds: float):
-    pyautogui.sleep(seconds)
+    pyautogui.sleep(seconds)  # pyright: ignore[reportOptionalMemberAccess]
 
 
 @_automation_wrapper()
 def type(text: str):
-    pyautogui.typewrite(text)
+    pyautogui.typewrite(text)  # pyright: ignore[reportOptionalMemberAccess]
 
 
 @_automation_wrapper()
 def click(position: tuple[int, int], /, *, times: int = 1):
     for _ in range(times):
-        pyautogui.click(position)
+        pyautogui.click(position)  # pyright: ignore[reportOptionalMemberAccess]
 
 
 @_automation_wrapper((0, 0))
@@ -71,8 +78,8 @@ def get_click_position() -> tuple[int, int]:
 @_automation_wrapper("selected text")
 def get_selected_text():
     old = pyperclip.paste()
-    pyautogui.hotkey("ctrl" if os.name == "nt" else "command", "c", interval=0.05)
-    pyautogui.sleep(0.01)
+    pyautogui.hotkey("ctrl" if os.name == "nt" else "command", "c", interval=0.05)  # pyright: ignore[reportOptionalMemberAccess]
+    pyautogui.sleep(0.01)  # pyright: ignore[reportOptionalMemberAccess]
     selected = pyperclip.paste()
     pyperclip.copy(old)  # type: ignore
     return selected
