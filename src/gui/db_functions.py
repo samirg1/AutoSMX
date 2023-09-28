@@ -16,38 +16,29 @@ def _get_connection(filename: str) -> Generator[sqlite3.Connection, None, None]:
     connection.close()
 
 
-def get_item(item_number: str) -> Item | None:
+def get_items(item_number: str) -> list[Item]:
     with _get_connection("SCMTests") as connection:
-        fields = connection.execute(
+        item_fields = connection.execute(
             """
             SELECT logical_name, description, model, manufacturer, serial_no_, room, last_update
             FROM 'devicem1_PS'
-            WHERE logical_name == ?
+            WHERE logical_name LIKE ?
             """,
-            (item_number,),
-        ).fetchone()
+            (item_number + "%",),
+        ).fetchall()
 
-    if fields is None:
-        return None
-
-    return Item(*fields)
+    return [Item(*fields) for fields in item_fields]
 
 
-def get_job(job_number: str) -> Job | None:
-    if not job_number.startswith("PM"):
-        job_number = f"PM{job_number}"
-
+def get_jobs(job_number: str) -> list[Job]:
     with _get_connection("SCMLookup") as connection:
-        fields = connection.execute(
+        job_fields = connection.execute(
             """
             SELECT company, location, dept, number
             FROM 'probsummarym1'
-            WHERE number == ?
+            WHERE number LIKE ? OR number LIKE ?
             """,
-            (job_number,),
-        ).fetchone()
+            (f"PM{job_number}%", f"{job_number}%"),
+        ).fetchall()
 
-    if fields is None:
-        return None
-
-    return Job(*fields)
+    return [Job(*fields) for fields in job_fields]

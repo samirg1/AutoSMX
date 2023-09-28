@@ -12,7 +12,6 @@ except KeyError:
     mouse = None
 
 
-
 _RUN = True  # actually run the automations or get default value (for testing)
 _PRINT = False  # print the automations (for testing)
 _DELAY = 0  # delay between automations (for testing)
