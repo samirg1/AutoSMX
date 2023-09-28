@@ -42,4 +42,3 @@ def get_jobs(job_number: str) -> list[Job]:
         ).fetchall()
 
     return [Job(*fields) for fields in job_fields]
-

@@ -26,7 +26,7 @@ class JobEntryPopup(Popup):
         if not jobs:
             return
         elif len(jobs) == 1:
-            return self._exit(jobs[0]) 
+            return self._exit(jobs[0])
 
         OptionSelectPopup(self, jobs, self._exit)
 

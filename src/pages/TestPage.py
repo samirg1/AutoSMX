@@ -56,9 +56,8 @@ class TestPage(Page):
         self.is_editing = editing
         if len(items) == 1:
             return self.get_test(items[0], choose_script=choose_script)
-        
+
         OptionSelectPopup(self.frame, items, lambda item: self.get_test(item, choose_script=choose_script))
-        
 
     def get_test(self, item: Item, *, choose_script: bool = False) -> None:
         self.shared.item_number_to_description[item.number] = item.description
