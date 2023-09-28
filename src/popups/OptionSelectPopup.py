@@ -13,7 +13,7 @@ class OptionSelectPopup(Popup, Generic[_T]):
 
         tree = ttk.Treeview(self, show="tree")
         for row, option in enumerate(options):
-            tree.insert("", tkinter.END, row, text=display(option), open=row == 0)
+            tree.insert("", tkinter.END, f"{row}", text=display(option), open=row == 0)
 
         scrollbar = ttk.Scrollbar(self, orient=tkinter.VERTICAL, command=tree.yview)  # type: ignore
         tree.configure(yscroll=scrollbar.set)  # type: ignore
