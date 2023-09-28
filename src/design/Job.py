@@ -17,7 +17,7 @@ class Job:
     company: str = field(hash=False, eq=False, converter=_job_company_converter)
     campus: str
     department: str = field(hash=False, eq=False)
-    number: str = field(hash=False, eq=False, default="")
+    number: str = field(hash=False, eq=False)
     tests: list[Test] = field(factory=list, init=False, hash=False, eq=False)
     test_breakdown: dict[str, int] = field(factory=dict, init=False, hash=False, eq=False)
 
@@ -32,4 +32,4 @@ class Job:
             del self.test_breakdown[test.script.nickname]
 
     def __str__(self) -> str:
-        return f"{self.campus}\n{self.company}\n{self.department}"
+        return f"{self.campus}\n{self.company}\n{self.number}"
