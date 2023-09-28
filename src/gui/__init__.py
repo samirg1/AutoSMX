@@ -8,4 +8,4 @@ from gui.automations import (
     get_click_position,
     get_selected_text,
 )
-from gui.db_functions import get_item, get_job
+from gui.db_functions import get_items, get_jobs

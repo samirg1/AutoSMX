@@ -1,8 +1,9 @@
 from tkinter import Misc, StringVar, ttk
 from typing import Callable
 from design.Job import Job
-from gui.db_functions import get_job
+from gui.db_functions import get_jobs
 from popups.Popup import Popup
+from popups.OptionSelectPopup import OptionSelectPopup
 
 
 class JobEntryPopup(Popup):
@@ -16,13 +17,19 @@ class JobEntryPopup(Popup):
         entry.grid(column=1, row=0)
         entry.focus()
 
-        add_button = ttk.Button(self, text="Add", command=lambda: self._get_job(number.get()))
+        add_button = ttk.Button(self, text="Add", command=lambda: self._get_jobs(number.get()))
         add_button.grid(column=0, row=4, columnspan=2)
-        entry.bind("<Return>", lambda _: self._get_job(number.get()))
+        entry.bind("<Return>", lambda _: self._get_jobs(number.get()))
 
-    def _get_job(self, number: str) -> None:
-        job = get_job(number)
-        if job is None:
+    def _get_jobs(self, number: str) -> None:
+        jobs = get_jobs(number)
+        if not jobs:
             return
+        elif len(jobs) == 1:
+            return self._exit(jobs[0]) 
+
+        OptionSelectPopup(self, jobs, self._exit)
+
+    def _exit(self, job: Job) -> None:
         self.callback(job)
         self.destroy()

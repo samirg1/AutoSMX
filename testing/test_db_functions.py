@@ -2,17 +2,17 @@ import sqlite3
 
 import pytest
 
-from gui.db_functions import get_item, get_job
+from gui.db_functions import get_items, get_jobs
 
 
 class JobMock:
-    def fetchone(self) -> tuple[str, ...]:
-        return ("company", "location", "dept", "number")
+    def fetchall(self) -> list[tuple[str, ...]]:
+        return [("company", "location", "dept", "number")]
 
 
 class ItemMock:
-    def fetchone(self) -> tuple[str, ...]:
-        return ("number", "description", "model", "manufacturer", "serial", "room", "last_update")
+    def fetchall(self) -> list[tuple[str, ...]]:
+        return [("number", "description", "model", "manufacturer", "serial", "room", "last_update")]
 
 
 class sql_job:
@@ -69,7 +69,7 @@ def mock_sql_item(monkeypatch: pytest.MonkeyPatch) -> sql_item:
 
 @pytest.mark.parametrize("job_number", ("23314115", "PM1242522"))
 def test_get_job(job_number: str, mock_sql_job: sql_job) -> None:
-    job = get_job(job_number)
+    job = get_jobs(job_number)[0]
     assert job
     assert job.campus == "location"
     assert job.department == "dept"
@@ -80,7 +80,7 @@ def test_get_job(job_number: str, mock_sql_job: sql_job) -> None:
 
 
 def test_get_item(mock_sql_item: sql_job) -> None:
-    item = get_item("123456")
+    item = get_items("123456")[0]
     assert item
     assert item.description == "description"
     assert item.number == "number"

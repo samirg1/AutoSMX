@@ -10,10 +10,11 @@ from design.Script import Script
 from design.Test import TEST_RESULTS, ScriptError, Test
 from design.TestJob import TestJob
 from gui.actions import complete_test, turn_off_capslock
-from gui.db_functions import get_item
+from gui.db_functions import get_items
 from pages.Page import Page
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.TestJobPopup import TestJobPopup
+from popups.OptionSelectPopup import OptionSelectPopup
 
 
 class TestPage(Page):
@@ -26,13 +27,13 @@ class TestPage(Page):
         item_entry.grid(column=2, row=1, sticky="w", columnspan=2)
         item_entry.focus()
         item_entry.icursor(tkinter.END)
-        self.go_button = ttk.Button(self.frame, text="Go", command=lambda: self.get_item(item_number.get(), item_entry))
+        self.go_button = ttk.Button(self.frame, text="Go", command=lambda: self.get_items(item_number.get(), item_entry))
         item_entry.bind("<Return>", lambda _: self.go_button.invoke())
         self.go_button.grid(column=0, row=2, columnspan=2)
-        self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_item(item_number.get(), item_entry, choose_script=True))
+        self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_items(item_number.get(), item_entry, choose_script=True))
         self.choose_button.grid(column=2, row=2)
         button_state = "normal" if item_number.get() in self.shared.item_number_to_description else "disabled"
-        self.edit_button = ttk.Button(self.frame, text="Edit Test", command=lambda: self.get_item(item_number.get(), item_entry, editing=True), state=button_state)
+        self.edit_button = ttk.Button(self.frame, text="Edit Test", command=lambda: self.get_items(item_number.get(), item_entry, editing=True), state=button_state)
         self.edit_button.grid(column=3, row=2)
 
         item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
@@ -41,7 +42,7 @@ class TestPage(Page):
         tested = item_number.get() in self.shared.item_number_to_description
         self.edit_button.configure(state=("normal" if tested else "disabled"))
 
-    def get_item(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False, editing: bool = False) -> None:
+    def get_items(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False, editing: bool = False) -> None:
         item_entry.state(["disabled"])  # type: ignore
         self.frame.focus()
         assert self.shared.job
@@ -49,15 +50,18 @@ class TestPage(Page):
         if editing and item_number not in self.shared.item_number_to_description:
             return self.item_not_found(item_number)
 
-        item = get_item(item_number)
-        if item is None:
+        items = get_items(item_number)
+        if not items:
             return self.reset_page(item_number)
-
-        self.shared.item_number_to_description[item_number] = item.description
         self.is_editing = editing
-        self.get_test(item, choose_script=choose_script)
+        if len(items) == 1:
+            return self.get_test(items[0], choose_script=choose_script)
+        
+        OptionSelectPopup(self.frame, items, lambda item: self.get_test(item, choose_script=choose_script))
+        
 
     def get_test(self, item: Item, *, choose_script: bool = False) -> None:
+        self.shared.item_number_to_description[item.number] = item.description
         if self.is_editing:
             assert self.shared.job
             try:
