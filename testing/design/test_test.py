@@ -11,7 +11,7 @@ TestJob.__test__ = False  # type: ignore
 
 
 def test_test_creation_and_properties():
-    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001")
+    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
     test = Test(item)
 
     with pytest.raises(ScriptError):
@@ -25,7 +25,7 @@ def test_test_creation_and_properties():
 
 
 def test_test_determine_script():
-    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001")
+    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
     test = Test(item)
 
     # Adding a custom script for testing
@@ -40,7 +40,7 @@ def test_test_determine_script():
 
 
 def test_test_add_testjob():
-    item = Item("001", "SLING 123", "ModelX", "ManufacturerX", "XYZ001")
+    item = Item("001", "SLING 123", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
     test = Test(item)
 
     test.script = test.determine_script()
@@ -54,7 +54,7 @@ def test_test_add_testjob():
 
 
 def test_test_complete_and_full_info():
-    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001")
+    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
     test = Test(item)
 
     custom = Script("CustomScript", "Custom Script", (), exact_matches=["Test Item"])
@@ -74,7 +74,7 @@ def test_test_complete_and_full_info():
 
 
 def test_test_item_model_property():
-    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001")
+    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
     test = Test(item)
     test.script = Script("CustomScript", "Custom Script")
 

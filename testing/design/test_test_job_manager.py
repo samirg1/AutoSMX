@@ -10,8 +10,8 @@ TestJobManager.__test__ = False  # type: ignore
 def test_test_job_manager_multiple_testjobs():
     manager = TestJobManager()
 
-    item1 = Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001")
-    job1 = Job("Company", "Campus", "Department")
+    item1 = Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001", "R1", "2019")
+    job1 = Job("Company", "Campus", "Department", "123")
     testjob1 = TestJob("Quality Control", "John Doe", "Performing testing on batch 1")
     testjob2 = TestJob("Quality Control", "Jane Smith", "Inspection for defects")
 
@@ -31,9 +31,9 @@ def test_test_job_manager_multiple_testjobs():
 def test_test_job_manager_multiple_items():
     manager = TestJobManager()
 
-    item1 = Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001")
-    item2 = Item("002", "Test Item 2", "ModelY", "ManufacturerY", "XYZ002")
-    job1 = Job("Company", "Campus", "Department")
+    item1 = Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
+    item2 = Item("002", "Test Item 2", "ModelY", "ManufacturerY", "XYZ002", "RM1", "2019")
+    job1 = Job("Company", "Campus", "Department", "123")
     testjob1 = TestJob("Quality Control", "John Doe", "Performing testing on batch 1")
 
     manager.add_testjob(item1, job1, testjob1)

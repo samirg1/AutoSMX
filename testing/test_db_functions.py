@@ -75,7 +75,7 @@ def test_get_job(job_number: str, mock_sql_job: sql_job) -> None:
     assert job.department == "dept"
     assert job.number == "number"
     assert job.company == "company"
-    assert mock_sql_job.called_with[0].endswith(job_number)
+    assert job_number in mock_sql_job.called_with[0]
     assert mock_sql_job.close_called
 
 
@@ -89,5 +89,5 @@ def test_get_item(mock_sql_item: sql_job) -> None:
     assert item.model == "model"
     assert item.serial == "serial"
     assert item.room == "room"
-    assert mock_sql_item.called_with[0].endswith("123456")
+    assert "123456" in mock_sql_item.called_with[0]
     assert mock_sql_item.close_called
