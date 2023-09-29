@@ -22,10 +22,10 @@ def test_job_add_test() -> None:
     test1 = Test(Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019"))
     test2 = Test(Item("002", "Test Item 2", "ModelY", "ManufacturerY", "XYZ002", "RM1", "2019"))
 
-    custom1 = Script("Custom1", "Custom Script", (), exact_matches=["Test Item 1"])
+    custom1 = Script("Custom1", "Custom Script", 1, (), exact_matches=["Test Item 1"])
     SCRIPTS["Custom1"] = custom1
     test1.script = test1.determine_script()
-    custom2 = Script("Custom2", "Custom Script", (), exact_matches=["Test Item 2"])
+    custom2 = Script("Custom2", "Custom Script", 1, (), exact_matches=["Test Item 2"])
     SCRIPTS["Custom2"] = custom2
     test2.script = test2.determine_script()
 
@@ -40,7 +40,7 @@ def test_job_add_test() -> None:
 
 
 def test_job_remove_test() -> None:
-    custom1 = Script("Custom1", "Custom Script", (), exact_matches=["Test Item 1"])
+    custom1 = Script("Custom1", "Custom Script", 1, (), exact_matches=["Test Item 1"])
     SCRIPTS["Custom1"] = custom1
     test1 = Test(Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019"))
     test1.script = test1.determine_script()

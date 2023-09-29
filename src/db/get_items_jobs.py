@@ -2,6 +2,7 @@ from design.Item import Item
 from design.Job import Job
 from db.get_connection import get_connection
 
+
 def get_items(item_number: str) -> list[Item]:
     with get_connection("SCMTests") as connection:
         item_fields = connection.execute(
