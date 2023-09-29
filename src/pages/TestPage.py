@@ -10,7 +10,7 @@ from design.Script import Script
 from design.Test import TEST_RESULTS, ScriptError, Test
 from design.TestJob import TestJob
 from gui.actions import complete_test, turn_off_capslock
-from gui.db_functions import get_items
+from db.get_items_jobs import get_items
 from pages.Page import Page
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.TestJobPopup import TestJobPopup

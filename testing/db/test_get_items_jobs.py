@@ -2,7 +2,7 @@ import sqlite3
 
 import pytest
 
-from gui.db_functions import get_items, get_jobs
+from db.get_items_jobs import get_items, get_jobs
 
 
 class JobMock:

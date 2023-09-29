@@ -1,7 +1,7 @@
 from tkinter import Misc, StringVar, ttk
 from typing import Callable
 from design.Job import Job
-from gui.db_functions import get_jobs
+from db.get_items_jobs import get_jobs
 from popups.Popup import Popup
 from popups.OptionSelectPopup import OptionSelectPopup
 

@@ -26,7 +26,7 @@ class Positions:
         return cls.__annotations__.keys()
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, tuple[int, int]]) -> 'Positions':
+    def from_dict(cls, data: Mapping[str, tuple[int, int]]) -> "Positions":
         return cls(**data)
 
 
@@ -61,7 +61,7 @@ class Storage:
             json.dump(data, file, indent=4)
 
     @contextmanager
-    def edit(self) -> Generator['Storage', None, None]:
+    def edit(self) -> Generator["Storage", None, None]:
         try:
             yield self
         finally:
