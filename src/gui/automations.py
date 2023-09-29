@@ -18,7 +18,7 @@ _DELAY = 0  # delay between automations (for testing)
 
 
 def _automation_wrapper(default: Any | None = None) -> Callable[[Callable[..., Any]], Any]:  # testing decorator for printing, delaying, and returning default values
-    def decorator(func: Callable[..., Any]) : # type: ignore[no-untyped-def]
+    def decorator(func: Callable[..., Any]):  # type: ignore[no-untyped-def]
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any | None:
             if _DELAY:
@@ -61,13 +61,13 @@ def click(position: tuple[int, int], /, *, times: int = 1) -> None:
 def get_click_position() -> tuple[int, int]:
     position: tuple[int, int] = -1, -1
 
-    def on_click(x: float, y: float, button: mouse.Button, pressed: bool) -> Literal[False] | None: # type: ignore
-        if button == mouse.Button.left and pressed: # pyright: ignore[reportOptionalMemberAccess]
+    def on_click(x: float, y: float, button: mouse.Button, pressed: bool) -> Literal[False] | None:  # type: ignore
+        if button == mouse.Button.left and pressed:  # pyright: ignore[reportOptionalMemberAccess]
             nonlocal position
             position = int(x), int(y)
             return False
 
-    listener = mouse.Listener(on_click=on_click) # pyright: ignore
+    listener = mouse.Listener(on_click=on_click)  # pyright: ignore
     listener.start()
     listener.join()
 
@@ -76,9 +76,9 @@ def get_click_position() -> tuple[int, int]:
 
 @_automation_wrapper("selected text")
 def get_selected_text() -> str:
-    old = pyperclip.paste() # pyright: ignore[reportOptionalMemberAccess]
+    old = pyperclip.paste()  # pyright: ignore[reportOptionalMemberAccess]
     pyautogui.hotkey("ctrl" if os.name == "nt" else "command", "c", interval=0.05)  # pyright: ignore[reportOptionalMemberAccess]
     pyautogui.sleep(0.01)  # pyright: ignore[reportOptionalMemberAccess]
-    selected: str = pyperclip.paste() # pyright: ignore[reportOptionalMemberAccess]
+    selected: str = pyperclip.paste()  # pyright: ignore[reportOptionalMemberAccess]
     pyperclip.copy(old)  # pyright: ignore
     return selected

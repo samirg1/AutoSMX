@@ -17,7 +17,7 @@ class CalibrationHelpPopup(Popup):
         img = Image.open(f"{_APPLICATION_PATH}/img/{image_name}.png")
         img = img.resize((width, 500), resample=Image.LANCZOS)
         img = ImageTk.PhotoImage(img)
-        panel = ttk.Label(self, image=img) 
+        panel = ttk.Label(self, image=img)
         panel.image = img  # type: ignore
         panel.grid(column=0, row=0, sticky="nsew")
 
