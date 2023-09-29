@@ -7,7 +7,7 @@ from popups.JobEntryPopup import JobEntryPopup
 
 
 class JobPage(Page):
-    def setup(self):
+    def setup(self) -> None:
         # top row
         ttk.Label(self.frame, text="Jobs").grid(column=0, row=0, columnspan=1)
         ttk.Button(self.frame, text="+", width=1, command=self.add_tests).grid(column=1, row=0, columnspan=1)
@@ -18,7 +18,7 @@ class JobPage(Page):
         # tree setup
         tree = ttk.Treeview(self.frame, columns=("text", "number"), show="tree headings", height=10, selectmode="browse")
         style = ttk.Style(self.frame)
-        style.configure("Treeview", rowheight=60)  # type: ignore
+        style.configure("Treeview", rowheight=60)  # pyright: ignore
         tree.column("#0", width=0)
         tree.column("text", anchor=tkinter.W)
         tree.column("number", width=10, anchor=tkinter.CENTER)
@@ -48,7 +48,7 @@ class JobPage(Page):
                     tree.insert(test_node, tkinter.END, values=(f"{script_name}", value))
 
         # completing tree setup
-        scrollbar = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # type: ignore
+        scrollbar = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # pyright: ignore
         tree.configure(yscroll=scrollbar.set)  # type: ignore
         scrollbar.grid(row=row, column=4, sticky=tkinter.NS)
         tree.grid(row=row, column=0, columnspan=4, sticky=tkinter.EW)
@@ -62,7 +62,7 @@ class JobPage(Page):
 
         tree.bind("<<TreeviewSelect>>", lambda _: self.on_first_select(tree, button1, button2))
 
-    def on_first_select(self, tree: ttk.Treeview, *buttons: ttk.Button):
+    def on_first_select(self, tree: ttk.Treeview, *buttons: ttk.Button) -> None:
         for button in buttons:
             button.configure(state="normal")
         tree.unbind("<<TreeviewSelect>>")

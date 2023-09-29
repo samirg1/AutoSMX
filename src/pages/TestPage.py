@@ -18,7 +18,7 @@ from popups.OptionSelectPopup import OptionSelectPopup
 
 
 class TestPage(Page):
-    def setup(self):
+    def setup(self) -> None:
         ttk.Button(self.frame, text="< Jobs", command=lambda: self.change_page("JOB")).grid(column=0, row=0, sticky="w")
 
         ttk.Label(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
@@ -38,12 +38,12 @@ class TestPage(Page):
 
         item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
 
-    def edit_button_reconfigure(self, item_number: StringVar):
+    def edit_button_reconfigure(self, item_number: StringVar) -> None:
         tested = item_number.get() in self.shared.item_number_to_description
         self.edit_button.configure(state=("normal" if tested else "disabled"))
 
     def get_items(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False, editing: bool = False) -> None:
-        item_entry.state(["disabled"])  # type: ignore
+        item_entry.state(["disabled"])  # pyright: ignore
         self.frame.focus()
         assert self.shared.job
 
@@ -81,7 +81,7 @@ class TestPage(Page):
             script_popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(item.number))
             script_popup.mainloop()
 
-    def display_test(self, script: Script, test: Test):
+    def display_test(self, script: Script, test: Test) -> None:
         test.script = script
         self.test = test
         self.choose_button.destroy()
@@ -157,19 +157,19 @@ class TestPage(Page):
         save.bind("<Return>", lambda _: self.save_test([s.get() for s in actual_answers], result.get()))
         row += 1
 
-    def add_testjob(self):
+    def add_testjob(self) -> None:
         assert self.shared.job is not None
         testjob_popup = TestJobPopup(self.frame, self.shared.job.department, self.shared.job.company, self.save_testjob)
         testjob_popup.mainloop()
 
-    def save_testjob(self, testjob: TestJob):
+    def save_testjob(self, testjob: TestJob) -> None:
         self.comment.insert(tkinter.END, testjob.test_comment + "\n\n")
         self.test.add_testjob(testjob)
         self.shared.testjob_manager.add_testjob(self.test.item, cast(Job, self.shared.job), testjob)
         self.add_job_button.configure(text=f"Add Job ({len(self.test.testjobs)})")
         self.delete_job_button.grid(column=3, row=self.add_job_button.grid_info()["row"], sticky="e")
 
-    def delete_test_job(self):
+    def delete_test_job(self) -> None:
         testjob = self.test.testjobs.pop()
         self.shared.testjob_manager.delete_testjob(cast(Job, self.shared.job), testjob)
         current_comment = self.comment.get("1.0", tkinter.END).strip()
@@ -183,7 +183,7 @@ class TestPage(Page):
             add_job_text += f" ({len(self.test.testjobs)})"
         self.add_job_button.configure(text=add_job_text)
 
-    def save_test(self, script_answers: list[str], result: str):
+    def save_test(self, script_answers: list[str], result: str) -> None:
         assert self.shared.job  # must have created a job by now
         turn_off_capslock()
         comment = self.comment.get("1.0", tkinter.END)
@@ -214,7 +214,7 @@ class TestPage(Page):
         self.shared.previous_item_number = item_number
         self.change_page("TEST")
 
-    def update_storage(self, actual_script_answers: list[str]):
+    def update_storage(self, actual_script_answers: list[str]) -> None:
         if self.saved_script_answers == actual_script_answers:
             return
 
@@ -226,9 +226,9 @@ class TestPage(Page):
                 storage.item_model_to_script_answers[self.test.item_model] = actual_script_answers
 
     def failsafe(self, current_item_number: str) -> None:
-        messagebox.showerror("Process Aborted", "Fail safe activated")  # type: ignore
+        messagebox.showerror("Process Aborted", "Fail safe activated")  # pyright: ignore
         self.reset_page(current_item_number)
 
     def item_not_found(self, current_item_number: str) -> None:
-        messagebox.showerror("Not Found", f"Item number '{current_item_number}' not tested yet")  # type: ignore
+        messagebox.showerror("Not Found", f"Item number '{current_item_number}' not tested yet")  # pyright: ignore
         self.reset_page(current_item_number)

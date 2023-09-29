@@ -53,7 +53,7 @@ _TUTORIAL = {
 
 
 class TutorialPage(Page):
-    def setup(self):
+    def setup(self) -> None:
         if self.shared.storage.tutorial_complete:
             return self.change_page("CALIBRATION")
 
@@ -65,7 +65,7 @@ class TutorialPage(Page):
         # tree setup
         tree = ttk.Treeview(self.frame, columns=("#1"), show="tree", height=15, selectmode=tkinter.NONE)
         style = ttk.Style(self.frame)
-        style.configure("Treeview", rowheight=60)  # type: ignore
+        style.configure("Treeview", rowheight=60)  # pyright: ignore[reportUnknownMemberType]
         tree.column("#0", width=0)
         column = tree.column(tree["columns"][0])
         assert column
@@ -79,12 +79,12 @@ class TutorialPage(Page):
                     text.write(line + ("\n" if i != len(group) - 1 else ""))
                 tree.insert(section_node, tkinter.END, values=(text.getvalue(),))
 
-        scrollbar_y = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # type: ignore
+        scrollbar_y = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # pyright: ignore
         tree.configure(yscroll=scrollbar_y.set)  # type: ignore
         scrollbar_y.grid(row=2, column=4, sticky=tkinter.NS)
         tree.grid(row=2, column=0, columnspan=4, sticky=tkinter.EW)
 
-    def adjust_newlines(self, val: str, width: int):
+    def adjust_newlines(self, val: str, width: int) -> list[str]:
         font = Font(font="TkDefaultFont")
         words = val.split()
         lines: list[str] = [""]
@@ -97,7 +97,7 @@ class TutorialPage(Page):
 
         return lines
 
-    def end_tutorial(self):
+    def end_tutorial(self) -> None:
         with self.shared.storage.edit() as storage:
             storage.tutorial_complete = True
         self.change_page("CALIBRATION")

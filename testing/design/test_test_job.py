@@ -5,7 +5,7 @@ from design.TestJob import TestJob
 TestJob.__test__ = False  # type: ignore
 
 
-def test_test_job_creation_and_string_representation():
+def test_test_job_creation_and_string_representation() -> None:
     test_job = TestJob("Quality Control", "John Doe", "Performing\ntesting on\nnew batch.")
 
     assert test_job.department == "Quality Control"
@@ -18,7 +18,7 @@ def test_test_job_creation_and_string_representation():
 
 
 @pytest.mark.parametrize("comment", ("C\nD\nE\n1 X 12345\n", "C\nD\nE\n1 x 12345\n\n"))
-def test_test_job_test_comment(comment: str):
+def test_test_job_test_comment(comment: str) -> None:
     test_job = TestJob("A", "B", comment)
 
     assert test_job.comment == comment.strip()
@@ -28,7 +28,7 @@ def test_test_job_test_comment(comment: str):
 
 
 @pytest.mark.parametrize("comment", ("C\nD\nE\na X 12345\n    ", "C\nD\nE\n2 a 12345   \n"))
-def test_test_job_invalid_last_line(comment: str):
+def test_test_job_invalid_last_line(comment: str) -> None:
     test_job = TestJob("A", "B", comment)
 
     assert test_job.comment == test_job.test_comment == comment.strip()

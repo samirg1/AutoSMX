@@ -7,7 +7,7 @@ from pages.Page import Page
 
 
 class CalibrationPage(Page):
-    def setup(self):
+    def setup(self) -> None:
         if self.shared.storage.calibrated:
             return self.change_page("JOB")
         self.positions_set = 0

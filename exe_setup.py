@@ -1,6 +1,6 @@
 import sys
 
-from cx_Freeze import Executable, setup  # type: ignore
+from cx_Freeze import Executable, setup  # pyright: ignore[reportMissingTypeStubs, reportUnknownVariableType]
 
 build_exe = {
     "excludes": ["pytest", "PyQt6", "PyQt5", "cv2", "numpy", "mypy", "test", "email", "pydoc_data", "multiprocessing", "rubicon"],

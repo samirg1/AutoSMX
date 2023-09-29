@@ -15,7 +15,7 @@ class OptionSelectPopup(Popup, Generic[_T]):
         for row, option in enumerate(options):
             tree.insert("", tkinter.END, f"{row}", text=display(option), open=row == 0)
 
-        scrollbar = ttk.Scrollbar(self, orient=tkinter.VERTICAL, command=tree.yview)  # type: ignore
+        scrollbar = ttk.Scrollbar(self, orient=tkinter.VERTICAL, command=tree.yview)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
         tree.configure(yscroll=scrollbar.set)  # type: ignore
         scrollbar.grid(row=0, column=2, sticky=tkinter.NS)
         tree.grid(row=0, column=0, columnspan=2, sticky=tkinter.EW)

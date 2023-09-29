@@ -1,10 +1,10 @@
 import json
 import os
-from typing import Any, Callable, cast
+from typing import Any, Callable, Generator, cast
 
 import pytest
 
-from storage import Positions, Storage # type: ignore
+from storage import Positions, Storage  # type: ignore
 
 _EMPTY_DATA: dict[str, Any] = {
     "total_tests": 0,
@@ -25,12 +25,12 @@ _EMPTY_DATA: dict[str, Any] = {
 
 
 @pytest.fixture
-def get_file_for_testing():
+def get_file_for_testing() -> Generator[Callable[..., str], None, None]:
     original_file_content: dict[str, Any] | str = {}
     file_name = ""
     file_exists = True
 
-    def _get_file(name: str):
+    def _get_file(name: str) -> str:
         name = f"testing/storage/{name}"
         nonlocal file_name
         file_name = name
@@ -52,14 +52,14 @@ def get_file_for_testing():
     if not file_exists:
         return os.remove(file_name)
     with open(file_name, "w") as file:
-        if isinstance(original_file_content, dict):  # type: ignore
+        if isinstance(original_file_content, dict):  # pyright: ignore[reportUnnecessaryIsInstance]
             json.dump(original_file_content, file, indent=4)
         else:
             file.write(original_file_content)
 
 
 @pytest.mark.parametrize("file_name", ["empty.json", "storage.json", "invalid.json", "missing.json"])
-def test_empty_missing_invalid_json(file_name: str, get_file_for_testing: Callable[[str], str]):
+def test_empty_missing_invalid_json(file_name: str, get_file_for_testing: Callable[[str], str]) -> None:
     file_name = get_file_for_testing(file_name)
     _EMPTY_DATA["_json_file_path"] = file_name
     storage = Storage(file_name)
@@ -76,7 +76,7 @@ def test_empty_missing_invalid_json(file_name: str, get_file_for_testing: Callab
         assert data == _EMPTY_DATA
 
 
-def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]):
+def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]) -> None:
     file = get_file_for_testing("storage.json")
     storage = Storage(file)
 
@@ -105,7 +105,7 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]):
             "comment_box": [4, 4],
             "window": [5, 5],
             "track_weight_field": [6, 6],
-            "sm_incident_tab": [7, 7]
+            "sm_incident_tab": [7, 7],
         }
         assert data["calibrated"]
         assert data["tutorial_complete"]

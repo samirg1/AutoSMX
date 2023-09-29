@@ -7,7 +7,7 @@ TestJob.__test__ = False  # type: ignore
 TestJobManager.__test__ = False  # type: ignore
 
 
-def test_test_job_manager_multiple_testjobs():
+def test_test_job_manager_multiple_testjobs() -> None:
     manager = TestJobManager()
 
     item1 = Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001", "R1", "2019")
@@ -28,7 +28,7 @@ def test_test_job_manager_multiple_testjobs():
     assert manager.testjob_to_item[testjob2] == item1
 
 
-def test_test_job_manager_multiple_items():
+def test_test_job_manager_multiple_items() -> None:
     manager = TestJobManager()
 
     item1 = Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")

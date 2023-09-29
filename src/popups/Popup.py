@@ -12,11 +12,11 @@ class Popup(tkinter.Toplevel):
         start_height = (max_height - height) // 2
 
         self.geometry(f"{width}x{height}+{max_width - width}+{start_height}")
-        self.attributes("-topmost", 2)  # type: ignore
+        self.attributes("-topmost", 2)  # pyright: ignore
         self.resizable(False, False)
 
         for i in range(columns):
             self.columnconfigure(i, weight=1)
 
-    def grid_remove(self):  # ensure it gets cleaned up
+    def grid_remove(self) -> None:  # ensure it gets cleaned up
         self.destroy()

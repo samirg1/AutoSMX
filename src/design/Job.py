@@ -21,7 +21,7 @@ class Job:
     tests: list[Test] = field(factory=list, init=False, hash=False, eq=False)
     test_breakdown: dict[str, int] = field(factory=dict, init=False, hash=False, eq=False)
 
-    def add_test(self, test: Test):
+    def add_test(self, test: Test) -> None:
         self.tests.append(test)
         self.test_breakdown[test.script.nickname] = self.test_breakdown.get(test.script.nickname, 0) + 1
 
