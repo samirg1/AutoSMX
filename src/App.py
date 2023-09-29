@@ -12,6 +12,7 @@ from pages.SettingsPage import SettingsPage
 from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
+from db.set_favourites import set_favourites
 
 _APPLICATION_PATH = os.path.dirname(sys.executable)
 
@@ -62,6 +63,7 @@ class App(tkinter.Tk):
 
 
 def main() -> None:
+    set_favourites()
     App().mainloop()
 
 
