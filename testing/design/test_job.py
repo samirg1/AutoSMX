@@ -7,7 +7,7 @@ from design.data import SCRIPTS
 Test.__test__ = False  # type: ignore
 
 
-def test_job_creation_and_properties():
+def test_job_creation_and_properties() -> None:
     job = Job("CAMPEYN - ABLE VICTORIA", "CampusA", "DepartmentY", "123")
 
     assert job.company == "ABLE"
@@ -16,7 +16,7 @@ def test_job_creation_and_properties():
     assert len(job.tests) == 0
 
 
-def test_job_add_test():
+def test_job_add_test() -> None:
     job = Job("CompanyX", "CampusA", "DepartmentY", "123")
 
     test1 = Test(Item("001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019"))
@@ -53,8 +53,7 @@ def test_job_remove_test() -> None:
     assert "Custom1" not in job.test_breakdown
 
 
-
-def test_job_string_representation():
+def test_job_string_representation() -> None:
     job1 = Job("CAMPEYN - YOORALLA", "CampusA", "DepartmentY", "123")
     job2 = Job("BENETAS - ST PAULS", "CampusA", "DepartmentY", "123")
     job3 = Job("JEWISH ST KILDA", "CampusA", "DepartmentY", "123")
@@ -64,7 +63,7 @@ def test_job_string_representation():
     assert str(job3) == "CampusA\nJEWISH CARE\n123"
 
 
-def test_job_hashing_and_eq():
+def test_job_hashing_and_eq() -> None:
     job1 = Job("CompanyX", "CampusA", "DepartmentY", "123")
     job2 = Job("CompanyY", "CampusB", "DepartmentZ", "123")
     job3 = Job("CompanyZ", "CampusA", "DepartmentZ", "123")

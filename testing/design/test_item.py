@@ -2,7 +2,7 @@
 from design.Item import Item
 
 
-def test_item_creation_and_properties():
+def test_item_creation_and_properties() -> None:
     item = Item("123", "Test Item", "Model123", "Test Manufacturer", "ABC456", "RM1", "2019")
 
     assert item.number == "123"
@@ -14,13 +14,13 @@ def test_item_creation_and_properties():
     assert item.last_update == "2019"
 
 
-def test_item_string_representation():
+def test_item_string_representation() -> None:
     item = Item("789", "Another Item", "Model789", "Another Manufacturer", "DEF789", "RM1", "2019")
 
     assert str(item) == "789 - Another Item"
 
 
-def test_item_hashing_and_eq():
+def test_item_hashing_and_eq() -> None:
     item1 = Item("111", "Item A", "ModelA", "ManufacturerA", "AAA111", "RM1", "2019")
     item2 = Item("222", "Item B", "ModelB", "ManufacturerB", "BBB222", "RM1", "2019")
     item3 = Item("111", "Item C", "ModelC", "ManufacturerC", "CCC333", "RM1", "2019")

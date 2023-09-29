@@ -10,7 +10,7 @@ Test.__test__ = False  # type: ignore
 TestJob.__test__ = False  # type: ignore
 
 
-def test_test_creation_and_properties():
+def test_test_creation_and_properties() -> None:
     item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
     test = Test(item)
 
@@ -24,7 +24,7 @@ def test_test_creation_and_properties():
     assert test.final_result == ""
 
 
-def test_test_determine_script():
+def test_test_determine_script() -> None:
     item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
     test = Test(item)
 
@@ -39,7 +39,7 @@ def test_test_determine_script():
     assert test.item_model == "Custom Script -> ModelX"
 
 
-def test_test_add_testjob():
+def test_test_add_testjob() -> None:
     item = Item("001", "SLING 123", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
     test = Test(item)
 
@@ -53,7 +53,7 @@ def test_test_add_testjob():
     assert test.testjobs[0] == testjob
 
 
-def test_test_complete_and_full_info():
+def test_test_complete_and_full_info() -> None:
     item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
     test = Test(item)
 
@@ -73,7 +73,7 @@ def test_test_complete_and_full_info():
     assert str(test) == "001 - Test Item - Pass"
 
 
-def test_test_item_model_property():
+def test_test_item_model_property() -> None:
     item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
     test = Test(item)
     test.script = Script("CustomScript", "Custom Script")
