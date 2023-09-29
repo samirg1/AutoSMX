@@ -1,11 +1,14 @@
 from attrs import field, frozen
 
 
-class ScriptTest:
+class ScriptLine:
     def __init__(self, name: str, *options: str):
         self.name = name
         self.selected = options[0] if options else ""
-        self.options = sorted(options, reverse=True)
+        self.options = options
+
+    def __repr__(self) -> str:
+        return f"{self.name} -> {self.options}"
 
 
 @frozen(repr=False)
@@ -13,7 +16,7 @@ class Script:
     nickname: str = field(hash=False, eq=False)
     name: str
     number: int = field(hash=False, eq=False)
-    tests: tuple[ScriptTest, ...] = field(factory=tuple, hash=False, eq=False)
+    tests: tuple[ScriptLine, ...] = field(factory=tuple, hash=False, eq=False)
     exact_matches: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
     search_terms: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
 

@@ -1,7 +1,7 @@
 # pyright: reportPrivateUsage=false
 import pytest
 
-from design.Script import Script, ScriptTest
+from design.Script import Script, ScriptLine
 
 
 def test_script_creation() -> None:
@@ -14,8 +14,8 @@ def test_script_creation() -> None:
 
 
 def test_script_creation_with_tests() -> None:
-    test1 = ScriptTest("Test 1", "Pass", "Fail")
-    test2 = ScriptTest("Test 2", "N/A", "Yes", "No")
+    test1 = ScriptLine("Test 1", "Pass", "Fail")
+    test2 = ScriptLine("Test 2", "N/A", "Yes", "No")
     script = Script("Nickname", "Test Script", 1, (test1, test2))
     assert script.nickname == "Nickname"
     assert script.name == "Test Script"
