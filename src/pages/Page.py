@@ -26,5 +26,5 @@ class Page(ABC):
         self.shared = shared
 
     @abstractmethod
-    def setup(self):
+    def setup(self) -> None:
         ...

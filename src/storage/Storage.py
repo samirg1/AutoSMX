@@ -1,13 +1,14 @@
 import json
+from collections.abc import KeysView
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Any, Generator, Mapping, Self, cast
 
 from attrs import asdict, define, field
 
 
-def _tuple_converter(value: Sequence[int] | None) -> tuple[int, ...] | None:
-    return tuple(value) if value is not None else value
+def _tuple_converter(value: tuple[int, int] | None) -> tuple[int, int] | None:
+    return cast(tuple[int, int], tuple(value)) if value is not None else value
 
 
 @define(repr=False, eq=False)
@@ -21,11 +22,11 @@ class Positions:
     sm_incident_tab: tuple[int, int] | None = field(default=None, converter=_tuple_converter)
 
     @classmethod
-    def keys(cls):
+    def keys(cls) -> KeysView[Any]:
         return cls.__annotations__.keys()
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Sequence[int]]):
+    def from_dict(cls, data: Mapping[str, tuple[int, int]]) -> Self:
         return cls(**data)
 
 
@@ -60,7 +61,7 @@ class Storage:
             json.dump(data, file, indent=4)
 
     @contextmanager
-    def edit(self):
+    def edit(self) -> Generator[Self, None, None]:
         try:
             yield self
         finally:

@@ -51,10 +51,10 @@ class Test:
 
         raise ScriptError("No script found")
 
-    def add_testjob(self, testjob: TestJob):
+    def add_testjob(self, testjob: TestJob) -> None:
         self.testjobs.append(testjob)
 
-    def complete(self, comment: str, final_result: str, script_answers: list[str]):
+    def complete(self, comment: str, final_result: str, script_answers: list[str]) -> None:
         self.script_answers = ["" if a == " " else "N/A" if a == "" else a for a in script_answers]
         self.comment = comment.strip()
         self.final_result = final_result

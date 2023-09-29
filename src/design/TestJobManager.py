@@ -4,14 +4,14 @@ from design.TestJob import TestJob
 
 
 class TestJobManager:
-    def __init__(self):
+    def __init__(self) -> None:
         self.job_to_testjobs: dict[Job, list[TestJob]] = {}
         self.testjob_to_item: dict[TestJob, Item] = {}
 
-    def add_testjob(self, item: Item, job: Job, testjob: TestJob):
+    def add_testjob(self, item: Item, job: Job, testjob: TestJob) -> None:
         self.job_to_testjobs.setdefault(job, []).append(testjob)
         self.testjob_to_item[testjob] = item
 
-    def delete_testjob(self, job: Job, testjob: TestJob):
+    def delete_testjob(self, job: Job, testjob: TestJob) -> None:
         self.job_to_testjobs[job].pop()
         del self.testjob_to_item[testjob]

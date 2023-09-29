@@ -17,14 +17,14 @@ _APPLICATION_PATH = os.path.dirname(sys.executable)
 
 
 class App(tkinter.Tk):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         maxWidth = self.winfo_screenwidth()
         width = 360
         height = self.winfo_screenheight()
         self.geometry(f"{width}x{height}+{maxWidth - width}+0")
         self.title("AutoSMX")
-        self.attributes("-topmost", 1)  # type: ignore
+        self.attributes("-topmost", 1)  # pyright: ignore
         self.iconphoto(True, PhotoImage(file=pathlib.Path(_APPLICATION_PATH, "autosmx.png")))
 
         self.columnconfigure(0, weight=1)
@@ -50,7 +50,7 @@ class App(tkinter.Tk):
         frame.columnconfigure(3, weight=1)
         return frame
 
-    def change_page(self, page: TPAGES):
+    def change_page(self, page: TPAGES) -> None:
         if self.current_page is not None:
             self.current_page.frame.grid_remove()
             for widget in self.current_page.frame.winfo_children():
@@ -61,7 +61,7 @@ class App(tkinter.Tk):
         self.current_page.frame.grid(row=0, column=0, sticky="nsew")
 
 
-def main():
+def main() -> None:
     App().mainloop()
 
 
