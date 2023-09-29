@@ -79,23 +79,27 @@ SCRIPTS: dict[str, Script] = {
     "CHANGE TILT TABLE": Script(
         "CHANGE TILT TABLE",
         "AT - CHANGE / TILT TABLE",
+        1278,
         (_CASTORS_P, _FRAME_P, _PAINT_P, _LABELLING_P, _CHARGER_N, _BATTERY_N, _CONTROL_P, _CONDITION_1, _FURTHER_ATTENTION_N),
     ),
     "SLING": Script(
         "SLING",
         "AT - SLING",
+        1261,
         (_DETAILS_P, _GENERAL_WEAR_P, _STITCHING_P, _FITTINGS_P, _VELCRO_N, _LABELLING_P, _CONDITION_1),
         exact_matches=["SLING", "PATIENT TRANSFER SLING, MECHANICAL LIFT"],
     ),
     "WALKER": Script(
         "WALKER",
         "AT - WALKER / STANDER",
+        1279,
         (_CASTORS_P, _CASTORS_P, _CASTORS_P, _FRAME_P, _HARDWARE_P, _PAINT_P, _OPERATION_P, _ATTACHMENTS_N, _LABELLING_P, _CONDITION_1, _FURTHER_ATTENTION_N),
         search_terms=["WALK", "STAND", "STEDY"],
     ),
     "CEILING HOIST": Script(
         "CEILING",
         "AT - CEILING HOIST",
+        1227,
         (
             _OPERATION_P,
             _CONTROL_P,
@@ -124,22 +128,26 @@ SCRIPTS: dict[str, Script] = {
     "TRACK": Script(
         "TRACK",
         "AT - TRACK",
+        1287,
         (_FEATURES_P, _TRACK_DUST_P, _CHARGER_N, _TRACK_LOAD_KG, _LOAD_TEST_P, _ELECTRIC_TEST_N),
         exact_matches=["TRACK", "TRACK, CEILING HOIST", "CEILING TRACK"],
     ),
     "COMMODE": Script(
         "COMMODE",
         "AT - COMMODE",
+        1228,
         (_CASTORS_P, _FRAME_P, _PAINT_P, _OPERATION_P, _LABELLING_P, _CHARGER_N, _BATTERY_N, _CONTROL_P, _CONDITION_1),
     ),
     "BED": Script(
         "BED",
         "AT - ELECTRIC BED",
+        1222,
         (_CASTORS_P, _FRAME_P, _HARDWARE_P, _CONTROL_P, _PAINT_P, _OPERATION_P, _LABELLING_P, _CHARGER_N, _HELP_POLE_N, _CONDITION_1),
     ),
     "FLOOR HOIST": Script(
         "FLOOR",
         "AT - FLOOR HOIST",
+        1226,
         (
             _CASTORS_P,
             _VISUAL_P,
@@ -167,11 +175,13 @@ SCRIPTS: dict[str, Script] = {
     "RECLINER": Script(
         "RECLINER",
         "AT - LIFT RECLINER",
+        1223,
         (_HARDWARE_P, _ACTUATOR_P, _CONTROL_P, _FRAME_P, _PAINT_P, _OPERATION_P, _LABELLING_P, _BATTERY_N, _POWER_P, _CONDITION_1),
     ),
     "TUB": Script(
         "TUB",
         "AT - TUB / BATH CHAIRS",
+        1230,
         (_CASTORS_P, _FRAME_P, _PAINT_P, _OPERATION_P, _LABELLING_P, _CHARGER_N, _BATTERY_N, _CONTROL_P, _CONDITION_1),
         search_terms=["BATH"],
         exact_matches=["BATH BED"],
@@ -179,12 +189,14 @@ SCRIPTS: dict[str, Script] = {
     "SCALE": Script(
         "SCALE",
         "AT - WEIGH CHAIR / SCALE",
+        1229,
         (_CASTORS_P, _FRAME_P, _PAINT_P, _OPERATION_P, _LABELLING_P, _CHARGER_N, _BATTERY_P, _ACCURACY_P, _CONDITION_1),
         search_terms=["WEIGH"],
     ),
     "WHEELCHAIR": Script(
         "WHEELCHAIR",
         "AT - WHEELCHAIR",
+        1113,
         (
             _CASTORS_P,
             _CASTORS_P,
@@ -212,21 +224,24 @@ SCRIPTS: dict[str, Script] = {
     "CHARGER": Script(
         "CHARGER",
         "BATTERY OPERATED / VISUAL TEST",
+        859,
         (_BATTERY_N, _CONTROL_P, _VISUAL_P, _ATTACHMENTS_N),
     ),
-    "BATTERY": Script("BATTERY", "BATTERY PACK", (_VISUAL_P, _CAPACITY_P, _DATE_P)),
+    "BATTERY": Script("BATTERY", "BATTERY PACK", 1065, (_VISUAL_P, _CAPACITY_P, _DATE_P)),
     "CLASS II": Script(
         "CLASS II",
         "CLASS II NO APPLIED PARTS",
+        606,
         (_MAINS_P, _FUSES_P, _CONTROL_P, _BATTERY_N, _VISUAL_P, _ATTACHMENTS_N, _EARTH_RESISTANCE, _INSULATION_RESISTANCE, _INSULATION_RESISTANCE_ENCLOSURE, _TOUCH_CURRENT, _IEC_MAINS_LEAD),
     ),
     "FURNITURE": Script(
         "FURNITURE",
         "FURNITURE GENERIC",
+        799,
         (_CHASIS_P, _CASTORS_P, _CASTORS_P, _PAINT_P, _CASTORS_P, _MISSING_COMPONENTS_N, _POLES_P, _CLEAN_P, _ELECTRIC_N, _PERFORMANCE_P),
         search_terms=["OVERBED"],
     ),
-    "VISUAL": Script("VISUAL", "VISUAL INSPECTION ONLY", (_INTEGRITY_P, _ACCESSORIES_P)),
+    "VISUAL": Script("VISUAL", "VISUAL INSPECTION ONLY", 1190, (_INTEGRITY_P, _ACCESSORIES_P)),
 }
 
 SCRIPT_DOWNS: dict[str, int] = {script.nickname: i for i, script in enumerate(SCRIPTS.values())}
