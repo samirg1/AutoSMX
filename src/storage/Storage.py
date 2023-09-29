@@ -2,7 +2,7 @@ import json
 from collections.abc import KeysView
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Generator, Mapping, Self, cast
+from typing import Any, Generator, Mapping, cast
 
 from attrs import asdict, define, field
 
@@ -26,7 +26,7 @@ class Positions:
         return cls.__annotations__.keys()
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, tuple[int, int]]) -> Self:
+    def from_dict(cls, data: Mapping[str, tuple[int, int]]) -> 'Positions':
         return cls(**data)
 
 
@@ -61,7 +61,7 @@ class Storage:
             json.dump(data, file, indent=4)
 
     @contextmanager
-    def edit(self) -> Generator[Self, None, None]:
+    def edit(self) -> Generator['Storage', None, None]:
         try:
             yield self
         finally:
