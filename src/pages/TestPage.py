@@ -15,6 +15,7 @@ from pages.Page import Page
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.TestJobPopup import TestJobPopup
 from popups.OptionSelectPopup import OptionSelectPopup
+from popups.Tooltip import Tooltip
 
 
 class TestPage(Page):
@@ -107,7 +108,9 @@ class TestPage(Page):
             self.saved_script_answers = stored_answers or [stest.selected for stest in script.lines]
         actual_answers = [StringVar(value=ans) for ans in self.saved_script_answers]
         for i, line in enumerate(script.lines):
-            ttk.Label(self.frame, text=f"{line.name}").grid(column=0, row=row, columnspan=1, sticky="w")
+            label = ttk.Label(self.frame, text=line.name, width=10)
+            Tooltip(label, text=line.name)
+            label.grid(column=0, row=row, columnspan=1, sticky="w")
             if len(line.options) <= 1:
                 ttk.Entry(self.frame, textvariable=actual_answers[i]).grid(column=1, row=row, columnspan=3, sticky="w")
             else:
