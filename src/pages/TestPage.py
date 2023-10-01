@@ -104,14 +104,14 @@ class TestPage(Page):
             self.saved_script_answers = test.script_answers
         else:
             stored_answers = self.shared.storage.item_model_to_script_answers.get(self.test.item_model)
-            self.saved_script_answers = stored_answers or [stest.selected for stest in script.tests]
+            self.saved_script_answers = stored_answers or [stest.selected for stest in script.lines]
         actual_answers = [StringVar(value=ans) for ans in self.saved_script_answers]
-        for i, stest in enumerate(script.tests):
-            ttk.Label(self.frame, text=f"{stest.name}").grid(column=0, row=row, columnspan=1, sticky="w")
-            if len(stest.options) <= 1:
+        for i, line in enumerate(script.lines):
+            ttk.Label(self.frame, text=f"{line.name}").grid(column=0, row=row, columnspan=1, sticky="w")
+            if len(line.options) <= 1:
                 ttk.Entry(self.frame, textvariable=actual_answers[i]).grid(column=1, row=row, columnspan=3, sticky="w")
             else:
-                for j, option in enumerate(stest.options):
+                for j, option in enumerate(line.options):
                     rb = ttk.Radiobutton(self.frame, text=option, variable=actual_answers[i], value=option)
                     rb.grid(column=1 + j, row=row)
                     if option == self.saved_script_answers[i]:
@@ -218,7 +218,7 @@ class TestPage(Page):
         if self.saved_script_answers == actual_script_answers:
             return
 
-        default = [stest.selected for stest in self.test.script.tests]
+        default = [stest.selected for stest in self.test.script.lines]
         with self.shared.storage.edit() as storage:
             if actual_script_answers == default:
                 del storage.item_model_to_script_answers[self.test.item_model]

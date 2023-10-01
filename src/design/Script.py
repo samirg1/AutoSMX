@@ -16,7 +16,7 @@ class Script:
     nickname: str = field(hash=False, eq=False)
     name: str
     number: int = field(hash=False, eq=False)
-    tests: tuple[ScriptLine, ...] = field(factory=tuple, hash=False, eq=False)
+    lines: tuple[ScriptLine, ...] = field(factory=tuple, hash=False, eq=False)
     exact_matches: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
     search_terms: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
 

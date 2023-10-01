@@ -1,8 +1,9 @@
 from db.get_connection import get_connection
 from design.Script import Script, ScriptLine
+from design.ScriptInfo import ScriptInfo
 
 
-def get_script(script_number: int) -> Script:
+def get_script(script_info: ScriptInfo) -> Script:
     with get_connection("SCMLookup") as connection:
         script_name = connection.execute(
             """
@@ -10,7 +11,7 @@ def get_script(script_number: int) -> Script:
             FROM SCMOBILESCRIPTSM1
             WHERE script_no = ?
         """,
-            (script_number,),
+            (script_info.number,),
         ).fetchone()[0]
 
         script_line_fields: list[tuple[int, str, str, str]] = connection.execute(
@@ -20,7 +21,7 @@ def get_script(script_number: int) -> Script:
             WHERE script_no = ?
             ORDER BY win32_page, win32_order
             """,
-            (script_number,),
+            (script_info.number,),
         ).fetchall()
 
         lines: list[ScriptLine] = []
@@ -47,4 +48,4 @@ def get_script(script_number: int) -> Script:
 
             lines.append(ScriptLine(text, *(text[0] for text in raw)))
 
-    return Script(script_name, script_name, script_number, tuple(lines))
+    return Script(script_info.nickname, script_name, script_info.number, tuple(lines), search_terms=script_info.search_terms, exact_matches=script_info.exact_matches)

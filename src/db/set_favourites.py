@@ -1,9 +1,8 @@
 from db.get_connection import get_connection
-from design.data import SCRIPTS
+from design.data import SCRIPT_INFOS
 
 
 def set_favourites() -> None:
-    script_numbers = [(script.number,) for script in SCRIPTS.values()]
     with get_connection("Settings") as connection:
         with connection:
             connection.execute("DELETE FROM ScriptFavourites")
@@ -14,5 +13,5 @@ def set_favourites() -> None:
                 INSERT INTO ScriptFavourites
                 VALUES (?)
             """,
-                script_numbers,
+                [(info.number,) for info in SCRIPT_INFOS],
             )
