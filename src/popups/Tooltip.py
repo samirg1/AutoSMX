@@ -4,7 +4,7 @@ from typing import Any
 
 
 class Tooltip:
-    def __init__(self, widget: Widget, text: str, *, delay: int=400, wraplength: int=250):
+    def __init__(self, widget: Widget, text: str, *, delay: int = 400, wraplength: int = 250) -> None:
         self._delay = delay
         self._wraplength = wraplength
         self._widget = widget
@@ -16,17 +16,17 @@ class Tooltip:
         self._after_id: str | None = None
         self._tooltip: tkinter.Toplevel | None = None
 
-    def _onEnter(self, _: Any):
+    def _onEnter(self, _: Any) -> None:
         self._unschedule()
         self._after_id = self._widget.after(self._delay, self._show)
 
-    def _onLeave(self, _: Any):
+    def _onLeave(self, _: Any) -> None:
         self._unschedule()
         if self._tooltip is not None:
             self._tooltip.destroy()
         self._tooltip = None
 
-    def _unschedule(self):
+    def _unschedule(self) -> None:
         if self._after_id is not None:
             self._widget.after_cancel(self._after_id)
         self._after_id = None
@@ -48,7 +48,7 @@ class Tooltip:
 
         return x1, max(y1, 0)
 
-    def _show(self):
+    def _show(self) -> None:
         self._tooltip = tkinter.Toplevel(self._widget)
         self._tooltip.attributes("-topmost", 2)  # pyright: ignore
         self._tooltip.wm_overrideredirect(True)
