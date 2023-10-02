@@ -70,11 +70,14 @@ _SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
     ScriptInfo(1190, "VISUAL", [], []),
 )
 
-scripts: dict[str, Script] = {}
+_scripts: dict[str, Script] = {}
+
+
 def get_all_scripts() -> dict[str, Script]:
-    global scripts
-    if not scripts:
-        scripts = {info.nickname: get_script(info, _LINE_DEFAULTS, _CONDITION_LINES) for info in _SCRIPT_INFOS}
-    return scripts
+    global _scripts
+    if not _scripts:
+        _scripts = {info.nickname: get_script(info, _LINE_DEFAULTS, _CONDITION_LINES) for info in _SCRIPT_INFOS}
+    return _scripts
+
 
 SCRIPT_DOWNS: dict[int, int] = {script.number: i for i, script in enumerate(_SCRIPT_INFOS)}

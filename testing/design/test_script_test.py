@@ -16,6 +16,7 @@ def test_script_test_with_options() -> None:
 
 def test_script_test_with_no_options() -> None:
     test = ScriptLine("Another Test")
+    assert str(test) == "Another Test -> ()"
     assert test.name == "Another Test"
     assert test.selected == ""
     assert test.options == ()

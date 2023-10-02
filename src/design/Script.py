@@ -2,7 +2,7 @@ from attrs import field, frozen
 
 
 class ScriptLine:
-    def __init__(self, name: str, *options: str):
+    def __init__(self, name: str, *options: str) -> None:
         self.name = name
         self.selected = options[0] if options else ""
         self.options = options
