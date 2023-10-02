@@ -1,7 +1,6 @@
-# pyright: reportPrivateUsage=false
 import pytest
 
-from design.Script import Script, ScriptTest
+from design.Script import Script, ScriptLine
 
 
 def test_script_creation() -> None:
@@ -9,17 +8,17 @@ def test_script_creation() -> None:
     assert script.nickname == "Nick"
     assert script.name == "Script Name"
     assert script.number == 1
-    assert len(script.tests) == 0
+    assert len(script.lines) == 0
     assert script.search_terms == ["Nick"]
 
 
 def test_script_creation_with_tests() -> None:
-    test1 = ScriptTest("Test 1", "Pass", "Fail")
-    test2 = ScriptTest("Test 2", "N/A", "Yes", "No")
+    test1 = ScriptLine("Test 1", "Pass", "Fail")
+    test2 = ScriptLine("Test 2", "N/A", "Yes", "No")
     script = Script("Nickname", "Test Script", 1, (test1, test2))
     assert script.nickname == "Nickname"
     assert script.name == "Test Script"
-    assert len(script.tests) == 2
+    assert len(script.lines) == 2
     assert script.search_terms == ["Nickname"]
 
 
@@ -27,7 +26,7 @@ def test_script_creation_with_extra_terms() -> None:
     script = Script("UniqueNick", "Unique Script", 1, search_terms=["tag1", "tag2"])
     assert script.nickname == "UniqueNick"
     assert script.name == "Unique Script"
-    assert len(script.tests) == 0
+    assert len(script.lines) == 0
     assert script.search_terms == ["tag1", "tag2", "UniqueNick"]
 
 

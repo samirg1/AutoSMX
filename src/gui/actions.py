@@ -41,7 +41,7 @@ def complete_test(test: Test, positions: Positions, is_editing: bool) -> None:  
         click_key(*_KEYS.ctrl_tab.value)
         click(positions.show_all_script, times=2)  # find and select script
         click_key(_KEYS.right.value)
-        click_key(_KEYS.down.value, times=SCRIPT_DOWNS[test.script.nickname])
+        click_key(_KEYS.down.value, times=SCRIPT_DOWNS[test.script.number])
         click_key(_KEYS.enter.value)
         click_key(*_KEYS.ctrl_tab.value)
         wait(1)

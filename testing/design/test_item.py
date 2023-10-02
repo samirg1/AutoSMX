@@ -1,6 +1,4 @@
-# pyright: reportPrivateUsage=false
 from design.Item import Item
-
 
 def test_item_creation_and_properties() -> None:
     item = Item("123", "Test Item", "Model123", "Test Manufacturer", "ABC456", "RM1", "2019")

@@ -1,6 +1,6 @@
 from typing import NamedTuple
 
-from design.data import SCRIPTS
+from design.data import get_all_scripts
 from design.Item import Item
 from design.Script import Script
 from design.TestJob import TestJob
@@ -41,11 +41,11 @@ class Test:
 
     def determine_script(self) -> Script:
         if self.item.description != "":
-            for script in SCRIPTS.values():
+            for script in get_all_scripts().values():
                 if self.item.description in script.exact_matches:
                     return script
 
-            for script in SCRIPTS.values():
+            for script in get_all_scripts().values():
                 if script.is_for(self.item.description):
                     return script
 
