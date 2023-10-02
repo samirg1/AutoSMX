@@ -7,10 +7,11 @@ from pyautogui import FailSafeException
 from design.Item import Item
 from design.Job import Job
 from design.Script import Script
-from design.Test import TEST_RESULTS, ScriptError, Test
+from design.Test import ScriptError, Test
 from design.TestJob import TestJob
 from gui.actions import complete_test, turn_off_capslock
 from db.get_items_jobs import get_items
+from db.get_overall_results import get_overall_results
 from pages.Page import Page
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.TestJobPopup import TestJobPopup
@@ -83,6 +84,7 @@ class TestPage(Page):
             script_popup.mainloop()
 
     def display_test(self, script: Script, test: Test) -> None:
+        assert self.shared.job
         test.script = script
         self.test = test
         self.choose_button.destroy()
@@ -92,7 +94,7 @@ class TestPage(Page):
 
         # displaying the item and job
         ttk.Label(self.frame, text=f"{test.item}").grid(column=0, row=3, columnspan=4)
-        ttk.Label(self.frame, text=f"{cast(Job, self.shared.job).campus}").grid(column=0, row=4, columnspan=4)
+        ttk.Label(self.frame, text=f"{self.shared.job.campus}").grid(column=0, row=4, columnspan=4)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=5, columnspan=4)
 
         # displaying the script
@@ -147,10 +149,12 @@ class TestPage(Page):
         # final results
         ttk.Label(self.frame, text="Result").grid(column=0, row=row, columnspan=4)
         row += 1
-        result = tkinter.StringVar(value=self.test.final_result or TEST_RESULTS[0].result)
-        for i, (name, test_result) in enumerate(TEST_RESULTS):
-            button = ttk.Radiobutton(self.frame, text=name, variable=result, value=test_result)
-            button.grid(column=i % 4, row=row)
+        overall_results = get_overall_results(self.shared.job.customer_number)
+        result = tkinter.StringVar(value=self.test.final_result or overall_results[0].nickname)
+        for i, (nickname, fullname) in enumerate(overall_results):
+            button = ttk.Radiobutton(self.frame, text=nickname, variable=result, value=fullname, width=15)
+            Tooltip(button, fullname)
+            button.grid(column=i % 4, row=row, columnspan=1)
             row = row + 1 if i % 4 == 3 else row
         row += 1
 

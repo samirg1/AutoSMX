@@ -1,25 +1,7 @@
-from typing import NamedTuple
-
 from design.data import get_all_scripts
 from design.Item import Item
 from design.Script import Script
 from design.TestJob import TestJob
-
-
-class _TEST_RESULT(NamedTuple):
-    name: str
-    result: str
-
-
-TEST_RESULTS = [
-    _TEST_RESULT("Pass", "Passed"),
-    _TEST_RESULT("Defect", "Passed - needs attention to minor defect"),
-    _TEST_RESULT("Repaired", "Passed after minor repairs"),
-    _TEST_RESULT("Tagged", "Failed and RED Tagged"),
-    _TEST_RESULT("Removed", "Failed and removed from service"),
-    _TEST_RESULT("Untested", "Not Tested"),
-    _TEST_RESULT("Fail-Unable", "Fail - Unable to Test"),
-]
 
 
 class ScriptError(ValueError):

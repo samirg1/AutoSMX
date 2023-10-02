@@ -21,7 +21,7 @@ def get_jobs(job_number: str) -> list[Job]:
     with get_connection("SCMLookup") as connection:
         job_fields = connection.execute(
             """
-            SELECT company, location, dept, number
+            SELECT company, location, dept, number, customer_no_
             FROM 'probsummarym1'
             WHERE number LIKE ? OR number LIKE ?
             """,
