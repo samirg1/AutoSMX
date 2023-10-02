@@ -46,6 +46,9 @@ class Tooltip:
             if y_delta:
                 y1 = mouse_y - 5 - height
 
+        if x1 + self._wraplength > s_width:
+            x1 = s_width - self._wraplength
+
         return x1, max(y1, 0)
 
     def _show(self) -> None:

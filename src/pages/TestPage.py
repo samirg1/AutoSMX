@@ -152,8 +152,9 @@ class TestPage(Page):
         overall_results = get_overall_results(self.shared.job.customer_number)
         result = tkinter.StringVar(value=self.test.final_result or overall_results[0].nickname)
         for i, (nickname, fullname) in enumerate(overall_results):
-            button = ttk.Radiobutton(self.frame, text=nickname, variable=result, value=fullname)
-            button.grid(column=i % 4, row=row)
+            button = ttk.Radiobutton(self.frame, text=nickname, variable=result, value=fullname, width=15)
+            Tooltip(button, fullname)
+            button.grid(column=i % 4, row=row, columnspan=1)
             row = row + 1 if i % 4 == 3 else row
         row += 1
 
