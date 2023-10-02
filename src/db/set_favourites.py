@@ -1,5 +1,5 @@
 from db.get_connection import get_connection
-from design.data import SCRIPT_INFOS
+from design.data import SCRIPTS
 
 
 def set_favourites() -> None:
@@ -13,5 +13,5 @@ def set_favourites() -> None:
                 INSERT INTO ScriptFavourites
                 VALUES (?)
             """,
-                [(info.number,) for info in SCRIPT_INFOS],
+                [(script.number,) for script in SCRIPTS.values()],
             )

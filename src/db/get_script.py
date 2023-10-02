@@ -3,7 +3,7 @@ from design.Script import Script, ScriptLine
 from design.ScriptInfo import ScriptInfo
 
 
-def get_script(script_info: ScriptInfo) -> Script:
+def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition_lines: set[int]) -> Script:
     with get_connection("SCMLookup") as connection:
         script_name = connection.execute(
             """
@@ -45,7 +45,14 @@ def get_script(script_info: ScriptInfo) -> Script:
                     (possible_id,),
                 ).fetchall():
                     break
+            
+            line = ScriptLine(text, *(text[0] for text in raw))
+            if z_rv in condition_lines:
+                line.selected = "1"
+            else:
+                line.selected = line_defaults.get(z_rv, line.selected)
 
-            lines.append(ScriptLine(text, *(text[0] for text in raw)))
+            lines.append(line)
+
 
     return Script(script_info.nickname, script_name, script_info.number, tuple(lines), search_terms=script_info.search_terms, exact_matches=script_info.exact_matches)
