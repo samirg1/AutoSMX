@@ -3,7 +3,7 @@ from design.data import get_all_scripts
 
 
 def set_favourites() -> None:
-    with get_connection("Settings") as connection:
+    with get_connection("Settings", mode="rw") as connection:
         with connection:
             connection.execute("DELETE FROM ScriptFavourites")
 

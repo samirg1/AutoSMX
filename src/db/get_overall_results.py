@@ -7,7 +7,7 @@ class TestResult(NamedTuple):
     fullname: str
 
 
-def get_results(customer_id: int):
+def get_overall_results(customer_id: int):
     with get_connection("SCMLookup") as connection:
         results: list[tuple[str, str]] = connection.execute("""
             SELECT overall_id, overall_text
@@ -18,6 +18,3 @@ def get_results(customer_id: int):
         ).fetchall()
 
     return [TestResult(nickname, fullname) for nickname, fullname in results]
-
-for res in (get_results(4871)):
-    print(res)
