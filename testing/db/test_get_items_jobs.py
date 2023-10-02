@@ -3,7 +3,7 @@ import pytest
 from db.get_items_jobs import get_items, get_jobs
 from testing.conftest import MockSqlObject
 
-job = [("company", "campus", "department", "number")]
+job = [("company", "campus", "department", "number", 123)]
 
 
 @pytest.mark.parametrize(("job_number", "mock_sql_connect"), (["23314115", [job]], ["PM1242522", [job]]), indirect=["mock_sql_connect"])
