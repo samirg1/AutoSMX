@@ -10,7 +10,10 @@ class JobPage(Page):
     def setup(self) -> None:
         # top row
         ttk.Label(self.frame, text="Jobs").grid(column=0, row=0, columnspan=1)
-        ttk.Button(self.frame, text="+", width=1, command=self.add_tests).grid(column=1, row=0, columnspan=1)
+        add_button = ttk.Button(self.frame, text="+", command=self.add_tests)
+        add_button.grid(column=1, row=0, columnspan=1)
+        add_button.focus()
+        add_button.bind("<Return>", lambda _: add_button.invoke())
         ttk.Button(self.frame, text="Settings", command=lambda: self.change_page("SETTINGS")).grid(column=2, row=0, columnspan=2)
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=1, columnspan=4)
         row = 2
