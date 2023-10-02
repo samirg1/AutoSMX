@@ -1,4 +1,3 @@
-# pyright: reportPrivateUsage=false
 import pytest
 
 from design.Script import Script, ScriptLine
