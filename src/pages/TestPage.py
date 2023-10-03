@@ -150,7 +150,7 @@ class TestPage(Page):
         ttk.Label(self.frame, text="Result").grid(column=0, row=row, columnspan=4)
         row += 1
         overall_results = get_overall_results(self.shared.job.customer_number)
-        result = tkinter.StringVar(value=self.test.final_result or overall_results[0].nickname)
+        result = tkinter.StringVar(value=self.test.final_result or overall_results[0].fullname)
         for i, (nickname, fullname) in enumerate(overall_results):
             button = ttk.Radiobutton(self.frame, text=nickname, variable=result, value=fullname, width=15)
             Tooltip(button, fullname)

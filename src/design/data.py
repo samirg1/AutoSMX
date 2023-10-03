@@ -6,6 +6,7 @@ _NA = "N/A"
 _NO = "No"
 _LOAD = "200"
 _199 = "199"
+_SPACE = " "
 
 _CONDITION_LINES = {8877, 8305, 9610, 9599, 8315, 8237, 8284, 8333, 8324, 6014, 8248}
 
@@ -39,8 +40,10 @@ _LINE_DEFAULTS: dict[int, str] = {
     2827: _NA,  # : accessories
     481: _NA,  # CLASSII: battery
     483: _NA,  # : accessories
+    477: _SPACE, # : earth resistance
     478: _199,  # : insulation resistance
     479: _199,  # : insulation resistance enclosure
+    485: _SPACE, # : touch current
     6019: _NA,  # WHEELCHAIR: attachments
     6010: _NA,  # : charger
     6011: _NA,  # : battery
