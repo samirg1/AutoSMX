@@ -5,13 +5,13 @@ from design.data import get_all_scripts
 def set_favourites() -> None:
     with get_connection("Settings", mode="rw") as connection:
         with connection:
-            connection.execute("DELETE FROM ScriptFavourites")
+            connection.execute("DELETE FROM ScriptFavourites;")
 
         with connection:
             connection.executemany(
                 """
                 INSERT INTO ScriptFavourites
-                VALUES (?)
-            """,
+                VALUES (?);
+                """,
                 [(script.number,) for script in get_all_scripts().values()],
             )

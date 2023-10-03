@@ -9,8 +9,8 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
             """
             SELECT script_name
             FROM SCMOBILESCRIPTSM1
-            WHERE script_no = ?
-        """,
+            WHERE script_no = ?;
+            """,
             (script_info.number,),
         ).fetchone()[0]
 
@@ -19,7 +19,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
             SELECT z_rv, script_line_text, answer_type, answer_id
             FROM SCMobileScriptLinesm1
             WHERE script_no = ?
-            ORDER BY win32_page, win32_order
+            ORDER BY win32_page, win32_order;
             """,
             (script_info.number,),
         ).fetchall()
@@ -40,7 +40,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
                     SELECT answer_text
                     FROM SCMobileAnswers
                     WHERE answer_id == ?
-                    ORDER BY z_rv
+                    ORDER BY z_rv;
                     """,
                     (possible_id,),
                 ).fetchall():

@@ -9,7 +9,7 @@ def get_items(item_number: str) -> list[Item]:
             """
             SELECT logical_name, description, model, manufacturer, serial_no_, room, last_spt_date
             FROM 'devicem1_PS'
-            WHERE logical_name LIKE ?
+            WHERE logical_name LIKE ?;
             """,
             (item_number + "%",),
         ).fetchall()
@@ -23,7 +23,7 @@ def get_jobs(job_number: str) -> list[Job]:
             """
             SELECT company, location, dept, number, customer_no_
             FROM 'probsummarym1'
-            WHERE number LIKE ? OR number LIKE ?
+            WHERE number LIKE ? OR number LIKE ?;
             """,
             (f"PM{job_number}%", f"{job_number}%"),
         ).fetchall()

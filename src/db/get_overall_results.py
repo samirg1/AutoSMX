@@ -14,8 +14,8 @@ def get_overall_results(customer_id: int) -> list[TestResult]:
             SELECT overall_id, overall_text
             FROM SCMobileOverallm1
             WHERE (customer_id IS NULL OR customer_id = ?) AND
-                    (exclude_customer_id IS NULL OR exclude_customer_id NOT LIKE ?)
-        """,
+                    (exclude_customer_id IS NULL OR exclude_customer_id NOT LIKE ?);
+            """,
             (customer_id, f"%{customer_id},%"),
         ).fetchall()
 
