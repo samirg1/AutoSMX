@@ -1,6 +1,7 @@
 from attrs import field, frozen
 
 from design.Test import Test
+from db.get_open_problems import Problem, get_open_problems
 
 _JOB_COMPANIES_SEARCH = {"ABLE": "ABLE", "CAMPEYN": "CAMPEYN", "BENETAS": "BENETAS", "JEWISH CARE": "JEWISH"}
 
@@ -19,8 +20,12 @@ class Job:
     department: str = field(hash=False, eq=False)
     number: str = field(hash=False, eq=False)
     customer_number: int = field(hash=False, eq=False, converter=int)
+    open_problems: list[Problem] = field(factory=list, init=False, hash=False, eq=False)
     tests: list[Test] = field(factory=list, init=False, hash=False, eq=False)
     test_breakdown: dict[str, int] = field(factory=dict, init=False, hash=False, eq=False)
+
+    def __attrs_post_init__(self) -> None:
+        self.open_problems.extend(get_open_problems(self.campus))
 
     def add_test(self, test: Test) -> None:
         self.tests.append(test)

@@ -9,6 +9,9 @@ class Problem(NamedTuple):
     asset_description: str
     asset_serial: str
 
+    def __repr__(self) -> str:
+        return f"{self.number} - {self.date_opened}\n{self.description}\n{self.asset_description} ({self.asset_serial})"
+
 
 def get_open_problems(location: str) -> list[Problem]:
     with get_connection("SCMLookup") as connection:

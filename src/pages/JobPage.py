@@ -37,6 +37,11 @@ class JobPage(Page):
         for campus, job in self.shared.jobs.items():
             job_node = tree.insert("", tkinter.END, campus, values=(f"{job}",))
 
+            if job.open_problems:
+                problem_node = tree.insert(job_node, tkinter.END, values=("Problems", len(job.open_problems)))
+                for problem in job.open_problems:
+                    tree.insert(problem_node, tkinter.END, values=(f"{problem}",))
+
             job_testjobs = self.shared.testjob_manager.job_to_testjobs.get(job, [])
             if job_testjobs:
                 testjob_node = tree.insert(job_node, tkinter.END, values=("Jobs Raised", len(job_testjobs)))
