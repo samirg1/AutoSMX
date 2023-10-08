@@ -13,3 +13,7 @@ class Item:
 
     def __str__(self) -> str:
         return f"{self.number} - {self.description}"
+    
+    @property
+    def full_info(self) -> str:
+        return f"{self}\nModel: {self.model}\nManufacturer: {self.manufacturer}\nSN: {self.serial}\nRoom: {self.room}\nLast Update: {self.last_update}"
