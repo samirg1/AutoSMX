@@ -1,4 +1,5 @@
 from db.get_connection import get_connection
+from db.convert_stringed_date import convert_stringed_date
 from typing import NamedTuple
 
 
@@ -10,7 +11,8 @@ class Problem(NamedTuple):
     asset_serial: str
 
     def __repr__(self) -> str:
-        return f"{self.number} - {self.date_opened}\n{self.description}\n{self.asset_description} ({self.asset_serial})"
+        date_opened = convert_stringed_date(self.date_opened).strftime(r"%d-%m-%Y")
+        return f"{self.number} - {date_opened}\n{self.description}\n{self.asset_description} ({self.asset_serial})"
 
 
 def get_open_problems(location: str) -> list[Problem]:

@@ -2,6 +2,7 @@ from typing import NamedTuple
 from db.get_connection import get_connection
 import functools
 
+
 class TestResult(NamedTuple):
     nickname: str
     fullname: str
