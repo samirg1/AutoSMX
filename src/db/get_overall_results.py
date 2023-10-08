@@ -1,12 +1,13 @@
 from typing import NamedTuple
 from db.get_connection import get_connection
-
+import functools
 
 class TestResult(NamedTuple):
     nickname: str
     fullname: str
 
 
+@functools.lru_cache(maxsize=5)
 def get_overall_results(customer_id: int) -> list[TestResult]:
     with get_connection("SCMLookup") as connection:
         results: list[tuple[str, str]] = connection.execute(
