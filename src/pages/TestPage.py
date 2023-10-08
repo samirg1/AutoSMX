@@ -59,7 +59,8 @@ class TestPage(Page):
         if len(items) == 1:
             return self.get_test(items[0], choose_script=choose_script)
 
-        OptionSelectPopup(self.frame, items, lambda item: self.get_test(item, choose_script=choose_script))
+        popup = OptionSelectPopup(self.frame, items, lambda item: self.get_test(item, choose_script=choose_script))
+        popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(item_number))
 
     def get_test(self, item: Item, *, choose_script: bool = False) -> None:
         self.shared.item_number_to_description[item.number] = item.description
