@@ -6,7 +6,7 @@ from testing.conftest import MockSqlObject
 job = [("company", "campus", "department", "number", 123)]
 
 
-@pytest.mark.parametrize(("job_number", "mock_sql_connect"), (["23314115", [job]], ["PM1242522", [job]]), indirect=["mock_sql_connect"])
+@pytest.mark.parametrize(("job_number", "mock_sql_connect"), (["23314115", [job, []]], ["PM1242522", [job, []]]), indirect=["mock_sql_connect"])
 def test_get_job(job_number: str, mock_sql_connect: MockSqlObject) -> None:
     job = get_jobs(job_number)[0]
     assert job
@@ -18,7 +18,7 @@ def test_get_job(job_number: str, mock_sql_connect: MockSqlObject) -> None:
     assert mock_sql_connect.close_called
 
 
-item = [("number", "description", "model", "manufacturer", "serial", "room", "last_update")]
+item = [("number", "description", "model", "manufacturer", "serial", "room", "2019-01-01 03:45:44.759")]
 
 
 @pytest.mark.parametrize("mock_sql_connect", ([item],), indirect=True)
@@ -31,6 +31,6 @@ def test_get_item(mock_sql_connect: MockSqlObject) -> None:
     assert item.manufacturer == "manufacturer"
     assert item.serial == "serial"
     assert item.room == "room"
-    assert item.last_update == "last_update"
+    assert item.last_update.strftime(r"%Y-%m-%d %H:%M:%S") == "2019-01-01 03:45:44"
     assert "123456" in mock_sql_connect.calls[0][1][0]
     assert mock_sql_connect.close_called

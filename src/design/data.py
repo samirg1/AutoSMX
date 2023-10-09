@@ -1,6 +1,7 @@
 from design.Script import Script
 from design.ScriptInfo import ScriptInfo
 from db.get_script import get_script
+import functools
 
 _NA = "N/A"
 _NO = "No"
@@ -40,10 +41,10 @@ _LINE_DEFAULTS: dict[int, str] = {
     2827: _NA,  # : accessories
     481: _NA,  # CLASSII: battery
     483: _NA,  # : accessories
-    477: _SPACE, # : earth resistance
+    477: _SPACE,  # : earth resistance
     478: _199,  # : insulation resistance
     479: _199,  # : insulation resistance enclosure
-    485: _SPACE, # : touch current
+    485: _SPACE,  # : touch current
     6019: _NA,  # WHEELCHAIR: attachments
     6010: _NA,  # : charger
     6011: _NA,  # : battery
@@ -73,14 +74,10 @@ _SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
     ScriptInfo(1190, "VISUAL", [], []),
 )
 
-_scripts: dict[str, Script] = {}
 
-
+@functools.lru_cache(maxsize=1)
 def get_all_scripts() -> dict[str, Script]:
-    global _scripts
-    if not _scripts:
-        _scripts = {info.nickname: get_script(info, _LINE_DEFAULTS, _CONDITION_LINES) for info in _SCRIPT_INFOS}
-    return _scripts
+    return {info.nickname: get_script(info, _LINE_DEFAULTS, _CONDITION_LINES) for info in _SCRIPT_INFOS}
 
 
 SCRIPT_DOWNS: dict[int, int] = {script.number: i for i, script in enumerate(_SCRIPT_INFOS)}

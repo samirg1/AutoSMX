@@ -1,5 +1,6 @@
 from design.Script import ScriptLine
 
+
 def test_script_test_creation() -> None:
     test = ScriptLine("Test Name")
     assert test.name == "Test Name"

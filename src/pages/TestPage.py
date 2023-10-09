@@ -59,7 +59,8 @@ class TestPage(Page):
         if len(items) == 1:
             return self.get_test(items[0], choose_script=choose_script)
 
-        OptionSelectPopup(self.frame, items, lambda item: self.get_test(item, choose_script=choose_script))
+        popup = OptionSelectPopup(self.frame, items, lambda item: self.get_test(item, choose_script=choose_script))
+        popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(item_number))
 
     def get_test(self, item: Item, *, choose_script: bool = False) -> None:
         self.shared.item_number_to_description[item.number] = item.description
@@ -93,8 +94,12 @@ class TestPage(Page):
         self.go_button.grid(column=0, row=2, columnspan=4)
 
         # displaying the item and job
-        ttk.Label(self.frame, text=f"{test.item}").grid(column=0, row=3, columnspan=4)
-        ttk.Label(self.frame, text=f"{self.shared.job.campus}").grid(column=0, row=4, columnspan=4)
+        item_label = ttk.Label(self.frame, text=f"{test.item}")
+        item_label.grid(column=0, row=3, columnspan=4)
+        Tooltip(item_label, test.item.full_info)
+        job_label = ttk.Label(self.frame, text=f"{self.shared.job.campus}")
+        job_label.grid(column=0, row=4, columnspan=4)
+        Tooltip(job_label, str(self.shared.job))
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=5, columnspan=4)
 
         # displaying the script

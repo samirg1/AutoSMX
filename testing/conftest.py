@@ -21,10 +21,10 @@ class MockSqlObject:
         self.current = 0
         self.return_values = return_values
         self.close_called = False
-        self.calls: list[tuple[str, list[Any]]] = []
+        self.calls: list[tuple[str, tuple[Any, ...]]] = []
 
-    def execute(self, sql: str, params: list[Any] | None = None) -> Any:
-        params = params or []
+    def execute(self, sql: str, params: tuple[Any, ...] | None = None) -> Any:
+        params = params or ()
         self.calls.append((sql, params))
         if self.constant:
             value = self.MockFetchedObject(self.return_values[self.current])
@@ -34,7 +34,7 @@ class MockSqlObject:
             return self.MockFetchedObject(None)
         return self.MockFetchedObject(self.return_values.pop())
 
-    def executemany(self, sql: str, params: list[Any]) -> Any:
+    def executemany(self, sql: str, params: tuple[Any, ...]) -> Any:
         return self.execute(sql, params)
 
     def close(self) -> None:
@@ -43,7 +43,7 @@ class MockSqlObject:
     def __enter__(self) -> None:
         return
 
-    def __exit__(self, *_) -> None:
+    def __exit__(self, *_: Any) -> None:
         return
 
 
