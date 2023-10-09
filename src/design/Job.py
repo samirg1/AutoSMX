@@ -20,12 +20,14 @@ class Job:
     department: str = field(hash=False, eq=False)
     number: str = field(hash=False, eq=False)
     customer_number: int = field(hash=False, eq=False, converter=int)
+    get_problems: bool = field(default=True, hash=False, eq=False, kw_only=True)
     open_problems: list[Problem] = field(factory=list, init=False, hash=False, eq=False)
     tests: list[Test] = field(factory=list, init=False, hash=False, eq=False)
     test_breakdown: dict[str, int] = field(factory=dict, init=False, hash=False, eq=False)
 
     def __attrs_post_init__(self) -> None:
-        self.open_problems.extend(get_open_problems(self.campus))
+        if self.get_problems:
+            self.open_problems.extend(get_open_problems(self.campus))
 
     def add_test(self, test: Test) -> None:
         self.tests.append(test)

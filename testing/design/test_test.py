@@ -12,7 +12,7 @@ TestJob.__test__ = False  # type: ignore
 
 
 def test_test_creation_and_properties() -> None:
-    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
+    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
     test = Test(item)
 
     with pytest.raises(ScriptError):
@@ -26,7 +26,7 @@ def test_test_creation_and_properties() -> None:
 
 
 def test_test_determine_script(mock_sql_connect_scripts: MockSqlObject) -> None:
-    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
+    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
     test = Test(item)
 
     # Adding a custom script for testing
@@ -41,7 +41,7 @@ def test_test_determine_script(mock_sql_connect_scripts: MockSqlObject) -> None:
 
 
 def test_test_add_testjob(mock_sql_connect_scripts: MockSqlObject) -> None:
-    item = Item("001", "SLING 123", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
+    item = Item("001", "SLING 123", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
     test = Test(item)
 
     custom_script = Script("SLING", "Custom Script", 1)
@@ -57,7 +57,7 @@ def test_test_add_testjob(mock_sql_connect_scripts: MockSqlObject) -> None:
 
 
 def test_test_complete_and_full_info(mock_sql_connect_scripts: MockSqlObject) -> None:
-    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
+    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
     test = Test(item)
 
     custom = Script("CustomScript", "Custom Script", 1, (), exact_matches=["Test Item"])
@@ -77,7 +77,7 @@ def test_test_complete_and_full_info(mock_sql_connect_scripts: MockSqlObject) ->
 
 
 def test_test_item_model_property() -> None:
-    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019")
+    item = Item("001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
     test = Test(item)
     test.script = Script("CustomScript", "Custom Script", 1)
 
