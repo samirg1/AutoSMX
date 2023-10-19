@@ -12,6 +12,7 @@ from design.TestJob import TestJob
 from gui.actions import complete_test, turn_off_capslock
 from db.get_items_jobs import get_items
 from db.get_overall_results import get_overall_results
+from db.add_test import add_test
 from pages.Page import Page
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.TestJobPopup import TestJobPopup
@@ -54,7 +55,7 @@ class TestPage(Page):
 
         items = get_items(item_number)
         if not items:
-            return self.reset_page(item_number)
+            return self.item_not_found(item_number)
         self.is_editing = editing
         if len(items) == 1:
             return self.get_test(items[0], choose_script=choose_script)
@@ -78,11 +79,13 @@ class TestPage(Page):
             if choose_script:
                 raise ScriptError
             script = test.determine_script()
-            self.display_test(script, test)
+            return self.display_test(script, test)
         except ScriptError:
-            script_popup = ScriptSelectionPopup(self.frame, lambda s: self.display_test(s, test))
-            script_popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(item.number))
-            script_popup.mainloop()
+            pass
+
+        script_popup = ScriptSelectionPopup(self.frame, lambda s: self.display_test(s, test))
+        script_popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(item.number))
+        script_popup.mainloop()
 
     def display_test(self, script: Script, test: Test) -> None:
         assert self.shared.job
@@ -115,8 +118,8 @@ class TestPage(Page):
             self.saved_script_answers = stored_answers or [stest.selected for stest in script.lines]
         actual_answers = [StringVar(value=ans) for ans in self.saved_script_answers]
         for i, line in enumerate(script.lines):
-            label = ttk.Label(self.frame, text=line.name, width=10)
-            Tooltip(label, text=line.name)
+            label = ttk.Label(self.frame, text=line.text, width=10)
+            Tooltip(label, text=line.text)
             label.grid(column=0, row=row, columnspan=1, sticky="w")
             if len(line.options) <= 1:
                 ttk.Entry(self.frame, textvariable=actual_answers[i]).grid(column=1, row=row, columnspan=3, sticky="w")
@@ -205,6 +208,7 @@ class TestPage(Page):
         self.shared.job.add_test(self.test)
 
         try:
+            add_test(self.test, self.shared.job)
             complete_test(self.test, self.shared.storage.positions, self.is_editing)
         except FailSafeException:
             test = self.shared.job.tests.pop()
@@ -242,5 +246,12 @@ class TestPage(Page):
         self.reset_page(current_item_number)
 
     def item_not_found(self, current_item_number: str) -> None:
-        messagebox.showerror("Not Found", f"Item number '{current_item_number}' not tested yet")  # pyright: ignore
+        messagebox.showerror("Not Found", f"Item number '{current_item_number}'")  # pyright: ignore
         self.reset_page(current_item_number)
+
+    def toggle_blanks(self, on: bool) -> None:
+        for c in self.frame.children.values():
+            if on:
+                c.grid_forget()
+            else:
+                c.grid()

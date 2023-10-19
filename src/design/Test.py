@@ -31,7 +31,7 @@ class Test:
                 if script.is_for(self.item.description):
                     return script
 
-        raise ScriptError("No script found")
+        raise ScriptError(f"No script found for {self.item.number}")
 
     def add_testjob(self, testjob: TestJob) -> None:
         self.testjobs.append(testjob)

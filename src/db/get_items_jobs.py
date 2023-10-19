@@ -1,10 +1,10 @@
 from design.Item import Item
 from design.Job import Job
-from db.get_connection import get_connection
+from db.get_connection import get_connection, DatabaseFilenames
 
 
 def get_items(item_number: str) -> list[Item]:
-    with get_connection("SCMTests") as connection:
+    with get_connection(DatabaseFilenames.TESTS) as connection:
         item_fields = connection.execute(
             """
             SELECT logical_name, description, model, manufacturer, serial_no_, room, last_spt_date
@@ -18,7 +18,7 @@ def get_items(item_number: str) -> list[Item]:
 
 
 def get_jobs(job_number: str) -> list[Job]:
-    with get_connection("SCMLookup") as connection:
+    with get_connection(DatabaseFilenames.LOOKUP) as connection:
         job_fields = connection.execute(
             """
             SELECT company, location, dept, number, customer_no_

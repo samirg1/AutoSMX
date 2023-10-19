@@ -11,11 +11,11 @@ class Item:
     manufacturer: str = field(hash=False, eq=False)
     serial: str = field(hash=False, eq=False)
     room: str = field(hash=False, eq=False)
-    last_update: datetime = field(hash=False, eq=False, converter=convert_stringed_date)
+    last_update: datetime | None = field(hash=False, eq=False, converter=convert_stringed_date)
 
     def __str__(self) -> str:
         return f"{self.number} - {self.description}"
 
     @property
     def full_info(self) -> str:
-        return f"{self}\nModel: {self.model}\nManufacturer: {self.manufacturer}\nSN: {self.serial}\nRoom: {self.room}\nLast Update: {self.last_update.strftime(r'%d-%m-%Y %I:%M%p')}"
+        return f"{self}\nModel: {self.model}\nManufacturer: {self.manufacturer}\nSN: {self.serial}\nRoom: {self.room}\nLast Update: {'Not found' if self.last_update is None else self.last_update.strftime(r'%d-%m-%Y %I:%M%p')}"

@@ -1,10 +1,10 @@
-from db.get_connection import get_connection
+from db.get_connection import get_connection, DatabaseFilenames
 from design.Script import Script, ScriptLine
 from design.ScriptInfo import ScriptInfo
 
 
 def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition_lines: set[int]) -> Script:
-    with get_connection("SCMLookup") as connection:
+    with get_connection(DatabaseFilenames.LOOKUP) as connection:
         script_name = connection.execute(
             """
             SELECT script_name
@@ -14,9 +14,9 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
             (script_info.number,),
         ).fetchone()[0]
 
-        script_line_fields: list[tuple[int, str, str, str]] = connection.execute(
+        script_line_fields: list[tuple[int, str, int, str, str]] = connection.execute(
             """
-            SELECT z_rv, script_line_text, answer_type, answer_id
+            SELECT z_rv, script_line_text, line_no, answer_type, answer_id
             FROM SCMobileScriptLinesm1
             WHERE script_no = ?
             ORDER BY win32_page, win32_order;
@@ -25,7 +25,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
         ).fetchall()
 
         lines: list[ScriptLine] = []
-        for z_rv, text, answer_type, answer_id in script_line_fields:
+        for z_rv, text, line_no, answer_type, answer_id in script_line_fields:
             if "header" in (answer_type, answer_id):
                 continue
 
@@ -46,7 +46,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
                 ).fetchall():
                     break
 
-            line = ScriptLine(text, *(text[0] for text in raw))
+            line = ScriptLine(text, line_no, *(text[0] for text in raw))
             if z_rv in condition_lines:
                 line.selected = "1"
             else:
@@ -54,4 +54,4 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
 
             lines.append(line)
 
-    return Script(script_info.nickname, script_name, script_info.number, tuple(lines), search_terms=script_info.search_terms, exact_matches=script_info.exact_matches)
+    return Script(script_info.nickname, script_name, script_info.number, script_info.tester_number, tuple(lines), search_terms=script_info.search_terms, exact_matches=script_info.exact_matches)

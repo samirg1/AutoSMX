@@ -1,9 +1,9 @@
-from db.get_connection import get_connection
+from db.get_connection import get_connection, DatabaseFilenames
 from design.data import get_all_scripts
 
 
 def set_favourites() -> None:
-    with get_connection("Settings", mode="rw") as connection:
+    with get_connection(DatabaseFilenames.SETTINGS, mode="rw") as connection:
         with connection:
             connection.execute("DELETE FROM ScriptFavourites;")
 

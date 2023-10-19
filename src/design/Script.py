@@ -2,20 +2,22 @@ from attrs import field, frozen
 
 
 class ScriptLine:
-    def __init__(self, name: str, *options: str) -> None:
-        self.name = name
+    def __init__(self, text: str, number: int, *options: str) -> None:
+        self.text = text
+        self.number = number
         self.selected = options[0] if options else ""
         self.options = options
 
     def __repr__(self) -> str:
-        return f"{self.name} -> {self.options}"
+        return f"{self.text} -> {self.options}"
 
 
 @frozen(repr=False)
 class Script:
     nickname: str = field(hash=False, eq=False)
-    name: str
-    number: int = field(hash=False, eq=False)
+    name: str = field(hash=False, eq=False)
+    number: int
+    tester_number: str = field(hash=False, eq=False)
     lines: tuple[ScriptLine, ...] = field(factory=tuple, hash=False, eq=False)
     exact_matches: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
     search_terms: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
