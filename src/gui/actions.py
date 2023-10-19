@@ -4,8 +4,8 @@ import subprocess
 from enum import Enum
 
 from design.data import SCRIPT_DOWNS
+from design.Job import Job
 from design.Test import Test
-from design.TestJob import TestJob
 from gui.automations import click, click_key, type, wait
 from storage.Storage import Positions
 
@@ -56,10 +56,10 @@ def complete_test(test: Test, positions: Positions, is_editing: bool) -> None:  
         type(test.script_answers[-3])
 
     click_key(*_KEYS.ctrl_tab.value)  # enter testjobs if needed
-    if test.testjobs:
+    if test.jobs:
         wait(0.5)
         click(positions.sm_incident_tab)
-        for testjob in test.testjobs:
+        for testjob in test.jobs:
             _complete_testjob(testjob)
 
     click_key(*_KEYS.ctrl_tab.value)  # enter comment if needed
@@ -72,7 +72,7 @@ def complete_test(test: Test, positions: Positions, is_editing: bool) -> None:  
     click_key(_KEYS.tab.value, times=7)
 
 
-def _complete_testjob(testjob: TestJob) -> None:
+def _complete_testjob(testjob: Job) -> None:
     type(testjob.department)
     click_key(_KEYS.enter.value)
     type(testjob.contact_name)

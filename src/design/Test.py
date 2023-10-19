@@ -1,7 +1,7 @@
 from design.data import get_all_scripts
 from design.Item import Item
+from design.Job import Job
 from design.Script import Script
-from design.TestJob import TestJob
 
 
 class ScriptError(ValueError):
@@ -12,7 +12,7 @@ class Test:
     def __init__(self, item: Item) -> None:
         self.item = item
         self.script_answers: list[str] = []
-        self.testjobs: list[TestJob] = []
+        self.jobs: list[Job] = []
         self.comment = ""
         self.final_result = ""
         self.script: Script
@@ -33,8 +33,8 @@ class Test:
 
         raise ScriptError(f"No script found for {self.item.number}")
 
-    def add_testjob(self, testjob: TestJob) -> None:
-        self.testjobs.append(testjob)
+    def add_job(self, job: Job) -> None:
+        self.jobs.append(job)
 
     def complete(self, comment: str, final_result: str, script_answers: list[str]) -> None:
         self.script_answers = ["" if a == " " else "N/A" if a == "" else a for a in script_answers]

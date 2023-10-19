@@ -7,19 +7,19 @@ from tkinter.font import Font
 from pages.Page import Page
 
 _TUTORIAL = {
-    "Quick Start": "After this tutorial you will be taken to the Job Page. \
+    "Quick Start": "After this tutorial you will be taken to the Problem Page. \
         This is the first and main page of the application. \
-            To add a job, click the '+' button on the top row, enter in the job number and then press Enter or hit 'Add' \
+            To add a problem, click the '+' button on the top row, enter in the problem number and then press Enter or hit 'Add' \
                 This will take you to the item entry screen where you can input item numbers.",
     "Enter Asset": "Enter the item into the program, then click 'Go' / press Enter. \
         The program will then search for the item's script. \
             Do not press 'Choose' unless the program has failed to find the script or unless you need to choose a script different from normal.\
                 The program will try and determine the script needed for this item, make sure this is correct before proceeding. \
                     The program will also determine the location information to keep as context to the tests.",
-    "Edit Script": "Edit the script values, add a test-job by click the 'Add Job' button, add comments and anything else that is needed for the test. \
+    "Edit Script": "Edit the script values, add a job by click the 'Add Job' button, add comments and anything else that is needed for the test. \
         The defaulted script values are those deemed to be the most common for the specific script. \
             If you change the script values from the default for a specifc item-model, the program will remember this next time you test that item-model.",
-    "Adding a Test-Job": "Adding a test-job is made easier as the job information is used to fill in the contact and department fields. \
+    "Adding a Job": "Adding a job is made easier as the problem information is used to fill in the contact and department fields. \
         Saving a job also pastes the comments from that job into the overall comments for the test (without any part numbers it can find). \
             If you accidentally add a job, press the 'X' button to delete the most recently added job. ",
     "Save Test": "Ensure values of the script are correct before clicking 'Save' (or press Enter straight away), this will save the test. \
@@ -27,16 +27,16 @@ _TUTORIAL = {
     "Edit Test": "If you need to edit a test, enter the item number before clicking the 'Edit Test' button. \
         The program will ensure that you cannot edit a test that you have not completed. \
             Once you select edit, the script values will show as normal and you can edit and save them just like you would normally.",
-    "Job Page": "Each job you have entered while the program is open will show all the details including the amount of tests, with a breakdown by script, and any jobs raised. \
-        Select a job (or anything inside of it) and press the 'Enter Job' button to keep adding items into that job. \
-            Select a job and press the 'Delete Job' button to remove the job from view. \
-                To start add new job, press the '+' button, enter a job number and press 'Add'. \
-                    These jobs that are displayed serve only as helpers to show test breakdowns and job's raised at each site, as well as help fill in test-job fields in the tests. ",
+    "Problem Page": "Each problem you have entered while the program is open will show all the details including the amount of tests, with a breakdown by script, and any jobs raised. \
+        Select a problem (or anything inside of it) and press the 'Enter Job' button to keep adding items into that problem. \
+            Select a problem and press the 'Delete Problem' button to remove the problem from view. \
+                To start add new problem, press the '+' button, enter a problem number and press 'Add'. \
+                    These problems that are displayed serve only as helpers to show test breakdowns and jobs raised at each site, as well as help fill in job fields in the tests. ",
     "Troubleshooting": "If the program incorrectly selects the script, press 'Cancel' and then select 'Choose' to manually select the script. \
         If the program is glitching or bugging and you don't believe SMX is the issue, try restarting the program. \
             If the problem persists raise an issue by sending an email to the developer. \
                 Please ensure you include any error messages as well as a description of the problem and how to reproduce it. \
-                      If you need see this tutorial again, navigate to the 'Jobs' page and click on the Settings button to access it.",
+                      If you need see this tutorial again, navigate to the Problem page and click on the Settings button to access it.",
 }
 
 

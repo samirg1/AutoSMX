@@ -5,7 +5,7 @@ from db.get_connection import DatabaseFilenames, get_connection
 from db.get_user import get_user
 from db.test_models import ScriptLineModel, ScriptTesterModel, TestModel
 from design.Item import Item
-from design.Job import Job
+from design.Problem import Problem
 from design.Test import Test
 
 
@@ -41,7 +41,7 @@ def _get_new_test_id() -> str:
     return f"SMX{str(current+1).zfill(10)}"
 
 
-def add_test(test: Test, job: Job) -> dict[str, Any]:
+def add_test(test: Test, problem: Problem) -> dict[str, Any]:
     user = get_user()
     test_id = _get_new_test_id()
     time = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
@@ -52,13 +52,13 @@ def add_test(test: Test, job: Job) -> dict[str, Any]:
         customer_barcode=test.item.number,
         test_date=time,
         sysmoduser=user,
-        problem_number=job.number,
+        problem_number=problem.number,
         user_name=user,
         comments=test.comment,
-        customer_id=str(job.customer_number),
-        company_name=job.company,
-        location=job.campus,
-        dept=job.department,
+        customer_id=str(problem.customer_number),
+        company_name=problem.company,
+        location=problem.campus,
+        dept=problem.department,
         overall=test.final_result,
         room=test.item.room,
         model=test.item.model,
@@ -108,7 +108,7 @@ def add_test(test: Test, job: Job) -> dict[str, Any]:
 
         # test_id = 'SMX0001391907'
 
-        output: dict[str, Any]= {}
+        output: dict[str, Any] = {}
 
         res = connection.execute(
             f"""
@@ -140,4 +140,4 @@ if __name__ == "__main__":
     t.script = t.determine_script()
     t.complete("comment", "final_res", ["pass"] * len(t.script.lines))
 
-    print(add_test(t, Job("company", "campus", "dept", "pm12345", 1)))
+    print(add_test(t, Problem("company", "campus", "dept", "pm12345", 1)))

@@ -1,14 +1,14 @@
 from tkinter import END, Misc, StringVar, Text, ttk
 from typing import Callable
 
-from design.TestJob import TestJob
+from design.Job import Job
 from popups.Popup import Popup
 
 
-class TestJobPopup(Popup):
-    def __init__(self, master: Misc | None, default_dept: str, default_contact: str, master_save_testjob: Callable[[TestJob], None]):
+class JobPopup(Popup):
+    def __init__(self, master: Misc | None, default_dept: str, default_contact: str, save_job: Callable[[Job], None]):
         super().__init__(master, "Add Job", height_factor=0.5, columns=2)
-        self.master_save_testjob = master_save_testjob
+        self.save_job = save_job
 
         ttk.Label(self, text="Department").grid(column=0, row=0)
         department = StringVar(value=default_dept)
@@ -23,8 +23,8 @@ class TestJobPopup(Popup):
         comment.focus()
         comment.grid(column=0, row=3, columnspan=2)
 
-        ttk.Button(self, text="Save", command=lambda: self._save_testjob(department.get(), contact.get(), comment.get("1.0", END))).grid(column=0, row=4, columnspan=2)
+        ttk.Button(self, text="Save", command=lambda: self._save_job(department.get(), contact.get(), comment.get("1.0", END))).grid(column=0, row=4, columnspan=2)
 
-    def _save_testjob(self, department: str, contact: str, comment: str) -> None:
-        self.master_save_testjob(TestJob(department, contact, comment))
+    def _save_job(self, department: str, contact: str, comment: str) -> None:
+        self.save_job(Job(department, contact, comment))
         self.destroy()

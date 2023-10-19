@@ -2,13 +2,13 @@ import pytest
 
 from design.data import get_all_scripts
 from design.Item import Item
+from design.Job import Job
 from design.Script import Script
 from design.Test import ScriptError, Test
-from design.TestJob import TestJob
 from testing.conftest import MockSqlObject
 
 Test.__test__ = False  # type: ignore
-TestJob.__test__ = False  # type: ignore
+Job.__test__ = False  # type: ignore
 
 
 def test_test_creation_and_properties() -> None:
@@ -20,7 +20,7 @@ def test_test_creation_and_properties() -> None:
 
     assert test.item == item
     assert test.script_answers == []
-    assert test.testjobs == []
+    assert test.jobs == []
     assert test.comment == ""
     assert test.final_result == ""
 
@@ -49,11 +49,11 @@ def test_test_add_testjob(mock_sql_connect_scripts: MockSqlObject) -> None:
     test.script = test.determine_script()
     assert test.script.nickname == "SLING"
 
-    testjob = TestJob("Quality Control", "John Doe", "Performing testing on batch 1")
-    test.add_testjob(testjob)
+    job = Job("Quality Control", "John Doe", "Performing testing on batch 1")
+    test.add_job(job)
 
-    assert len(test.testjobs) == 1
-    assert test.testjobs[0] == testjob
+    assert len(test.jobs) == 1
+    assert test.jobs[0] == job
 
 
 def test_test_complete_and_full_info(mock_sql_connect_scripts: MockSqlObject) -> None:
@@ -66,8 +66,8 @@ def test_test_complete_and_full_info(mock_sql_connect_scripts: MockSqlObject) ->
     assert test.script.nickname == "CustomScript"
     del get_all_scripts()["CustomScript"]
 
-    testjob = TestJob("Quality Control", "John Doe", "Performing testing on batch 1")
-    test.add_testjob(testjob)
+    job = Job("Quality Control", "John Doe", "Performing testing on batch 1")
+    test.add_job(job)
 
     test.complete("Test completed successfully.", "Pass", ["", "No"])
     assert test.comment == "Test completed successfully."

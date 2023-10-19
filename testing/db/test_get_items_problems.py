@@ -1,20 +1,20 @@
 import pytest
 
-from db.get_items_jobs import get_items, get_jobs
+from db.get_items_problems import get_items, get_problems
 from testing.conftest import MockSqlObject
 
-job = [("company", "campus", "department", "number", 123)]
+problem = [("company", "campus", "department", "number", 123)]
 
 
-@pytest.mark.parametrize(("job_number", "mock_sql_connect"), (["23314115", [job, []]], ["PM1242522", [job, []]]), indirect=["mock_sql_connect"])
-def test_get_job(job_number: str, mock_sql_connect: MockSqlObject) -> None:
-    job = get_jobs(job_number)[0]
-    assert job
-    assert job.company == "company"
-    assert job.campus == "campus"
-    assert job.department == "department"
-    assert job.number == "number"
-    assert job_number in mock_sql_connect.calls[0][1][0]
+@pytest.mark.parametrize(("problem_number", "mock_sql_connect"), (["23314115", [problem, []]], ["PM1242522", [problem, []]]), indirect=["mock_sql_connect"])
+def test_get_problem(problem_number: str, mock_sql_connect: MockSqlObject) -> None:
+    problem = get_problems(problem_number)[0]
+    assert problem
+    assert problem.company == "company"
+    assert problem.campus == "campus"
+    assert problem.department == "department"
+    assert problem.number == "number"
+    assert problem_number in mock_sql_connect.calls[0][1][0]
     assert mock_sql_connect.close_called
 
 

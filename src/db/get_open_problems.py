@@ -4,7 +4,7 @@ from db.convert_stringed_date import convert_stringed_date
 from db.get_connection import DatabaseFilenames, get_connection
 
 
-class Problem(NamedTuple):
+class OpenProblem(NamedTuple):
     number: str
     description: str
     date_opened: str
@@ -17,7 +17,7 @@ class Problem(NamedTuple):
         return f"{self.number} - Opened: {date_opened}\n{self.description}\n{self.asset_description} ({self.asset_serial})"
 
 
-def get_open_problems(location: str) -> list[Problem]:
+def get_open_problems(location: str) -> list[OpenProblem]:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
         results = connection.execute(
             """
@@ -28,4 +28,4 @@ def get_open_problems(location: str) -> list[Problem]:
             (location,),
         ).fetchall()
 
-    return [Problem(*res) for res in results]
+    return [OpenProblem(*res) for res in results]

@@ -5,24 +5,24 @@ from typing import cast
 from pyautogui import FailSafeException
 
 from db.add_test import add_test
-from db.get_items_jobs import get_items
+from db.get_items_problems import get_items
 from db.get_overall_results import get_overall_results
 from design.Item import Item
 from design.Job import Job
+from design.Problem import Problem
 from design.Script import Script
 from design.Test import ScriptError, Test
-from design.TestJob import TestJob
 from gui.actions import complete_test, turn_off_capslock
 from pages.Page import Page
+from popups.JobPopup import JobPopup
 from popups.OptionSelectPopup import OptionSelectPopup
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
-from popups.TestJobPopup import TestJobPopup
 from popups.Tooltip import Tooltip
 
 
 class TestPage(Page):
     def setup(self) -> None:
-        ttk.Button(self.frame, text="< Jobs", command=lambda: self.change_page("JOB")).grid(column=0, row=0, sticky="w")
+        ttk.Button(self.frame, text="< Problems", command=lambda: self.change_page("PROBLEM")).grid(column=0, row=0, sticky="w")
 
         ttk.Label(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
         item_number = StringVar(value=self.shared.previous_item_number)
@@ -48,7 +48,7 @@ class TestPage(Page):
     def get_items(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False, editing: bool = False) -> None:
         item_entry.state(["disabled"])  # pyright: ignore
         self.frame.focus()
-        assert self.shared.job
+        assert self.shared.problem
 
         if editing and item_number not in self.shared.item_number_to_description:
             return self.item_not_found(item_number)
@@ -66,9 +66,9 @@ class TestPage(Page):
     def get_test(self, item: Item, *, choose_script: bool = False) -> None:
         self.shared.item_number_to_description[item.number] = item.description
         if self.is_editing:
-            assert self.shared.job
+            assert self.shared.problem
             try:
-                test = next(test for test in reversed(self.shared.job.tests) if test.item.number == item.number)
+                test = next(test for test in reversed(self.shared.problem.tests) if test.item.number == item.number)
             except StopIteration:
                 return self.item_not_found(item.number)
 
@@ -88,7 +88,7 @@ class TestPage(Page):
         script_popup.mainloop()
 
     def display_test(self, script: Script, test: Test) -> None:
-        assert self.shared.job
+        assert self.shared.problem
         test.script = script
         self.test = test
         self.choose_button.destroy()
@@ -96,13 +96,13 @@ class TestPage(Page):
         self.go_button.configure(text="Cancel", command=lambda: self.reset_page(test.item.number))
         self.go_button.grid(column=0, row=2, columnspan=4)
 
-        # displaying the item and job
+        # displaying the item and problem
         item_label = ttk.Label(self.frame, text=f"{test.item}")
         item_label.grid(column=0, row=3, columnspan=4)
         Tooltip(item_label, test.item.full_info)
-        job_label = ttk.Label(self.frame, text=f"{self.shared.job.campus}")
-        job_label.grid(column=0, row=4, columnspan=4)
-        Tooltip(job_label, str(self.shared.job))
+        problem_label = ttk.Label(self.frame, text=f"{self.shared.problem.campus}")
+        problem_label.grid(column=0, row=4, columnspan=4)
+        Tooltip(problem_label, str(self.shared.problem))
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=5, columnspan=4)
 
         # displaying the script
@@ -134,12 +134,12 @@ class TestPage(Page):
         ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=row, columnspan=4)
         row += 1
 
-        # adding testjobs
-        self.add_job_button = ttk.Button(self.frame, text="Add Job", command=self.add_testjob)
-        self.delete_job_button = ttk.Button(self.frame, text="X", width=1, command=self.delete_test_job)
+        # adding jobs
+        self.add_job_button = ttk.Button(self.frame, text="Add Job", command=self.add_job)
+        self.delete_job_button = ttk.Button(self.frame, text="X", width=1, command=self.delete_job)
         self.add_job_button.grid(column=0, row=row, columnspan=4)
-        if len(self.test.testjobs):
-            self.add_job_button.configure(text=f"Add Job ({len(self.test.testjobs)})")
+        if len(self.test.jobs):
+            self.add_job_button.configure(text=f"Add Job ({len(self.test.jobs)})")
             self.delete_job_button.grid(column=3, row=self.add_job_button.grid_info()["row"], sticky="e")
         row += 1
 
@@ -157,7 +157,7 @@ class TestPage(Page):
         # final results
         ttk.Label(self.frame, text="Result").grid(column=0, row=row, columnspan=4)
         row += 1
-        overall_results = get_overall_results(self.shared.job.customer_number)
+        overall_results = get_overall_results(self.shared.problem.customer_number)
         result = tkinter.StringVar(value=self.test.final_result or overall_results[0].fullname)
         for i, (nickname, fullname) in enumerate(overall_results):
             button = ttk.Radiobutton(self.frame, text=nickname, variable=result, value=fullname, width=15)
@@ -172,49 +172,49 @@ class TestPage(Page):
         save.bind("<Return>", lambda _: self.save_test([s.get() for s in actual_answers], result.get()))
         row += 1
 
-    def add_testjob(self) -> None:
-        assert self.shared.job is not None
-        testjob_popup = TestJobPopup(self.frame, self.shared.job.department, self.shared.job.company, self.save_testjob)
-        testjob_popup.mainloop()
+    def add_job(self) -> None:
+        assert self.shared.problem is not None
+        job_popup = JobPopup(self.frame, self.shared.problem.department, self.shared.problem.company, self.save_job)
+        job_popup.mainloop()
 
-    def save_testjob(self, testjob: TestJob) -> None:
-        self.comment.insert(tkinter.END, testjob.test_comment + "\n\n")
-        self.test.add_testjob(testjob)
-        self.shared.testjob_manager.add_testjob(self.test.item, cast(Job, self.shared.job), testjob)
-        self.add_job_button.configure(text=f"Add Job ({len(self.test.testjobs)})")
+    def save_job(self, job: Job) -> None:
+        self.comment.insert(tkinter.END, job.test_comment + "\n\n")
+        self.test.add_job(job)
+        self.shared.job_manager.add_job(self.test.item, cast(Problem, self.shared.problem), job)
+        self.add_job_button.configure(text=f"Add Job ({len(self.test.jobs)})")
         self.delete_job_button.grid(column=3, row=self.add_job_button.grid_info()["row"], sticky="e")
 
-    def delete_test_job(self) -> None:
-        testjob = self.test.testjobs.pop()
-        self.shared.testjob_manager.delete_testjob(cast(Job, self.shared.job), testjob)
+    def delete_job(self) -> None:
+        job = self.test.jobs.pop()
+        self.shared.job_manager.delete_job(cast(Problem, self.shared.problem), job)
         current_comment = self.comment.get("1.0", tkinter.END).strip()
         self.comment.delete("1.0", tkinter.END)
-        self.comment.insert(tkinter.END, current_comment.replace(testjob.test_comment, ""))
+        self.comment.insert(tkinter.END, current_comment.replace(job.test_comment, ""))
 
         add_job_text = "Add Job"
-        if not self.test.testjobs:
+        if not self.test.jobs:
             self.delete_job_button.grid_forget()
         else:
-            add_job_text += f" ({len(self.test.testjobs)})"
+            add_job_text += f" ({len(self.test.jobs)})"
         self.add_job_button.configure(text=add_job_text)
 
     def save_test(self, script_answers: list[str], result: str) -> None:
-        assert self.shared.job  # must have created a job by now
+        assert self.shared.problem  # must have created a problem by now
         turn_off_capslock()
         comment = self.comment.get("1.0", tkinter.END)
         self.test.complete(comment, result, script_answers)
         if self.is_editing:
-            self.shared.job.remove_test(self.test)
-        self.shared.job.add_test(self.test)
+            self.shared.problem.remove_test(self.test)
+        self.shared.problem.add_test(self.test)
 
         try:
-            add_test(self.test, self.shared.job)
+            add_test(self.test, self.shared.problem)
             complete_test(self.test, self.shared.storage.positions, self.is_editing)
         except FailSafeException:
-            test = self.shared.job.tests.pop()
-            self.shared.job.test_breakdown[test.script.nickname] -= 1
-            for _ in test.testjobs:
-                self.shared.testjob_manager.job_to_testjobs[self.shared.job].pop()
+            test = self.shared.problem.tests.pop()
+            self.shared.problem.test_breakdown[test.script.nickname] -= 1
+            for _ in test.jobs:
+                self.shared.job_manager.problem_to_jobs[self.shared.problem].pop()
             return self.failsafe(self.test.item.number)
 
         with self.shared.storage.edit() as storage:

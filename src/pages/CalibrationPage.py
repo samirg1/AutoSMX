@@ -9,7 +9,7 @@ from popups.CalibrationHelpPopup import CalibrationHelpPopup
 class CalibrationPage(Page):
     def setup(self) -> None:
         if self.shared.storage.calibrated:
-            return self.change_page("JOB")
+            return self.change_page("PROBLEM")
         self.positions_set = 0
 
         ttk.Label(self.frame, text="Calibration").grid(column=0, row=0, sticky="nsew")
@@ -38,7 +38,7 @@ class CalibrationPage(Page):
         if self.positions_set == len(self.shared.storage.positions.__annotations__):
             with self.shared.storage.edit() as storage:
                 storage.calibrated = True
-            self.change_page("TEST")
+            self.change_page("PROBLEM")
 
     def show_help(self, name: str) -> None:
         CalibrationHelpPopup(self.frame, name).mainloop()

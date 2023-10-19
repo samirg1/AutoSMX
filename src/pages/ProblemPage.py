@@ -1,15 +1,15 @@
 import tkinter
 from tkinter import ttk
 
-from design.Job import Job
+from design.Problem import Problem
 from pages.Page import Page
-from popups.JobEntryPopup import JobEntryPopup
+from popups.ProblemEntryPopup import ProblemEntryPopup
 
 
-class JobPage(Page):
+class ProblemPage(Page):
     def setup(self) -> None:
         # top row
-        ttk.Label(self.frame, text="Jobs").grid(column=0, row=0, columnspan=1)
+        ttk.Label(self.frame, text="Problems").grid(column=0, row=0, columnspan=1)
         add_button = ttk.Button(self.frame, text="+", command=self.add_tests)
         add_button.grid(column=1, row=0, columnspan=1)
         add_button.focus()
@@ -29,30 +29,30 @@ class JobPage(Page):
         tree.heading("number", text="#")
 
         # default
-        if not self.shared.jobs:
-            tree.insert("", tkinter.END, values=("No jobs yet, click '+' to add",))
+        if not self.shared.problems:
+            tree.insert("", tkinter.END, values=("No problems yet, click '+' to add",))
             tree.configure(selectmode="none")
 
-        # add each job to the tree
-        for campus, job in self.shared.jobs.items():
-            job_node = tree.insert("", tkinter.END, campus, values=(f"{job}",))
+        # add each problem to the tree
+        for campus, problem in self.shared.problems.items():
+            job_node = tree.insert("", tkinter.END, campus, values=(f"{problem}",))
 
-            if job.open_problems:
-                problem_node = tree.insert(job_node, tkinter.END, values=("Problems", len(job.open_problems)))
-                for problem in job.open_problems:
-                    tree.insert(problem_node, tkinter.END, values=(f"{problem}",))
+            if problem.open_problems:
+                problem_node = tree.insert(job_node, tkinter.END, values=("Open Problems", len(problem.open_problems)))
+                for open_problem in problem.open_problems:
+                    tree.insert(problem_node, tkinter.END, values=(f"{open_problem}",))
 
-            job_testjobs = self.shared.testjob_manager.job_to_testjobs.get(job, [])
+            job_testjobs = self.shared.job_manager.problem_to_jobs.get(problem, [])
             if job_testjobs:
                 testjob_node = tree.insert(job_node, tkinter.END, values=("Jobs Raised", len(job_testjobs)))
                 for testjob in job_testjobs:
-                    item = self.shared.testjob_manager.testjob_to_item[testjob]
+                    item = self.shared.job_manager.job_to_item[testjob]
                     first_line = str(testjob).split("\n")[0]
                     tree.insert(testjob_node, tkinter.END, values=(f"{first_line}\n{item.description}\n{item.number}",))
 
-            if job.tests:
-                test_node = tree.insert(job_node, tkinter.END, values=("Tests", f"{len(job.tests)}"))
-                for script_name, value in job.test_breakdown.items():
+            if problem.tests:
+                test_node = tree.insert(job_node, tkinter.END, values=("Tests", f"{len(problem.tests)}"))
+                for script_name, value in problem.test_breakdown.items():
                     tree.insert(test_node, tkinter.END, values=(f"{script_name}", value))
 
         # completing tree setup
@@ -63,9 +63,9 @@ class JobPage(Page):
         row += 1
 
         # add job manipulation buttons
-        button1 = ttk.Button(self.frame, text="Enter Job", command=lambda: self.add_tests(tree), state="disabled")
+        button1 = ttk.Button(self.frame, text="Enter Problem", command=lambda: self.add_tests(tree), state="disabled")
         button1.grid(row=row, column=0, columnspan=4)
-        button2 = ttk.Button(self.frame, text="Delete Job", command=lambda: self.delete_job(tree), state="disabled")
+        button2 = ttk.Button(self.frame, text="Delete Problem", command=lambda: self.delete_problem(tree), state="disabled")
         button2.grid(row=row + 1, column=0, columnspan=4)
 
         tree.bind("<<TreeviewSelect>>", lambda _: self.on_first_select(tree, button1, button2))
@@ -75,29 +75,29 @@ class JobPage(Page):
             button.configure(state="normal")
         tree.unbind("<<TreeviewSelect>>")
 
-    def get_selected_job(self, tree: ttk.Treeview) -> Job:
+    def get_selected_problem(self, tree: ttk.Treeview) -> Problem:
         item = tree.focus()
         possible_parent1 = tree.parent(item)
         parent1 = possible_parent1 if possible_parent1 else item
         possible_parent2 = tree.parent(parent1)
         parent2 = possible_parent2 if possible_parent2 else parent1
 
-        return self.shared.jobs[parent2]
+        return self.shared.problems[parent2]
 
-    def delete_job(self, tree: ttk.Treeview) -> None:
-        job = self.get_selected_job(tree)
-        del self.shared.jobs[job.campus]
-        if job in self.shared.testjob_manager.job_to_testjobs:
-            del self.shared.testjob_manager.job_to_testjobs[job]
-        self.change_page("JOB")
+    def delete_problem(self, tree: ttk.Treeview) -> None:
+        problem = self.get_selected_problem(tree)
+        del self.shared.problems[problem.campus]
+        if problem in self.shared.job_manager.problem_to_jobs:
+            del self.shared.job_manager.problem_to_jobs[problem]
+        self.change_page("PROBLEM")
 
     def add_tests(self, tree: ttk.Treeview | None = None) -> None:
         if tree is None:
-            JobEntryPopup(self.frame, lambda job: self.add_job(job))
+            ProblemEntryPopup(self.frame, lambda problem: self.add_problem(problem))
         else:
-            self.add_job(self.get_selected_job(tree))
+            self.add_problem(self.get_selected_problem(tree))
 
-    def add_job(self, job: Job) -> None:
-        self.shared.job = job
-        self.shared.jobs[job.campus] = job
+    def add_problem(self, problem: Problem) -> None:
+        self.shared.problem = problem
+        self.shared.problems[problem.campus] = problem
         self.change_page("TEST")

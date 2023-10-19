@@ -1,6 +1,6 @@
 from db.get_connection import DatabaseFilenames, get_connection
 from design.Item import Item
-from design.Job import Job
+from design.Problem import Problem
 
 
 def get_items(item_number: str) -> list[Item]:
@@ -17,15 +17,15 @@ def get_items(item_number: str) -> list[Item]:
     return [Item(*fields) for fields in item_fields]
 
 
-def get_jobs(job_number: str) -> list[Job]:
+def get_problems(problem_number: str) -> list[Problem]:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
-        job_fields = connection.execute(
+        problem_fields = connection.execute(
             """
             SELECT company, location, dept, number, customer_no_
             FROM 'probsummarym1'
             WHERE number LIKE ? OR number LIKE ?;
             """,
-            (f"PM{job_number}%", f"{job_number}%"),
+            (f"PM{problem_number}%", f"{problem_number}%"),
         ).fetchall()
 
-    return [Job(*fields) for fields in job_fields]
+    return [Problem(*fields) for fields in problem_fields]
