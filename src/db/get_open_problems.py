@@ -13,7 +13,7 @@ class Problem(NamedTuple):
     def __repr__(self) -> str:
         converted = convert_stringed_date(self.date_opened)
         date_opened = "Not found" if converted is None else converted.strftime(r"%d-%m-%Y")
-        return f"{self.number} - {date_opened}\n{self.description}\n{self.asset_description} ({self.asset_serial})"
+        return f"{self.number} - Opened: {date_opened}\n{self.description}\n{self.asset_description} ({self.asset_serial})"
 
 
 def get_open_problems(location: str) -> list[Problem]:
