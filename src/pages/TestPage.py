@@ -248,10 +248,3 @@ class TestPage(Page):
     def item_not_found(self, current_item_number: str) -> None:
         messagebox.showerror("Not Found", f"Item number '{current_item_number}'")  # pyright: ignore
         self.reset_page(current_item_number)
-
-    def toggle_blanks(self, on: bool) -> None:
-        for c in self.frame.children.values():
-            if on:
-                c.grid_forget()
-            else:
-                c.grid()

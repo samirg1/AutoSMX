@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from db.get_connection import DatabaseFilenames, get_connection
 from db.get_user import get_user
@@ -13,7 +14,7 @@ class NoTestIDsError(RuntimeError):
 
 
 def _get_new_test_id() -> str:
-    with get_connection(DatabaseFilenames.SETTINGS) as connection:
+    with get_connection(DatabaseFilenames.SETTINGS, mode="rw") as connection:
         res: tuple[str, int, int] | None = connection.execute(
             """
             SELECT TABLENAME, LASTUSED, LASTRESERVED
@@ -22,12 +23,11 @@ def _get_new_test_id() -> str:
             """
         ).fetchone()
 
-    if res is None:  #!! CHECK THIS
-        raise NoTestIDsError
+        if res is None:  #!! CHECK THIS
+            raise NoTestIDsError
 
-    _, current, end = res
+        _, current, end = res
 
-    with get_connection(DatabaseFilenames.SETTINGS, mode="rw") as connection:
         # with connection:
         connection.execute(
             """
@@ -41,7 +41,7 @@ def _get_new_test_id() -> str:
     return f"SMX{str(current+1).zfill(10)}"
 
 
-def add_test(test: Test, job: Job) -> None:
+def add_test(test: Test, job: Job) -> dict[str, Any]:
     user = get_user()
     test_id = _get_new_test_id()
     time = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
@@ -92,7 +92,7 @@ def add_test(test: Test, job: Job) -> None:
             script_model.values(),
         )
 
-        for line, result in zip(test.script.lines, test.script_answers):
+        for line, result in zip(test.script.lines, test.script_answers, strict=True):
             set_point = 200 if test.script.number == 1287 and line.number == 5 else None
             script_line_model = ScriptLineModel(
                 test_id=test_id, script_number=test.script.number, script_line=line.number, result=result, performed_by=user, script_line_text=line.text, set_point=set_point
@@ -108,33 +108,31 @@ def add_test(test: Test, job: Job) -> None:
 
         # test_id = 'SMX0001391907'
 
+        output: dict[str, Any]= {}
+
         res = connection.execute(
             f"""
-            SELECT * from SCMobileTestsm1 WHERE test_id == '{test_id}'
+            SELECT * from SCMobileTestsm1 WHERE test_id == '{test_id}';
         """
         )
-
-        print(list(zip((d[0] for d in res.description), res.fetchone())))
-        print()
+        output["Test"] = list(zip((d[0] for d in res.description), res.fetchone()))
 
         res = connection.execute(
             f"""
-            SELECT * from SCMobileTesterNumbersm1 WHERE test_id == '{test_id}'
+            SELECT * from SCMobileTesterNumbersm1 WHERE test_id == '{test_id}';
         """
         )
-
-        print(list(zip((d[0] for d in res.description), res.fetchone())))
-        print()
+        output["Script Number"] = list(zip((d[0] for d in res.description), res.fetchone()))
 
         res = connection.execute(
             f"""
-            SELECT * from SCMobileTestLinesm1 WHERE test_id == '{test_id}'
+            SELECT * from SCMobileTestLinesm1 WHERE test_id == '{test_id}';
         """
         )
         descs = [d[0] for d in res.description]
+        output["Lines"] = [list(zip(descs, r)) for r in res.fetchall()]
 
-        for r in res.fetchall():
-            print(list(zip(descs, r)))
+        return output
 
 
 if __name__ == "__main__":
@@ -142,4 +140,4 @@ if __name__ == "__main__":
     t.script = t.determine_script()
     t.complete("comment", "final_res", ["pass"] * len(t.script.lines))
 
-    add_test(t, Job("company", "campus", "dept", "pm12345", 1))
+    print(add_test(t, Job("company", "campus", "dept", "pm12345", 1)))

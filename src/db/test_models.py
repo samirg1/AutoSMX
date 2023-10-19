@@ -41,6 +41,13 @@ class TestModel(Model):
 
 
 @dataclass(repr=False, frozen=True, kw_only=True)
+class ScriptTesterModel(Model):
+    test_id: str
+    script_number: int
+    tester_number: str
+
+
+@dataclass(repr=False, frozen=True, kw_only=True)
 class ScriptLineModel(Model):
     test_id: str
     script_number: int
@@ -53,10 +60,3 @@ class ScriptLineModel(Model):
     set_point: int | None
     page: str | None = field(default=None, init=False)
     orderprgn: str | None = field(default=None, init=False)
-
-
-@dataclass(repr=False, frozen=True, kw_only=True)
-class ScriptTesterModel(Model):
-    test_id: str
-    script_number: int
-    tester_number: str
