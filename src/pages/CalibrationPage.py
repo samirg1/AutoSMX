@@ -2,8 +2,8 @@ import tkinter
 from tkinter import ttk
 
 from gui.automations import get_click_position
-from popups.CalibrationHelpPopup import CalibrationHelpPopup
 from pages.Page import Page
+from popups.CalibrationHelpPopup import CalibrationHelpPopup
 
 
 class CalibrationPage(Page):

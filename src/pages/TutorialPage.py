@@ -4,8 +4,8 @@ from itertools import zip_longest
 from tkinter import ttk
 from tkinter.font import Font
 
-from pages.Page import Page
 from design.data import get_all_scripts
+from pages.Page import Page
 
 _TUTORIAL = {
     "Setup": f"Ensure you have the latest version of SMX installed, the version needs to include the favourites tab. \

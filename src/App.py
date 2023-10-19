@@ -4,6 +4,7 @@ import sys
 import tkinter
 from tkinter import PhotoImage, ttk
 
+from db.set_favourites import set_favourites
 from design.TestJobManager import TestJobManager
 from pages.CalibrationPage import CalibrationPage
 from pages.JobPage import JobPage
@@ -12,7 +13,6 @@ from pages.SettingsPage import SettingsPage
 from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
-from db.set_favourites import set_favourites
 
 _APPLICATION_PATH = os.path.dirname(sys.executable)
 

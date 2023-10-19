@@ -1,14 +1,16 @@
 from abc import ABC
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
+from typing import Any
+
 
 @dataclass(frozen=True)
 class Model(ABC):
-    def fields(self):
+    def fields(self) -> str:
         return f"({', '.join(self.__annotations__.keys())})"
-    
-    def values(self):
+
+    def values(self) -> tuple[Any, ...]:
         return tuple(asdict(self).values())
-    
+
 
 @dataclass(repr=False, frozen=True, kw_only=True)
 class TestModel(Model):
@@ -48,7 +50,7 @@ class ScriptLineModel(Model):
     date_performed: str | None = field(default=None, init=False)
     performed_by: str
     script_line_text: str
-    set_point: int | None  # used for track load test
+    set_point: int | None
     page: str | None = field(default=None, init=False)
     orderprgn: str | None = field(default=None, init=False)
 

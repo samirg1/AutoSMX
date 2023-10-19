@@ -1,6 +1,7 @@
-from tkinter import Misc, ttk
 import tkinter
-from typing import Callable, TypeVar, Generic
+from tkinter import Misc, ttk
+from typing import Callable, Generic, TypeVar
+
 from popups.Popup import Popup
 
 _T = TypeVar("_T")

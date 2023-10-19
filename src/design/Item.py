@@ -1,5 +1,7 @@
-from attrs import field, frozen
 from datetime import datetime
+
+from attrs import field, frozen
+
 from db.convert_stringed_date import convert_stringed_date
 
 

@@ -1,4 +1,4 @@
-from db.get_connection import get_connection, DatabaseFilenames
+from db.get_connection import DatabaseFilenames, get_connection
 from design.data import get_all_scripts
 
 

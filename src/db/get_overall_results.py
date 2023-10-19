@@ -1,6 +1,7 @@
-from typing import NamedTuple
-from db.get_connection import get_connection, DatabaseFilenames
 import functools
+from typing import NamedTuple
+
+from db.get_connection import DatabaseFilenames, get_connection
 
 
 class TestResult(NamedTuple):

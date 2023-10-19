@@ -1,7 +1,8 @@
+import functools
+
+from db.get_script import get_script
 from design.Script import Script
 from design.ScriptInfo import ScriptInfo
-from db.get_script import get_script
-import functools
 
 _NA = "N/A"
 _NO = "No"
@@ -67,10 +68,10 @@ _SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
     ScriptInfo(1230, "9999TEST", "TUB", ["BATH"], ["BATH BED"]),
     ScriptInfo(1229, "9999TEST", "SCALE", ["WEIGH"], []),
     ScriptInfo(1113, "9999TEST", "WHEELCHAIR", [], []),
-    ScriptInfo(859, "9999TEST","CHARGER", [], []),
+    ScriptInfo(859, "9999TEST", "CHARGER", [], []),
     ScriptInfo(1065, "9999TEST", "BATTERY", [], []),
-    ScriptInfo(606, "11083TEST","CLASS II", [], []),
-    ScriptInfo(799, "9999TEST","FURNITURE", ["OVERBED"], []),
+    ScriptInfo(606, "11083TEST", "CLASS II", [], []),
+    ScriptInfo(799, "9999TEST", "FURNITURE", ["OVERBED"], []),
     ScriptInfo(1190, "9999TEST", "VISUAL", [], []),
 )
 

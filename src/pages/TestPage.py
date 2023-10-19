@@ -4,19 +4,19 @@ from typing import cast
 
 from pyautogui import FailSafeException
 
+from db.add_test import add_test
+from db.get_items_jobs import get_items
+from db.get_overall_results import get_overall_results
 from design.Item import Item
 from design.Job import Job
 from design.Script import Script
 from design.Test import ScriptError, Test
 from design.TestJob import TestJob
 from gui.actions import complete_test, turn_off_capslock
-from db.get_items_jobs import get_items
-from db.get_overall_results import get_overall_results
-from db.add_test import add_test
 from pages.Page import Page
+from popups.OptionSelectPopup import OptionSelectPopup
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.TestJobPopup import TestJobPopup
-from popups.OptionSelectPopup import OptionSelectPopup
 from popups.Tooltip import Tooltip
 
 

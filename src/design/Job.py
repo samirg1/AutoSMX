@@ -1,7 +1,7 @@
 from attrs import field, frozen
 
-from design.Test import Test
 from db.get_open_problems import Problem, get_open_problems
+from design.Test import Test
 
 _JOB_COMPANIES_SEARCH = {"ABLE": "ABLE", "CAMPEYN": "CAMPEYN", "BENETAS": "BENETAS", "JEWISH CARE": "JEWISH"}
 

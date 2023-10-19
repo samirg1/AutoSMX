@@ -1,6 +1,7 @@
-from db.get_connection import get_connection, DatabaseFilenames
-from db.convert_stringed_date import convert_stringed_date
 from typing import NamedTuple
+
+from db.convert_stringed_date import convert_stringed_date
+from db.get_connection import DatabaseFilenames, get_connection
 
 
 class Problem(NamedTuple):
