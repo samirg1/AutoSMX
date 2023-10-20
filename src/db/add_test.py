@@ -7,6 +7,7 @@ from db.test_models import ScriptLineModel, ScriptTesterModel, TestModel
 from design.Item import Item
 from design.Problem import Problem
 from design.Test import Test
+from design.Script import ScriptLine
 
 
 class NoTestIDsError(RuntimeError):
@@ -41,7 +42,7 @@ def _get_new_test_id() -> str:
     return f"SMX{str(current+1).zfill(10)}"
 
 
-def add_test(test: Test, problem: Problem) -> dict[str, Any]:
+def add_test(test: Test, problem: Problem, *, _override: str | None = None) -> dict[str, Any]:
     user = get_user()
     test_id = _get_new_test_id()
     time = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
@@ -54,12 +55,12 @@ def add_test(test: Test, problem: Problem) -> dict[str, Any]:
         sysmoduser=user,
         problem_number=problem.number,
         user_name=user,
-        comments=test.comment,
+        comments=test.comments,
         customer_id=str(problem.customer_number),
         company_name=problem.company,
         location=problem.campus,
         dept=problem.department,
-        overall=test.final_result,
+        overall=test.result,
         room=test.item.room,
         model=test.item.model,
         manufacturer=test.item.manufacturer,
@@ -92,10 +93,15 @@ def add_test(test: Test, problem: Problem) -> dict[str, Any]:
             script_model.values(),
         )
 
-        for line, result in zip(test.script.lines, test.script_answers, strict=True):
+        lines = test.script.lines
+        if test.script.number == 1287:
+            track_header_line = ScriptLine(text="Disclaimer: Tests carried out are subject to conditions, available on request", number=1)
+            lines = (track_header_line, *lines)
+
+        for line in lines:
             set_point = 200 if test.script.number == 1287 and line.number == 5 else None
             script_line_model = ScriptLineModel(
-                test_id=test_id, script_number=test.script.number, script_line=line.number, result=result, performed_by=user, script_line_text=line.text, set_point=set_point
+                test_id=test_id, script_number=test.script.number, script_line=line.number, result=line.result, performed_by=user, script_line_text=line.text, set_point=set_point
             )
 
             connection.execute(
@@ -106,7 +112,7 @@ def add_test(test: Test, problem: Problem) -> dict[str, Any]:
                 script_line_model.values(),
             )
 
-        # test_id = 'SMX0001391907'
+        test_id = test_id if _override is None else _override
 
         output: dict[str, Any] = {}
 

@@ -111,11 +111,11 @@ class TestPage(Page):
         ttk.Label(self.frame, text=f"{script.name}").grid(column=0, row=row, columnspan=4)
         row += 1
 
-        if test.script_answers:
-            self.saved_script_answers = test.script_answers
+        if test.completed:
+            self.saved_script_answers = [line.result for line in test.script.lines]
         else:
             stored_answers = self.shared.storage.item_model_to_script_answers.get(self.test.item_model)
-            self.saved_script_answers = stored_answers or [stest.selected for stest in script.lines]
+            self.saved_script_answers = stored_answers or [stest.default for stest in script.lines]
         actual_answers = [StringVar(value=ans) for ans in self.saved_script_answers]
         for i, line in enumerate(script.lines):
             label = ttk.Label(self.frame, text=line.text, width=10)
@@ -147,8 +147,8 @@ class TestPage(Page):
         ttk.Label(self.frame, text="Comment").grid(column=0, row=row, columnspan=4)
         row += 1
         self.comment = tkinter.Text(self.frame, height=4, width=100)
-        if self.test.comment:
-            self.comment.insert(tkinter.END, self.test.comment + "\n\n")
+        if self.test.comments:
+            self.comment.insert(tkinter.END, self.test.comments + "\n\n")
         self.comment.grid(column=0, row=row, columnspan=4)
         row += 1
         self.frame.rowconfigure(row, minsize=10)
@@ -158,9 +158,9 @@ class TestPage(Page):
         ttk.Label(self.frame, text="Result").grid(column=0, row=row, columnspan=4)
         row += 1
         overall_results = get_overall_results(self.shared.problem.customer_number)
-        result = tkinter.StringVar(value=self.test.final_result or overall_results[0].fullname)
+        result = tkinter.StringVar(value=self.test.result or overall_results[0].nickname)
         for i, (nickname, fullname) in enumerate(overall_results):
-            button = ttk.Radiobutton(self.frame, text=nickname, variable=result, value=fullname, width=15)
+            button = ttk.Radiobutton(self.frame, text=nickname, variable=result, value=nickname, width=15)
             Tooltip(button, fullname)
             button.grid(column=i % 4, row=row, columnspan=1)
             row = row + 1 if i % 4 == 3 else row
@@ -208,7 +208,7 @@ class TestPage(Page):
         self.shared.problem.add_test(self.test)
 
         try:
-            add_test(self.test, self.shared.problem)
+            print(add_test(self.test, self.shared.problem))
             complete_test(self.test, self.shared.storage.positions, self.is_editing)
         except FailSafeException:
             test = self.shared.problem.tests.pop()
@@ -234,7 +234,7 @@ class TestPage(Page):
         if self.saved_script_answers == actual_script_answers:
             return
 
-        default = [stest.selected for stest in self.test.script.lines]
+        default = [stest.default for stest in self.test.script.lines]
         with self.shared.storage.edit() as storage:
             if actual_script_answers == default:
                 del storage.item_model_to_script_answers[self.test.item_model]

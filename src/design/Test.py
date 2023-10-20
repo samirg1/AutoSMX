@@ -11,11 +11,11 @@ class ScriptError(ValueError):
 class Test:
     def __init__(self, item: Item) -> None:
         self.item = item
-        self.script_answers: list[str] = []
         self.jobs: list[Job] = []
-        self.comment = ""
-        self.final_result = ""
+        self.comments = ""
+        self.result = ""
         self.script: Script
+        self.completed = False
 
     @property
     def item_model(self) -> str:
@@ -36,10 +36,12 @@ class Test:
     def add_job(self, job: Job) -> None:
         self.jobs.append(job)
 
-    def complete(self, comment: str, final_result: str, script_answers: list[str]) -> None:
-        self.script_answers = ["" if a == " " else "N/A" if a == "" else a for a in script_answers]
-        self.comment = comment.strip()
-        self.final_result = final_result
+    def complete(self, comment: str, result: str, script_answers: list[str]) -> None:
+        for answer, line in zip(script_answers, self.script.lines):
+            line.result = "" if answer == " " else "N/A" if answer == "" else answer
+        self.comments = comment.strip()
+        self.result = result
+        self.completed = True
 
     def __str__(self) -> str:
-        return f"{self.item} - {self.final_result}"
+        return f"{self.item} - {self.result}"

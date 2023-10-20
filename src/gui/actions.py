@@ -46,14 +46,14 @@ def complete_test(test: Test, positions: Positions, is_editing: bool) -> None:  
         click_key(*_KEYS.ctrl_tab.value)
         wait(1)
 
-    for i, value in enumerate(test.script_answers):  # enter script answers
-        type(value)
-        if i != len(test.script_answers) - 1:
+    for i, line in enumerate(test.script.lines):  # enter script answers
+        type(line.result)
+        if i != len(test.script.lines) - 1:
             click_key(_KEYS.tab.value)
 
     if test.script.nickname == "TRACK":  # enter track weight if needed
         click(positions.track_weight_field, times=2)
-        type(test.script_answers[-3])
+        type(test.script.lines[-3].result)
 
     click_key(*_KEYS.ctrl_tab.value)  # enter testjobs if needed
     if test.jobs:
@@ -63,12 +63,12 @@ def complete_test(test: Test, positions: Positions, is_editing: bool) -> None:  
             _complete_testjob(testjob)
 
     click_key(*_KEYS.ctrl_tab.value)  # enter comment if needed
-    if test.comment:
+    if test.comments:
         click(positions.comment_box)
-        type(test.comment)
+        type(test.comments)
         click_key(*_KEYS.shift_tab.value)
 
-    type(test.final_result)  # finish test
+    type(test.result)  # finish test
     click_key(_KEYS.tab.value, times=7)
 
 

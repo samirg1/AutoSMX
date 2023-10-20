@@ -48,9 +48,9 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
 
             line = ScriptLine(text, line_no, *(text[0] for text in raw))
             if z_rv in condition_lines:
-                line.selected = "1"
+                line.default = "1"
             else:
-                line.selected = line_defaults.get(z_rv, line.selected)
+                line.default = line_defaults.get(z_rv, line.default)
 
             lines.append(line)
 

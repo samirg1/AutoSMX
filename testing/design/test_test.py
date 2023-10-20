@@ -21,8 +21,8 @@ def test_test_creation_and_properties() -> None:
     assert test.item == item
     assert test.script_answers == []
     assert test.jobs == []
-    assert test.comment == ""
-    assert test.final_result == ""
+    assert test.comments == ""
+    assert test.result == ""
 
 
 def test_test_determine_script(mock_sql_connect_scripts: MockSqlObject) -> None:
@@ -70,8 +70,8 @@ def test_test_complete_and_full_info(mock_sql_connect_scripts: MockSqlObject) ->
     test.add_job(job)
 
     test.complete("Test completed successfully.", "Pass", ["", "No"])
-    assert test.comment == "Test completed successfully."
-    assert test.final_result == "Pass"
+    assert test.comments == "Test completed successfully."
+    assert test.result == "Pass"
     assert test.script_answers == ["N/A", "No"]
     assert str(test) == "001 - Test Item - Pass"
 

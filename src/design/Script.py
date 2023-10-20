@@ -5,8 +5,9 @@ class ScriptLine:
     def __init__(self, text: str, number: int, *options: str) -> None:
         self.text = text
         self.number = number
-        self.selected = options[0] if options else ""
+        self.default = options[0] if options else ""
         self.options = options
+        self.result = ""
 
     def __repr__(self) -> str:
         return f"{self.text} -> {self.options}"

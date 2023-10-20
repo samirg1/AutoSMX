@@ -3,19 +3,10 @@ from attrs import field, frozen
 from db.get_open_problems import OpenProblem, get_open_problems
 from design.Test import Test
 
-_JOB_COMPANIES_SEARCH = {"ABLE": "ABLE", "CAMPEYN": "CAMPEYN", "BENETAS": "BENETAS", "JEWISH CARE": "JEWISH"}
-
-
-def _job_company_converter(original_company: str) -> str:
-    for company, search_term in _JOB_COMPANIES_SEARCH.items():
-        if search_term in original_company:
-            return company
-    return original_company
-
 
 @frozen(repr=False)
 class Problem:
-    company: str = field(hash=False, eq=False, converter=_job_company_converter)
+    company: str = field(hash=False, eq=False)
     campus: str
     department: str = field(hash=False, eq=False)
     number: str = field(hash=False, eq=False)
