@@ -67,14 +67,14 @@ class TestPage(Page):
     def get_test(self, item: Item, *, choose_script: bool = False) -> None:
         if not self.is_editing:
             return self.get_script(Test(item), choose_script)
-        
+
         possible_tests = self.shared.item_number_to_tests.get(item.number, None)
         if possible_tests is None:
             return self.item_not_found(item.number)
-        
+
         if len(possible_tests) == 1:
             return self.get_script(possible_tests[0], choose_script)
-        
+
         popup = OptionSelectPopup(self.frame, possible_tests, lambda test: self.get_script(test, choose_script), display=lambda test: f"{test.script.nickname} - {test.date}")
         popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(item.number))
 
@@ -228,7 +228,7 @@ class TestPage(Page):
         else:
             try:
                 add_test(self.test, self.test_problem)
-                #complete_test(self.test, self.shared.storage.positions, self.is_editing)
+                # complete_test(self.test, self.shared.storage.positions, self.is_editing)
             except FailSafeException:
                 test = self.test_problem.tests.pop()
                 self.test_problem.test_breakdown[test.script.nickname] -= 1
@@ -240,7 +240,7 @@ class TestPage(Page):
             storage.total_tests += 1
             storage.test_breakdown[self.test.script.nickname] = storage.test_breakdown.get(self.test.script.nickname, 0) + 1
 
-        if self.test.item.model not in (".", " ", "", "-", self.test.item.description, self.test.script.nickname):
+        if self.test.item.model not in (".", " ", "", "-", self.test.item.description, self.test.script.nickname) and self.test.script.nickname != "CLASS II":
             self.update_storage(script_answers)
 
         self.reset_page(self.test.item.number)
