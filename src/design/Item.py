@@ -8,6 +8,7 @@ from db.convert_stringed_date import convert_stringed_date
 @frozen(repr=False)
 class Item:
     number: str
+    customer_barcode: str = field(hash=False, eq=False)
     description: str = field(hash=False, eq=False)
     model: str = field(hash=False, eq=False)
     manufacturer: str = field(hash=False, eq=False)

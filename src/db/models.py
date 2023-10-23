@@ -36,7 +36,7 @@ class TestModel(Model):
     def __init__(self, test: Test, problem: Problem):
         self.test_id = test.id
         self.logical_name = test.item.number
-        self.customer_barcode = test.item.number
+        self.customer_barcode = test.item.customer_barcode
         self.test_date = test.date
         self.sysmoduser = test.user
         self.problem_number = problem.number
@@ -105,7 +105,7 @@ class JobModel(Model):
         self.category = None
         self.subcategory = None
         self.logical_name = test.item.number
-        self.customer_barcode = test.item.number
+        self.customer_barcode = test.item.customer_barcode
         self.actionprgn = job.comment
         self.assignment = None
         self.dept = job.department
