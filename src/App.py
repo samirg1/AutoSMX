@@ -4,7 +4,6 @@ import sys
 import tkinter
 from tkinter import PhotoImage, ttk
 
-from db.set_favourites import set_favourites
 from design.JobManager import JobManager
 from pages.ProblemPage import ProblemPage
 from pages.Page import TPAGES, Page, SharedPageInfo
@@ -61,7 +60,6 @@ class App(tkinter.Tk):
 
 
 def main() -> None:
-    set_favourites()
     App().mainloop()
 
 
