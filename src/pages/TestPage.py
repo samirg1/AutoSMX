@@ -38,14 +38,14 @@ class TestPage(Page):
         self.go_button.grid(column=0, row=2, columnspan=2)
         self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_items(item_number.get(), item_entry, choose_script=True))
         self.choose_button.grid(column=2, row=2)
-        button_state = "normal" if item_number.get() in self.shared.item_number_to_tests else "disabled"
+        button_state = "normal" if self.shared.item_number_to_tests.get(item_number.get()) else "disabled"
         self.edit_button = ttk.Button(self.frame, text="Edit Test", command=lambda: self.get_items(item_number.get(), item_entry, editing=True), state=button_state)
         self.edit_button.grid(column=3, row=2)
 
         item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
 
     def edit_button_reconfigure(self, item_number: StringVar) -> None:
-        tested = item_number.get() in self.shared.item_number_to_tests
+        tested = self.shared.item_number_to_tests.get(item_number.get())
         self.edit_button.configure(state=("normal" if tested else "disabled"))
 
     def get_items(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False, editing: bool = False) -> None:
@@ -76,7 +76,7 @@ class TestPage(Page):
         if len(possible_tests) == 1:
             return self.get_script(possible_tests[0], choose_script)
         
-        popup = OptionSelectPopup(self.frame, possible_tests, lambda test: self.get_script(test, choose_script))
+        popup = OptionSelectPopup(self.frame, possible_tests, lambda test: self.get_script(test, choose_script), display=lambda test: f"{test.script.nickname} - {test.date}")
         popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(item.number))
 
     def get_script(self, test: Test, choose_script: bool):
@@ -100,7 +100,12 @@ class TestPage(Page):
         self.choose_button.destroy()
         self.edit_button.destroy()
         self.go_button.configure(text="Cancel", command=lambda: self.reset_page(test.item.number))
-        self.go_button.grid(column=0, row=2, columnspan=4)
+
+        if self.is_editing:
+            self.go_button.grid(column=0, row=2, columnspan=2)
+            ttk.Button(self.frame, text="Remove", command=self.remove_test).grid(column=2, row=2, columnspan=2)
+        else:
+            self.go_button.grid(column=0, row=2, columnspan=4)
 
         # displaying the item and problem
         item_label = ttk.Label(self.frame, text=f"{test.item}")
@@ -177,6 +182,12 @@ class TestPage(Page):
         save.focus()
         save.bind("<Return>", lambda _: self.save_test([s.get() for s in actual_answers], result.get()))
         row += 1
+
+    def remove_test(self) -> None:
+        self.test_problem.remove_test(self.test)
+        self.shared.item_number_to_tests[self.test.item.number].remove(self.test)
+        edit_test(self.test, self.test_problem, remove_only=True)
+        return self.reset_page(self.test.item.number)
 
     def add_job(self) -> None:
         job_popup = JobPopup(self.frame, self.test_problem.department, self.test_problem.company, self.save_job)
