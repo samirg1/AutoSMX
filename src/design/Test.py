@@ -52,5 +52,7 @@ class Test:
         self.date = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
         self.completed = True
 
-    def __str__(self) -> str:
-        return f"{self.item} - {self.result}"
+    def __repr__(self) -> str:
+        if self.completed:
+            return f"{self.id}({self.item.number}) - {self.script.name} - {self.result}"
+        return f"{self.item.number} - Incomplete"

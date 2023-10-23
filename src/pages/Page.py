@@ -17,8 +17,7 @@ class SharedPageInfo:
         self.problem: Problem | None = None
         self.storage = storage
         self.previous_item_number: str = ""
-        self.item_number_to_description: dict[str, str] = {}
-        self.test_id_to_test: dict[str, Test] = {}
+        self.item_number_to_tests: dict[str, list[Test]] = {}
 
 
 class Page(ABC):
