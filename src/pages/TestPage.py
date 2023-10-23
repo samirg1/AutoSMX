@@ -12,7 +12,6 @@ from design.Job import Job
 from design.Problem import Problem
 from design.Script import Script
 from design.Test import ScriptError, Test
-from gui.actions import complete_test, turn_off_capslock
 from pages.Page import Page
 from popups.JobPopup import JobPopup
 from popups.OptionSelectPopup import OptionSelectPopup
@@ -215,7 +214,6 @@ class TestPage(Page):
         self.add_job_button.configure(text=add_job_text)
 
     def save_test(self, script_answers: list[str], result: str) -> None:
-        turn_off_capslock()
         comment = self.comment.get("1.0", tkinter.END)
         self.test.complete(comment, result, script_answers)
         if self.is_editing:

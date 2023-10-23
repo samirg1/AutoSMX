@@ -43,7 +43,7 @@ _TUTORIAL = {
 class TutorialPage(Page):
     def setup(self) -> None:
         if self.shared.storage.tutorial_complete:
-            return self.change_page("CALIBRATION")
+            return self.change_page("PROBLEM")
 
         ttk.Label(self.frame, text="Tutorial Page").grid(row=0, column=0, sticky=tkinter.EW)
         ttk.Button(self.frame, text="Skip", command=self.end_tutorial).grid(row=0, column=3)
@@ -88,4 +88,4 @@ class TutorialPage(Page):
     def end_tutorial(self) -> None:
         with self.shared.storage.edit() as storage:
             storage.tutorial_complete = True
-        self.change_page("CALIBRATION")
+        self.change_page("PROBLEM")

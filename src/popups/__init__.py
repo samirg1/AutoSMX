@@ -1,5 +1,4 @@
 # pyright: reportUnusedImport=false
-from popups.CalibrationHelpPopup import CalibrationHelpPopup
 from popups.JobPopup import JobPopup
 from popups.OptionSelectPopup import OptionSelectPopup
 from popups.Popup import Popup

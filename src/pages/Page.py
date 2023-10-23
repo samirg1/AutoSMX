@@ -7,7 +7,7 @@ from design.Problem import Problem
 from design.Test import Test
 from storage.Storage import Storage
 
-TPAGES = Literal["CALIBRATION", "PROBLEM", "TEST", "TUTORIAL", "SETTINGS"]
+TPAGES = Literal["PROBLEM", "TEST", "TUTORIAL", "SETTINGS"]
 
 
 class SharedPageInfo:
