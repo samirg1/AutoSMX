@@ -8,12 +8,11 @@ from design.Script import ScriptLine
 
 
 def add_test(test: Test, problem: Problem) -> None:
-    spt_date = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
     next_spt_date = (datetime.now() + timedelta(days=366)).strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
 
     with get_connection(DatabaseFilenames.TESTS, mode="rw") as connection, get_connection(DatabaseFilenames.ASSETS, mode="rw") as asset_connection:
         with connection, asset_connection:
-            TestModel(test, problem, spt_date).insert(connection)
+            TestModel(test, problem).insert(connection)
             ScriptTesterModel(test).insert(connection)
 
             lines = test.script.lines
@@ -33,7 +32,7 @@ def add_test(test: Test, problem: Problem) -> None:
                 SET service_last = ?, service_next = ?
                 WHERE logical_name = ? AND service_type = ?;
                 """,
-                (spt_date, next_spt_date, test.item.number, test.script.service_type),
+                (test.date, next_spt_date, test.item.number, test.script.service_type),
             )
 
             services: list[tuple[str, float, str, str]] = asset_connection.execute(
@@ -53,5 +52,5 @@ def add_test(test: Test, problem: Problem) -> None:
                 SET last_spt_date = ?, next_spt_date = ?, servicearray = ? 
                 WHERE logical_name = ?;
                 """,
-                (spt_date, next_spt_date, servicearray, test.item.number),
+                (test.date, next_spt_date, servicearray, test.item.number),
             )

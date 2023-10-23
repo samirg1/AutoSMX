@@ -33,11 +33,11 @@ class TestModel(Model):
     def table_name(self) -> str:
         return "SCMobileTestsm1"
 
-    def __init__(self, test: Test, problem: Problem, time: str):
+    def __init__(self, test: Test, problem: Problem):
         self.test_id = test.id
         self.logical_name = test.item.number
         self.customer_barcode = test.item.number
-        self.test_date = time
+        self.test_date = test.date
         self.sysmoduser = test.user
         self.problem_number = problem.number
         self.user_name = test.user
@@ -56,7 +56,7 @@ class TestModel(Model):
         self.description = test.item.description
         self.serial_no_ = test.item.serial
         self.pointsync_time = None
-        self.sysmodtime = time
+        self.sysmodtime = test.date
         self.interfaced = None
 
 

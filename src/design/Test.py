@@ -1,3 +1,4 @@
+from datetime import datetime
 from db.get_user import get_user
 from design.data import get_all_scripts
 from design.Item import Item
@@ -19,6 +20,7 @@ class Test:
         self.result = ""
         self.id = ""
         self.user = ""
+        self.date = ""
         self.completed = False
 
     @property
@@ -47,6 +49,7 @@ class Test:
         self.result = result
         self.id = get_new_test_id()
         self.user = get_user()
+        self.date = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
         self.completed = True
 
     def __str__(self) -> str:
