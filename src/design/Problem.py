@@ -10,7 +10,7 @@ class Problem:
     campus: str
     department: str = field(hash=False, eq=False)
     number: str = field(hash=False, eq=False)
-    customer_number: int = field(hash=False, eq=False, converter=int)
+    customer_number: str = field(hash=False, eq=False)
     get_open_problems: bool = field(default=True, hash=False, eq=False, kw_only=True)
     open_problems: list[OpenProblem] = field(factory=list, init=False, hash=False, eq=False)
     tests: list[Test] = field(factory=list, init=False, hash=False, eq=False)

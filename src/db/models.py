@@ -1,9 +1,15 @@
 from abc import ABC, abstractmethod
 from sqlite3 import Connection
+from random import randrange
 
 from design.Test import Test
 from design.Problem import Problem
 from design.Script import ScriptLine
+from design.Job import Job
+
+
+def rand_hex(n: int) -> str:
+    return f"{randrange(16**n):0{n}x}".upper()
 
 
 class Model(ABC):
@@ -36,7 +42,7 @@ class TestModel(Model):
         self.problem_number = problem.number
         self.user_name = user
         self.comments = test.comments
-        self.customer_id = str(problem.customer_number)
+        self.customer_id = problem.customer_number
         self.company_name = problem.company
         self.location = problem.campus
         self.dept = problem.department
@@ -82,3 +88,32 @@ class ScriptLineModel(Model):
         self.set_point = 200 if (test.script.number == 1287 and line.number == 5) else None
         self.page = None
         self.orderprgn = None
+
+
+class JobModel(Model):
+    @property
+    def table_name(self) -> str:
+        return "SCMProbsUploadm1"
+
+    def __init__(self, test: Test, problem: Problem, test_id: str, job: Job, user: str) -> None:
+        self.pointsync_id = "{" + f"{rand_hex(8)}-{rand_hex(4)}-{rand_hex(4)}-{rand_hex(4)}-{rand_hex(12)}" + "}"
+        self.customer_no_ = problem.customer_number
+        self.location = problem.campus
+        self.building = None
+        self.floor = None
+        self.room = test.item.room
+        self.category = None
+        self.subcategory = None
+        self.logical_name = test.item.number
+        self.customer_barcode = test.item.number
+        self.actionprgn = job.comment
+        self.assignment = None
+        self.dept = job.department
+        self.contact_name = job.contact_name
+        self.contact_phone = None
+        self.contact_email = None
+        self.assignee_name = user
+        self.asset_description = test.item.description
+        self.opened_by = user
+        self.link_to_problem = problem.number
+        self.test_id = test_id

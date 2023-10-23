@@ -157,7 +157,7 @@ class TestPage(Page):
         # final results
         ttk.Label(self.frame, text="Result").grid(column=0, row=row, columnspan=4)
         row += 1
-        overall_results = get_overall_results(self.shared.problem.customer_number)
+        overall_results = get_overall_results(int(self.shared.problem.customer_number))
         result = tkinter.StringVar(value=self.test.result or overall_results[0].nickname)
         for i, (nickname, fullname) in enumerate(overall_results):
             button = ttk.Radiobutton(self.frame, text=nickname, variable=result, value=nickname, width=15)
@@ -208,8 +208,8 @@ class TestPage(Page):
         self.shared.problem.add_test(self.test)
 
         try:
-            print(add_test(self.test, self.shared.problem))
-            complete_test(self.test, self.shared.storage.positions, self.is_editing)
+            add_test(self.test, self.shared.problem)
+            #complete_test(self.test, self.shared.storage.positions, self.is_editing)
         except FailSafeException:
             test = self.shared.problem.tests.pop()
             self.shared.problem.test_breakdown[test.script.nickname] -= 1

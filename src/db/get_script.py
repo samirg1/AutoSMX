@@ -5,14 +5,14 @@ from design.ScriptInfo import ScriptInfo
 
 def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition_lines: set[int]) -> Script:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
-        script_name = connection.execute(
+        script_name, service_type = connection.execute(
             """
-            SELECT script_name
+            SELECT script_name, service_type
             FROM SCMOBILESCRIPTSM1
             WHERE script_no = ?;
             """,
             (script_info.number,),
-        ).fetchone()[0]
+        ).fetchone()
 
         script_line_fields: list[tuple[int, str, int, str, str]] = connection.execute(
             """
@@ -54,4 +54,4 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
 
             lines.append(line)
 
-    return Script(script_info.nickname, script_name, script_info.number, script_info.tester_number, tuple(lines), search_terms=script_info.search_terms, exact_matches=script_info.exact_matches)
+    return Script(script_info.nickname, script_name, script_info.number, script_info.tester_number, service_type, tuple(lines), search_terms=script_info.search_terms, exact_matches=script_info.exact_matches)
