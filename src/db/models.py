@@ -33,14 +33,14 @@ class TestModel(Model):
     def table_name(self) -> str:
         return "SCMobileTestsm1"
 
-    def __init__(self, test: Test, problem: Problem, test_id: str, user: str, time: str):
-        self.test_id = test_id
+    def __init__(self, test: Test, problem: Problem, time: str):
+        self.test_id = test.id
         self.logical_name = test.item.number
         self.customer_barcode = test.item.number
         self.test_date = time
-        self.sysmoduser = user
+        self.sysmoduser = test.user
         self.problem_number = problem.number
-        self.user_name = user
+        self.user_name = test.user
         self.comments = test.comments
         self.customer_id = problem.customer_number
         self.company_name = problem.company
@@ -65,8 +65,8 @@ class ScriptTesterModel(Model):
     def table_name(self) -> str:
         return "SCMobileTesterNumbersm1"
 
-    def __init__(self, test: Test, test_id: str):
-        self.test_id = test_id
+    def __init__(self, test: Test):
+        self.test_id = test.id
         self.script_number = test.script.number
         self.tester_number = test.script.tester_number
 
@@ -76,14 +76,14 @@ class ScriptLineModel(Model):
     def table_name(self) -> str:
         return "SCMobileTestLinesm1"
 
-    def __init__(self, test: Test, line: ScriptLine, test_id: str, user: str):
-        self.test_id = test_id
+    def __init__(self, test: Test, line: ScriptLine):
+        self.test_id = test.id
         self.script_number = test.script.number
         self.script_line = line.number
         self.result = line.result
         self.comments = None
         self.date_performed = None
-        self.performed_by = user
+        self.performed_by = test.user
         self.script_line_text = line.text
         self.set_point = 200 if (test.script.number == 1287 and line.number == 5) else None
         self.page = None
@@ -95,7 +95,7 @@ class JobModel(Model):
     def table_name(self) -> str:
         return "SCMProbsUploadm1"
 
-    def __init__(self, test: Test, problem: Problem, test_id: str, job: Job, user: str) -> None:
+    def __init__(self, test: Test, problem: Problem, job: Job) -> None:
         self.pointsync_id = "{" + f"{rand_hex(8)}-{rand_hex(4)}-{rand_hex(4)}-{rand_hex(4)}-{rand_hex(12)}" + "}"
         self.customer_no_ = problem.customer_number
         self.location = problem.campus
@@ -112,8 +112,8 @@ class JobModel(Model):
         self.contact_name = job.contact_name
         self.contact_phone = None
         self.contact_email = None
-        self.assignee_name = user
+        self.assignee_name = test.user
         self.asset_description = test.item.description
-        self.opened_by = user
+        self.opened_by = test.user
         self.link_to_problem = problem.number
-        self.test_id = test_id
+        self.test_id = test.id

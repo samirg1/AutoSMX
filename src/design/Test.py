@@ -1,7 +1,9 @@
+from db.get_user import get_user
 from design.data import get_all_scripts
 from design.Item import Item
 from design.Job import Job
 from design.Script import Script
+from db.get_new_test_id import get_new_test_id
 
 
 class ScriptError(ValueError):
@@ -12,9 +14,11 @@ class Test:
     def __init__(self, item: Item) -> None:
         self.item = item
         self.jobs: list[Job] = []
+        self.script: Script
         self.comments = ""
         self.result = ""
-        self.script: Script
+        self.id = ""
+        self.user = ""
         self.completed = False
 
     @property
@@ -41,6 +45,8 @@ class Test:
             line.result = "" if answer == " " else "N/A" if answer == "" else answer
         self.comments = comment.strip()
         self.result = result
+        self.id = get_new_test_id()
+        self.user = get_user()
         self.completed = True
 
     def __str__(self) -> str:

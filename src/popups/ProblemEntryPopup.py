@@ -1,7 +1,7 @@
 from tkinter import Misc, StringVar, ttk
 from typing import Callable
 
-from db.get_items_problems import get_problems
+from db.get_problems import get_problems
 from design.Problem import Problem
 from popups.OptionSelectPopup import OptionSelectPopup
 from popups.Popup import Popup

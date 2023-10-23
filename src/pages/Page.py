@@ -4,6 +4,7 @@ from typing import Callable, Literal
 
 from design.JobManager import JobManager
 from design.Problem import Problem
+from design.Test import Test
 from storage.Storage import Storage
 
 TPAGES = Literal["CALIBRATION", "PROBLEM", "TEST", "TUTORIAL", "SETTINGS"]
@@ -17,6 +18,7 @@ class SharedPageInfo:
         self.storage = storage
         self.previous_item_number: str = ""
         self.item_number_to_description: dict[str, str] = {}
+        self.test_id_to_test: dict[str, Test] = {}
 
 
 class Page(ABC):

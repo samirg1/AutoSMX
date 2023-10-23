@@ -5,7 +5,7 @@ from typing import cast
 from pyautogui import FailSafeException
 
 from db.add_test import add_test
-from db.get_items_problems import get_items
+from db.get_items import get_items
 from db.get_overall_results import get_overall_results
 from design.Item import Item
 from design.Job import Job
