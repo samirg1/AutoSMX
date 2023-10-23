@@ -25,8 +25,8 @@ class OptionSelectPopup(Popup, Generic[_T]):
         tree.bind("<Return>", lambda _: self._select(tree.focus()))
         tree.focus_set()
 
-    def _select(self, focused: str) -> None:
-        if not focused:
+    def _select(self, selected: str) -> None:
+        if not selected:
             return
-        self.callback(self.options[int(focused)])
+        self.callback(self.options[int(selected)])
         self.destroy()

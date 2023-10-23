@@ -32,8 +32,8 @@ class TestPage(Page):
         item_entry.grid(column=2, row=1, sticky="w", columnspan=2)
         item_entry.focus()
         item_entry.icursor(tkinter.END)
+
         self.go_button = ttk.Button(self.frame, text="Go", command=lambda: self.get_items(item_number.get(), item_entry))
-        item_entry.bind("<Return>", lambda _: self.go_button.invoke())
         self.go_button.grid(column=0, row=2, columnspan=2)
         self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_items(item_number.get(), item_entry, choose_script=True))
         self.choose_button.grid(column=2, row=2)
@@ -41,7 +41,11 @@ class TestPage(Page):
         self.edit_button = ttk.Button(self.frame, text="Edit Test", command=lambda: self.get_items(item_number.get(), item_entry, editing=True), state=button_state)
         self.edit_button.grid(column=3, row=2)
 
+        item_entry.bind("<Return>", lambda _: self.go_button.invoke())
+        item_entry.bind("<Alt-c>", lambda _: self.choose_button.invoke())
+        item_entry.bind("<Alt-e>", lambda _: self.edit_button.invoke())
         item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
+        
 
     def edit_button_reconfigure(self, item_number: StringVar) -> None:
         tested = self.shared.item_number_to_tests.get(item_number.get())
@@ -180,6 +184,7 @@ class TestPage(Page):
         save.grid(column=0, row=row, columnspan=4)
         save.focus()
         save.bind("<Return>", lambda _: self.save_test([s.get() for s in actual_answers], result.get()))
+        save.bind("c", lambda _: self.go_button.invoke())
         row += 1
 
     def remove_test(self) -> None:
