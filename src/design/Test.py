@@ -47,7 +47,8 @@ class Test:
             line.result = "" if answer == " " else "N/A" if answer == "" else answer
         self.comments = comment.strip()
         self.result = result
-        self.id = get_new_test_id()
-        self.user = get_user()
+        if not self.completed:
+            self.id = get_new_test_id()
+            self.user = get_user()
         self.date = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
         self.completed = True
