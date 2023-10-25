@@ -4,6 +4,7 @@ from tkinter import ttk
 from design.Problem import Problem
 from pages.Page import Page
 from popups.ProblemEntryPopup import ProblemEntryPopup
+from popups.SyncPopup import SyncPopup
 
 
 class ProblemPage(Page):
@@ -42,13 +43,13 @@ class ProblemPage(Page):
                 for open_problem in problem.open_problems:
                     tree.insert(problem_node, tkinter.END, values=(f"{open_problem}",))
 
-            job_testjobs = self.shared.job_manager.problem_to_jobs.get(problem, [])
-            if job_testjobs:
-                testjob_node = tree.insert(job_node, tkinter.END, values=("Jobs Raised", len(job_testjobs)))
-                for testjob in job_testjobs:
-                    item = self.shared.job_manager.job_to_item[testjob]
-                    first_line = str(testjob).split("\n")[0]
-                    tree.insert(testjob_node, tkinter.END, values=(f"{first_line}\n{item.description}\n{item.number}",))
+            problem_jobs = self.shared.job_manager.problem_to_jobs.get(problem, [])
+            if problem_jobs:
+                job_node = tree.insert(job_node, tkinter.END, values=("Jobs Raised", len(problem_jobs)))
+                for job in problem_jobs:
+                    item = self.shared.job_manager.job_to_item[job]
+                    first_line = str(job).split("\n")[0]
+                    tree.insert(job_node, tkinter.END, values=(f"{first_line}\n{item.description}\n{item.number}",))
 
             if problem.tests:
                 test_node = tree.insert(job_node, tkinter.END, values=("Tests", f"{len(problem.tests)}"))
@@ -67,9 +68,17 @@ class ProblemPage(Page):
         button1.grid(row=row, column=0, columnspan=4)
         button2 = ttk.Button(self.frame, text="Delete Problem", command=lambda: self.delete_problem(tree), state="disabled")
         button2.grid(row=row + 1, column=0, columnspan=4)
+        row += 2
 
         tree.bind("<<TreeviewSelect>>", lambda _: self.on_first_select(tree, button1, button2))
 
+        self.frame.rowconfigure(row, minsize=10)
+        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=row+1, columnspan=4)
+        row += 2
+
+        ttk.Button(self.frame, text="Sync", command=self.sync).grid(row=row, column=0, columnspan=4)
+        row += 1
+        
     def on_first_select(self, tree: ttk.Treeview, *buttons: ttk.Button) -> None:
         for button in buttons:
             button.configure(state="normal")
@@ -101,3 +110,6 @@ class ProblemPage(Page):
         self.shared.problem = problem
         self.shared.problems[problem.campus] = problem
         self.change_page("TEST")
+
+    def sync(self):
+        SyncPopup(self.frame, self.shared.problem).mainloop()

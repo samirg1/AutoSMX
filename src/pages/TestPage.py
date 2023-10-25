@@ -190,6 +190,8 @@ class TestPage(Page):
     def remove_test(self) -> None:
         self.test_problem.remove_test(self.test)
         self.shared.item_number_to_tests[self.test.item.number].remove(self.test)
+        for job in self.test.jobs:
+            self.shared.job_manager.delete_job(self.test_problem, job)
         edit_test(self.test, self.test_problem, remove_only=True)
         return self.reset_page(self.test.item.number)
 
