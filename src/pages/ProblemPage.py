@@ -36,23 +36,23 @@ class ProblemPage(Page):
 
         # add each problem to the tree
         for campus, problem in self.shared.problems.items():
-            job_node = tree.insert("", tkinter.END, campus, values=(f"{problem}",))
+            problem_node = tree.insert("", tkinter.END, campus, values=(f"{problem}",))
 
             if problem.open_problems:
-                problem_node = tree.insert(job_node, tkinter.END, values=("Open Problems", len(problem.open_problems)))
+                open_problem_node = tree.insert(problem_node, tkinter.END, values=("Open Problems", len(problem.open_problems)))
                 for open_problem in problem.open_problems:
-                    tree.insert(problem_node, tkinter.END, values=(f"{open_problem}",))
+                    tree.insert(open_problem_node, tkinter.END, values=(f"{open_problem}",))
 
             problem_jobs = self.shared.job_manager.problem_to_jobs.get(problem, [])
             if problem_jobs:
-                job_node = tree.insert(job_node, tkinter.END, values=("Jobs Raised", len(problem_jobs)))
+                job_node = tree.insert(problem_node, tkinter.END, values=("Jobs Raised", len(problem_jobs)))
                 for job in problem_jobs:
                     item = self.shared.job_manager.job_to_item[job]
                     first_line = str(job).split("\n")[0]
                     tree.insert(job_node, tkinter.END, values=(f"{first_line}\n{item.description}\n{item.number}",))
 
             if problem.tests:
-                test_node = tree.insert(job_node, tkinter.END, values=("Tests", f"{len(problem.tests)}"))
+                test_node = tree.insert(problem_node, tkinter.END, values=("Tests", f"{len(problem.tests)}"))
                 for script_name, value in problem.test_breakdown.items():
                     tree.insert(test_node, tkinter.END, values=(f"{script_name}", value))
 
