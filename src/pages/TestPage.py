@@ -1,8 +1,6 @@
 import tkinter
 from tkinter import StringVar, messagebox, ttk
 
-from pyautogui import FailSafeException
-
 from db.add_test import add_test
 from db.edit_test import edit_test
 from db.get_items import get_items
@@ -81,7 +79,7 @@ class TestPage(Page):
         popup = OptionSelectPopup(self.frame, possible_tests, lambda test: self.get_script(test, choose_script), display=lambda test: f"{test.script.nickname} - {test.date}")
         popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(item.number))
 
-    def get_script(self, test: Test, choose_script: bool):
+    def get_script(self, test: Test, choose_script: bool) -> None:
         try:
             if not hasattr(test, "script"):
                 if choose_script:
@@ -232,15 +230,7 @@ class TestPage(Page):
         if self.is_editing:
             edit_test(self.test, self.test_problem)
         else:
-            try:
-                add_test(self.test, self.test_problem)
-                # complete_test(self.test, self.shared.storage.positions, self.is_editing)
-            except FailSafeException:
-                test = self.test_problem.tests.pop()
-                self.test_problem.test_breakdown[test.script.nickname] -= 1
-                for _ in test.jobs:
-                    self.shared.job_manager.problem_to_jobs[self.test_problem].pop()
-                return self.failsafe(self.test.item.number)
+            add_test(self.test, self.test_problem)
 
         with self.shared.storage.edit() as storage:
             storage.total_tests += 1
@@ -265,10 +255,6 @@ class TestPage(Page):
                 del storage.item_model_to_script_answers[self.test.item_model]
             else:
                 storage.item_model_to_script_answers[self.test.item_model] = actual_script_answers
-
-    def failsafe(self, current_item_number: str) -> None:
-        messagebox.showerror("Process Aborted", "Fail safe activated")  # pyright: ignore
-        self.reset_page(current_item_number)
 
     def item_not_found(self, current_item_number: str) -> None:
         messagebox.showerror("Not Found", f"Item number '{current_item_number}'")  # pyright: ignore
