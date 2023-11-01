@@ -1,4 +1,5 @@
 import os
+import sys
 from tkinter import Misc, ttk
 
 from db.get_connection import BASE_FILE
@@ -33,8 +34,10 @@ class SyncPopup(Popup):
         row += 1
 
     def _sync(self) -> None:
-        with open(rf"{BASE_FILE}\SCMSync.log", "w"):
-            ...
+        if sys.platform == "win32":
+            with open(rf"{BASE_FILE}\SCMSync.log", "w"):
+                ...
 
-        os.startfile("C:\\Program Files (x86)\\SMX\\SCMSync.exe")
+            os.startfile("C:\\Program Files (x86)\\SMX\\SCMSync.exe")
+
         self.destroy()
