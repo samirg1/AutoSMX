@@ -1,3 +1,4 @@
+import configparser
 import sqlite3
 from typing import Any
 
@@ -71,5 +72,30 @@ def mock_sql_connect(monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureReq
 
 @pytest.fixture
 def mock_sql_connect_scripts(monkeypatch: pytest.MonkeyPatch) -> MockSqlObject:
-    return_values: list[Any] = [("script_name",), []]
+    return_values: list[Any] = [("script_name", "type"), []]
     return base(monkeypatch, return_values, constant=True)
+
+
+class MockConfigObject:
+    def __init__(self) -> None:
+        self.read_calls: list[str] = []
+        self.get_calls: list[tuple[str, str]] = []
+
+    def read(self, s: str) -> None:
+        self.read_calls.append(s)
+
+    def get(self, s1: str, s2: str) -> str:
+        self.get_calls.append((s1, s2))
+        return "test user"
+
+
+@pytest.fixture
+def mock_config_parse(monkeypatch: pytest.MonkeyPatch) -> MockConfigObject:
+    obj = MockConfigObject()
+
+    def mock_config() -> MockConfigObject:
+        return obj
+
+    monkeypatch.setattr(configparser, "ConfigParser", mock_config)
+
+    return obj

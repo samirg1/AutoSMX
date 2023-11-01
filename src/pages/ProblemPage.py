@@ -73,12 +73,12 @@ class ProblemPage(Page):
         tree.bind("<<TreeviewSelect>>", lambda _: self.on_first_select(tree, button1, button2))
 
         self.frame.rowconfigure(row, minsize=10)
-        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=row+1, columnspan=4)
+        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=row + 1, columnspan=4)
         row += 2
 
         ttk.Button(self.frame, text="Sync", command=self.sync).grid(row=row, column=0, columnspan=4)
         row += 1
-        
+
     def on_first_select(self, tree: ttk.Treeview, *buttons: ttk.Button) -> None:
         for button in buttons:
             button.configure(state="normal")
@@ -111,5 +111,5 @@ class ProblemPage(Page):
         self.shared.problems[problem.campus] = problem
         self.change_page("TEST")
 
-    def sync(self):
+    def sync(self) -> None:
         SyncPopup(self.frame, self.shared.problem).mainloop()

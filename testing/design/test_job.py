@@ -2,8 +2,6 @@ import pytest
 
 from design.Job import Job
 
-Job.__test__ = False  # type: ignore
-
 
 def test_job_creation_and_string_representation() -> None:
     job = Job("Quality Control", "John Doe", "Performing\ntesting on\nnew batch.")

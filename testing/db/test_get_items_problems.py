@@ -1,6 +1,7 @@
 import pytest
 
-from db.get_items_problems import get_items, get_problems
+from db.get_items import get_items
+from db.get_problems import get_problems
 from testing.conftest import MockSqlObject
 
 problem = [("company", "campus", "department", "number", 123)]
@@ -18,7 +19,7 @@ def test_get_problem(problem_number: str, mock_sql_connect: MockSqlObject) -> No
     assert mock_sql_connect.close_called
 
 
-item = [("number", "description", "model", "manufacturer", "serial", "room", "2019-01-01 03:45:44.759")]
+item = [("number", "customer_number", "description", "model", "manufacturer", "serial", "room", "2019-01-01 03:45:44.759")]
 
 
 @pytest.mark.parametrize("mock_sql_connect", ([item],), indirect=True)
@@ -26,11 +27,13 @@ def test_get_item(mock_sql_connect: MockSqlObject) -> None:
     item = get_items("123456")[0]
     assert item
     assert item.number == "number"
+    assert item.customer_barcode == "customer_number"
     assert item.description == "description"
     assert item.model == "model"
     assert item.manufacturer == "manufacturer"
     assert item.serial == "serial"
     assert item.room == "room"
+    assert item.last_update
     assert item.last_update.strftime(r"%Y-%m-%d %H:%M:%S") == "2019-01-01 03:45:44"
     assert "123456" in mock_sql_connect.calls[0][1][0]
     assert mock_sql_connect.close_called

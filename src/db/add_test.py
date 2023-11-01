@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
 
 from db.get_connection import DatabaseFilenames, get_connection
-from db.models import ScriptLineModel, ScriptTesterModel, TestModel, JobModel
+from db.models import JobModel, ScriptLineModel, ScriptTesterModel, TestModel
 from design.Problem import Problem
-from design.Test import Test
 from design.Script import ScriptLine
+from design.Test import Test
 
 
 def add_test(test: Test, problem: Problem) -> None:
@@ -49,7 +49,7 @@ def add_test(test: Test, problem: Problem) -> None:
             connection.execute(
                 """
                 UPDATE devicem1_PS
-                SET last_spt_date = ?, next_spt_date = ?, servicearray = ? 
+                SET last_spt_date = ?, next_spt_date = ?, servicearray = ?
                 WHERE logical_name = ?;
                 """,
                 (test.date, next_spt_date, servicearray, test.item.number),

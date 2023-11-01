@@ -45,7 +45,6 @@ class TestPage(Page):
         item_entry.bind("<Alt-c>", lambda _: self.choose_button.invoke())
         item_entry.bind("<Alt-e>", lambda _: self.edit_button.invoke())
         item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
-        
 
     def edit_button_reconfigure(self, item_number: StringVar) -> None:
         tested = self.shared.item_number_to_tests.get(item_number.get())

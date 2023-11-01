@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from sqlite3 import Connection
 from random import randrange
+from sqlite3 import Connection
 
-from design.Test import Test
+from design.Job import Job
 from design.Problem import Problem
 from design.Script import ScriptLine
-from design.Job import Job
+from design.Test import Test
 
 
 def rand_hex(n: int) -> str:
@@ -16,7 +16,7 @@ class Model(ABC):
     @property
     @abstractmethod
     def table_name(self) -> str:
-        ...
+        ...  # pragma: no cover
 
     def insert(self, connection: Connection) -> None:
         connection.execute(
@@ -33,7 +33,7 @@ class TestModel(Model):
     def table_name(self) -> str:
         return "SCMobileTestsm1"
 
-    def __init__(self, test: Test, problem: Problem):
+    def __init__(self, test: Test, problem: Problem) -> None:
         self.test_id = test.id
         self.logical_name = test.item.number
         self.customer_barcode = test.item.customer_barcode
@@ -65,7 +65,7 @@ class ScriptTesterModel(Model):
     def table_name(self) -> str:
         return "SCMobileTesterNumbersm1"
 
-    def __init__(self, test: Test):
+    def __init__(self, test: Test) -> None:
         self.test_id = test.id
         self.script_number = test.script.number
         self.tester_number = test.script.tester_number
@@ -76,7 +76,7 @@ class ScriptLineModel(Model):
     def table_name(self) -> str:
         return "SCMobileTestLinesm1"
 
-    def __init__(self, test: Test, line: ScriptLine):
+    def __init__(self, test: Test, line: ScriptLine) -> None:
         self.test_id = test.id
         self.script_number = test.script.number
         self.script_line = line.number

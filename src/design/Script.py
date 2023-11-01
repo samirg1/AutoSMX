@@ -19,7 +19,7 @@ class Script:
     name: str = field(hash=False, eq=False)
     number: int
     tester_number: str = field(hash=False, eq=False)
-    service_type: str =  field(hash=False, eq=False)
+    service_type: str = field(hash=False, eq=False)
     lines: tuple[ScriptLine, ...] = field(factory=tuple, hash=False, eq=False)
     exact_matches: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
     search_terms: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)

@@ -54,4 +54,6 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
 
             lines.append(line)
 
-    return Script(script_info.nickname, script_name, script_info.number, script_info.tester_number, service_type, tuple(lines), search_terms=script_info.search_terms, exact_matches=script_info.exact_matches)
+    return Script(
+        script_info.nickname, script_name, script_info.number, script_info.tester_number, service_type, tuple(lines), search_terms=script_info.search_terms, exact_matches=script_info.exact_matches
+    )
