@@ -4,7 +4,7 @@ from typing import Any, Callable, Generator
 
 import pytest
 
-from storage import Storage
+from storage.Storage import Storage
 
 _EMPTY_DATA: dict[str, Any] = {
     "total_tests": 0,
