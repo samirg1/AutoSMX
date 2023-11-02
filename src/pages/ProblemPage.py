@@ -12,22 +12,23 @@ class ProblemPage(Page):
         # top row
         ttk.Label(self.frame, text="Problems").grid(column=0, row=0, columnspan=1)
         add_button = ttk.Button(self.frame, text="+", command=self.add_tests)
-        add_button.grid(column=1, row=0, columnspan=1)
+        add_button.grid(column=15, row=0, columnspan=1)
         add_button.focus()
         add_button.bind("<Return>", lambda _: add_button.invoke())
-        ttk.Button(self.frame, text="Settings", command=lambda: self.change_page("SETTINGS")).grid(column=2, row=0, columnspan=2)
-        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=1, columnspan=4)
+        button1 = ttk.Button(self.frame, text="Enter Problem", command=lambda: self.add_tests(tree), state="disabled")
+        button1.grid(row=0, column=16, columnspan=1)
+        button2 = ttk.Button(self.frame, text="Delete Problem", command=lambda: self.delete_problem(tree), state="disabled")
+        button2.grid(row=0, column=17, columnspan=1)
+        ttk.Button(self.frame, text="Settings", command=lambda: self.change_page("SETTINGS")).grid(column=18, row=0, columnspan=1)
+        ttk.Button(self.frame, text="Sync", command=self.sync).grid(row=0, column=19, columnspan=1)
+        ttk.Label(self.frame, text=f"{'-' * 300}").grid(column=0, row=1, columnspan=20)
         row = 2
 
         # tree setup
-        tree = ttk.Treeview(self.frame, columns=("text", "number"), show="tree headings", height=10, selectmode="browse")
+        tree = ttk.Treeview(self.frame, columns=("text",), show="headings", height=25, selectmode="browse", padding=20)
         style = ttk.Style(self.frame)
-        style.configure("Treeview", rowheight=60)  # pyright: ignore
-        tree.column("#0", width=0)
-        tree.column("text", anchor=tkinter.W)
-        tree.column("number", width=10, anchor=tkinter.CENTER)
-        tree.heading("text", text="Jobs")
-        tree.heading("number", text="#")
+        style.configure("Treeview", rowheight=30)  # pyright: ignore 
+        tree.heading("text", text="Problems")
 
         # default
         if not self.shared.problems:
@@ -39,45 +40,30 @@ class ProblemPage(Page):
             problem_node = tree.insert("", tkinter.END, campus, values=(f"{problem}",))
 
             if problem.open_problems:
-                open_problem_node = tree.insert(problem_node, tkinter.END, values=("Open Problems", len(problem.open_problems)))
+                open_problem_node = tree.insert(problem_node, tkinter.END, values=(f"\tOpen Problems ({len(problem.open_problems)})",))
                 for open_problem in problem.open_problems:
-                    tree.insert(open_problem_node, tkinter.END, values=(f"{open_problem}",))
+                    tree.insert(open_problem_node, tkinter.END, values=(f"\t\t{open_problem}",))
 
             problem_jobs = self.shared.job_manager.problem_to_jobs.get(problem, [])
             if problem_jobs:
-                job_node = tree.insert(problem_node, tkinter.END, values=("Jobs Raised", len(problem_jobs)))
+                job_node = tree.insert(problem_node, tkinter.END, values=(f"\tJobs Raised ({len(problem_jobs)})",))
                 for job in problem_jobs:
                     item = self.shared.job_manager.job_to_item[job]
-                    first_line = str(job).split("\n")[0]
-                    tree.insert(job_node, tkinter.END, values=(f"{first_line}\n{item.description}\n{item.number}",))
+                    tree.insert(job_node, tkinter.END, values=(f"\t\t{item.description} ({item.number}): {job.comment.replace("\n", " | ")}",))
 
             if problem.tests:
-                test_node = tree.insert(problem_node, tkinter.END, values=("Tests", f"{len(problem.tests)}"))
+                test_node = tree.insert(problem_node, tkinter.END, values=(f"\tTests ({len(problem.tests)})",))
                 for script_name, value in problem.test_breakdown.items():
-                    tree.insert(test_node, tkinter.END, values=(f"{script_name}", value))
+                    tree.insert(test_node, tkinter.END, values=(f"\t\t{script_name} ({value})",))
 
         # completing tree setup
         scrollbar = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # pyright: ignore
         tree.configure(yscroll=scrollbar.set)  # type: ignore
-        scrollbar.grid(row=row, column=4, sticky=tkinter.NS)
-        tree.grid(row=row, column=0, columnspan=4, sticky=tkinter.EW)
+        scrollbar.grid(row=row, column=20, sticky=tkinter.NS)
+        tree.grid(row=row, column=0, columnspan=20, sticky=tkinter.EW)
         row += 1
-
-        # add job manipulation buttons
-        button1 = ttk.Button(self.frame, text="Enter Problem", command=lambda: self.add_tests(tree), state="disabled")
-        button1.grid(row=row, column=0, columnspan=4)
-        button2 = ttk.Button(self.frame, text="Delete Problem", command=lambda: self.delete_problem(tree), state="disabled")
-        button2.grid(row=row + 1, column=0, columnspan=4)
-        row += 2
 
         tree.bind("<<TreeviewSelect>>", lambda _: self.on_first_select(tree, button1, button2))
-
-        self.frame.rowconfigure(row, minsize=10)
-        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=row + 1, columnspan=4)
-        row += 2
-
-        ttk.Button(self.frame, text="Sync", command=self.sync).grid(row=row, column=0, columnspan=4)
-        row += 1
 
     def on_first_select(self, tree: ttk.Treeview, *buttons: ttk.Button) -> None:
         for button in buttons:

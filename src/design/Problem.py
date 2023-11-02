@@ -31,4 +31,4 @@ class Problem:
             del self.test_breakdown[test.script.nickname]
 
     def __str__(self) -> str:
-        return f"{self.campus}\n{self.company}\n{self.number}"
+        return f"{self.number} - {self.campus} - {self.company}"
