@@ -11,7 +11,7 @@ class Popup(tkinter.Toplevel):
         height = int(max_height * height_factor)
         start_height = (max_height - height) // 2
 
-        self.geometry(f"{width}x{height}+{max_width - width}+{start_height}")
+        self.geometry(f"{width}x{height}+{(max_width - width) // 2}+{start_height}")
         self.attributes("-topmost", 2)  # pyright: ignore
         self.resizable(False, False)
 
