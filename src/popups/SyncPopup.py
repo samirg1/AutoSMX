@@ -1,6 +1,7 @@
 import os
 import sys
 from tkinter import Misc, ttk
+import tkinter
 
 from db.get_connection import BASE_FILE
 from db.presync_check import get_double_ups
