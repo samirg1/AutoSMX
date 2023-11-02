@@ -9,7 +9,7 @@ from popups.Popup import Popup
 
 class ProblemEntryPopup(Popup):
     def __init__(self, master: Misc | None, callback: Callable[[Problem], None]) -> None:
-        super().__init__(master, "Add Problem", height_factor=0.5, columns=2)
+        super().__init__(master, "Add Problem", height_factor=0.1, columns=2)
         self.callback = callback
 
         ttk.Label(self, text="Problem Number").grid(column=0, row=0)
