@@ -2,21 +2,22 @@ from abc import ABC, abstractmethod
 from tkinter import ttk
 from typing import Callable, Literal
 
-from design.Job import Job
-from design.TestJobManager import TestJobManager
+from design.JobManager import JobManager
+from design.Problem import Problem
+from design.Test import Test
 from storage.Storage import Storage
 
-TPAGES = Literal["CALIBRATION", "JOB", "TEST", "TUTORIAL", "SETTINGS"]
+TPAGES = Literal["PROBLEM", "TEST", "TUTORIAL", "SETTINGS"]
 
 
 class SharedPageInfo:
-    def __init__(self, jobs: dict[str, Job], testjob_manager: TestJobManager, storage: Storage) -> None:
-        self.jobs = jobs
-        self.testjob_manager = testjob_manager
-        self.job: Job | None = None
+    def __init__(self, problems: dict[str, Problem], job_manager: JobManager, storage: Storage) -> None:
+        self.problems = problems
+        self.job_manager = job_manager
+        self.problem: Problem | None = None
         self.storage = storage
         self.previous_item_number: str = ""
-        self.item_number_to_description: dict[str, str] = {}
+        self.item_number_to_tests: dict[str, list[Test]] = {}
 
 
 class Page(ABC):

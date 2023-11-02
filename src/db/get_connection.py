@@ -1,14 +1,21 @@
 import os
-from contextlib import contextmanager
-from typing import Generator, Literal
 import sqlite3
+from contextlib import contextmanager
+from enum import StrEnum
+from typing import Generator, Literal
+
+BASE_FILE = rf"C:\Users\{os.getenv('USERNAME')}\AppData\Local\SMXMobile"
 
 
-_BASE_FILE = rf"C:\Users\{os.getenv('USERNAME')}\AppData\Local\SMXMobile"
+class DatabaseFilenames(StrEnum):
+    TESTS = "SCMTests"
+    ASSETS = "SCMAssets"
+    LOOKUP = "SCMLookup"
+    SETTINGS = "Settings"
 
 
 @contextmanager
-def get_connection(filename: str, mode: Literal["ro", "rw"] = "ro") -> Generator[sqlite3.Connection, None, None]:
-    connection = sqlite3.connect(rf"file:{_BASE_FILE}\{filename}.sdb?mode={mode}", uri=True)
+def get_connection(filename: DatabaseFilenames, *, mode: Literal["ro", "rw"] = "ro") -> Generator[sqlite3.Connection, None, None]:
+    connection = sqlite3.connect(rf"file:{BASE_FILE}\{filename}.sdb?mode={mode}", uri=True)
     yield connection
     connection.close()

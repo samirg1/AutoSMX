@@ -1,5 +1,5 @@
 import tkinter
-from tkinter import ttk, Widget
+from tkinter import Widget, ttk
 from typing import Any
 
 

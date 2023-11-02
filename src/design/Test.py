@@ -1,7 +1,10 @@
+from datetime import datetime
+from db.get_user import get_user
 from design.data import get_all_scripts
 from design.Item import Item
+from design.Job import Job
 from design.Script import Script
-from design.TestJob import TestJob
+from db.get_new_test_id import get_new_test_id
 
 
 class ScriptError(ValueError):
@@ -11,11 +14,14 @@ class ScriptError(ValueError):
 class Test:
     def __init__(self, item: Item) -> None:
         self.item = item
-        self.script_answers: list[str] = []
-        self.testjobs: list[TestJob] = []
-        self.comment = ""
-        self.final_result = ""
+        self.jobs: list[Job] = []
         self.script: Script
+        self.comments = ""
+        self.result = ""
+        self.id = ""
+        self.user = ""
+        self.date = ""
+        self.completed = False
 
     @property
     def item_model(self) -> str:
@@ -31,15 +37,18 @@ class Test:
                 if script.is_for(self.item.description):
                     return script
 
-        raise ScriptError("No script found")
+        raise ScriptError(f"No script found for {self.item.number}")
 
-    def add_testjob(self, testjob: TestJob) -> None:
-        self.testjobs.append(testjob)
+    def add_job(self, job: Job) -> None:
+        self.jobs.append(job)
 
-    def complete(self, comment: str, final_result: str, script_answers: list[str]) -> None:
-        self.script_answers = ["" if a == " " else "N/A" if a == "" else a for a in script_answers]
-        self.comment = comment.strip()
-        self.final_result = final_result
-
-    def __str__(self) -> str:
-        return f"{self.item} - {self.final_result}"
+    def complete(self, comment: str, result: str, script_answers: list[str]) -> None:
+        for answer, line in zip(script_answers, self.script.lines):
+            line.result = "" if answer == " " else "N/A" if answer == "" else answer
+        self.comments = comment.strip()
+        self.result = result
+        if not self.completed:
+            self.id = get_new_test_id()
+            self.user = get_user()
+        self.date = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
+        self.completed = True

@@ -1,6 +1,7 @@
-from typing import NamedTuple
-from db.get_connection import get_connection
 import functools
+from typing import NamedTuple
+
+from db.get_connection import DatabaseFilenames, get_connection
 
 
 class TestResult(NamedTuple):
@@ -10,7 +11,7 @@ class TestResult(NamedTuple):
 
 @functools.lru_cache(maxsize=5)
 def get_overall_results(customer_id: int) -> list[TestResult]:
-    with get_connection("SCMLookup") as connection:
+    with get_connection(DatabaseFilenames.LOOKUP) as connection:
         results: list[tuple[str, str]] = connection.execute(
             """
             SELECT overall_id, overall_text

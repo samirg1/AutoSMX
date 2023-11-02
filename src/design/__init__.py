@@ -1,8 +1,8 @@
 # pyright: reportUnusedImport=false
-from design.Script import Script
-from design.data import get_all_scripts, SCRIPT_DOWNS
+from design.data import SCRIPT_DOWNS, get_all_scripts
 from design.Item import Item
 from design.Job import Job
-from design.Test import Test, ScriptError
-from design.TestJob import TestJob
-from design.TestJobManager import TestJobManager
+from design.JobManager import JobManager
+from design.Problem import Problem
+from design.Script import Script
+from design.Test import ScriptError, Test

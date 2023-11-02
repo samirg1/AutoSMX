@@ -1,9 +1,10 @@
-from db.get_connection import get_connection
-from db.convert_stringed_date import convert_stringed_date
 from typing import NamedTuple
 
+from db.convert_stringed_date import convert_stringed_date
+from db.get_connection import DatabaseFilenames, get_connection
 
-class Problem(NamedTuple):
+
+class OpenProblem(NamedTuple):
     number: str
     description: str
     date_opened: str
@@ -11,12 +12,13 @@ class Problem(NamedTuple):
     asset_serial: str
 
     def __repr__(self) -> str:
-        date_opened = convert_stringed_date(self.date_opened).strftime(r"%d-%m-%Y")
-        return f"{self.number} - {date_opened}\n{self.description}\n{self.asset_description} ({self.asset_serial})"
+        converted = convert_stringed_date(self.date_opened)
+        date_opened = "Not found" if converted is None else converted.strftime(r"%d-%m-%Y")
+        return f"{self.number} - Opened: {date_opened}\n{self.description}\n{self.asset_description} ({self.asset_serial})"
 
 
-def get_open_problems(location: str) -> list[Problem]:
-    with get_connection("SCMLookup") as connection:
+def get_open_problems(location: str) -> list[OpenProblem]:
+    with get_connection(DatabaseFilenames.LOOKUP) as connection:
         results = connection.execute(
             """
             SELECT number, brief_description, open_time, asset_description, serial_no_
@@ -26,4 +28,4 @@ def get_open_problems(location: str) -> list[Problem]:
             (location,),
         ).fetchall()
 
-    return [Problem(*res) for res in results]
+    return [OpenProblem(*res) for res in results]

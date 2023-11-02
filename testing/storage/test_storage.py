@@ -1,24 +1,14 @@
 import json
 import os
-from typing import Any, Callable, Generator, cast
+from typing import Any, Callable, Generator
 
 import pytest
 
-from storage import Positions, Storage  # type: ignore
+from storage.Storage import Storage
 
 _EMPTY_DATA: dict[str, Any] = {
     "total_tests": 0,
     "test_breakdown": {},
-    "positions": {
-        "testing_tab": None,
-        "assets_tab": None,
-        "show_all_script": None,
-        "comment_box": None,
-        "window": None,
-        "track_weight_field": None,
-        "sm_incident_tab": None,
-    },
-    "calibrated": False,
     "tutorial_complete": False,
     "item_model_to_script_answers": {},
 }
@@ -63,13 +53,8 @@ def test_empty_missing_invalid_json(file_name: str, get_file_for_testing: Callab
     file_name = get_file_for_testing(file_name)
     _EMPTY_DATA["_json_file_path"] = file_name
     storage = Storage(file_name)
-    assert isinstance(storage.positions, Positions)
     for key, value in _EMPTY_DATA.items():
-        if key == "positions":
-            for k, v in cast(dict[str, None], value).items():
-                assert getattr(storage.positions, k) == v
-        else:
-            assert getattr(storage, key) == value
+        assert getattr(storage, key) == value
 
     with open(file_name) as file:
         data = json.load(file)
@@ -83,14 +68,6 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]) -> No
     with storage.edit():
         storage.total_tests += 1
         storage.test_breakdown["test"] = 1
-        storage.positions.testing_tab = (1, 1)
-        storage.positions.assets_tab = (2, 2)
-        storage.positions.show_all_script = (3, 3)
-        storage.positions.comment_box = (4, 4)
-        storage.positions.window = (5, 5)
-        storage.positions.track_weight_field = (6, 6)
-        storage.positions.sm_incident_tab = (7, 7)
-        storage.calibrated = True
         storage.tutorial_complete = True
         storage.item_model_to_script_answers["test"] = ["test"]
 
@@ -98,30 +75,12 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], str]) -> No
         data = json.load(f)
         assert data["total_tests"] == 1
         assert data["test_breakdown"] == {"test": 1}
-        assert data["positions"] == {
-            "testing_tab": [1, 1],
-            "assets_tab": [2, 2],
-            "show_all_script": [3, 3],
-            "comment_box": [4, 4],
-            "window": [5, 5],
-            "track_weight_field": [6, 6],
-            "sm_incident_tab": [7, 7],
-        }
-        assert data["calibrated"]
         assert data["tutorial_complete"]
         assert data["item_model_to_script_answers"] == {"test": ["test"]}
 
     storage2 = Storage(file)
     assert storage2.total_tests == 1
     assert storage2.test_breakdown == {"test": 1}
-    assert storage2.positions.testing_tab == (1, 1)
-    assert storage2.positions.assets_tab == (2, 2)
-    assert storage2.positions.show_all_script == (3, 3)
-    assert storage2.positions.comment_box == (4, 4)
-    assert storage2.positions.window == (5, 5)
-    assert storage2.positions.track_weight_field == (6, 6)
-    assert storage2.positions.sm_incident_tab == (7, 7)
-    assert storage2.calibrated
     assert storage2.tutorial_complete
     assert storage2.item_model_to_script_answers == {"test": ["test"]}
 

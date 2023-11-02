@@ -5,57 +5,45 @@ from tkinter import ttk
 from tkinter.font import Font
 
 from pages.Page import Page
-from design.data import get_all_scripts
 
 _TUTORIAL = {
-    "Setup": f"Ensure you have the latest version of SMX installed, the version needs to include the favourites tab. \
-        Before starting, ensure that you have all of the main tests added to favourites, these include: \
-            {', '.join(val.name for val in get_all_scripts().values())}.",
-    "Calibration": "The first time you use this software, you need to calibrate it. \
-        Do this on the calibration page by clicking each button, then immediately clicking on thier corresponding areas on the screen. \
-            This allows this program to be able to click on certain fields and areas of SMX while it is running. \
-                You only need to do this once.",
-    "First Item": "Make sure to enter it into SMX and hit enter first, this will allow for any delay on the first search. \
-        For all items, ensure that the 'Assets Tab' does not currently have an item open.",
+    "Quick Start": "After this tutorial you will be taken to the Problem Page. \
+        This is the first and main page of the application. \
+            To add a problem, click the '+' button on the top row, enter in the problem number and then press Enter or hit 'Add' \
+                This will take you to the item entry screen where you can input item numbers.",
     "Enter Asset": "Enter the item into the program, then click 'Go' / press Enter. \
         The program will then search for the item's script. \
             Do not press 'Choose' unless the program has failed to find the script or unless you need to choose a script different from normal.\
                 The program will try and determine the script needed for this item, make sure this is correct before proceeding. \
                     The program will also determine the location information to keep as context to the tests.",
-    "Edit Script": "Edit the script values, add a test-job by click the 'Add Job' button, add comments and anything else that is needed for the test. \
+    "Edit Script": "Edit the script values, add a job by click the 'Add Job' button, add comments and anything else that is needed for the test. \
         The defaulted script values are those deemed to be the most common for the specific script. \
-            If you change the script values from the default for a specifc item model, the program will remember this next time you text that item model.",
-    "Adding a Job": "Adding a job is made easier as the location information is used to fill in the contact and department fields. \
+            If you change the script values from the default for a specifc item-model, the program will remember this next time you test that item-model.",
+    "Adding a Job": "Adding a job is made easier as the problem information is used to fill in the contact and department fields. \
         Saving a job also pastes the comments from that job into the overall comments for the test (without any part numbers it can find). \
             If you accidentally add a job, press the 'X' button to delete the most recently added job. ",
-    "Save Test": "Ensure values of the script are correct before clicking 'Save' (or press Enter straight away), the program will now input the test. \
-        The program will wait for the test to complete, once it has, it will save the results and return to the item entry screen. \
-            The program will purposely not save the test in SMX to allow any last minute changes to be made. \
-                To save the test in SMX without making any other changes, click the 'Enter' button before clicking back on the program's window.",
+    "Save Test": "Ensure values of the script are correct before clicking 'Save' (or press Enter straight away), this will save the test. \
+        The program will wait for the test to complete, once it has, it will save the results and return to the item entry screen.",
     "Edit Test": "If you need to edit a test, enter the item number before clicking the 'Edit Test' button. \
         The program will ensure that you cannot edit a test that you have not completed. \
             Once you select edit, the script values will show as normal and you can edit and save them just like you would normally.",
-    "Job Page": "When entering items, the location information of the items are taken into account to form the Job Page, this can be accessed by clicking the 'Jobs' button on the item entry screen. \
-        Each job you have entered while the program is open will show all the details including the amount of tests, with a breakdown by script, and any jobs raised. \
-              Select a job (or anything inside of it) and press the 'Enter Job' button to keep adding items into that job. \
-                The benefit of doing this means that the program will no longer look for the job if the job is already filled in. \
-                    Select a job and press the 'Delete Job' button to remove the job from view. \
-                        To start adding items to a new job, press the '+' button. \
-                            These jobs that are displayed serve only as helpers to show test breakdowns and job's raised at each site, as well as help fill in test-job fields in the tests. ",
-    "Troubleshooting": "If anything goes wrong while the program is running, quickly move the mouse to any corner of the screen to activate the failsafe. \
-        If the program incorrectly selects the script, press 'Cancel' and then select 'Choose' to manually select the script. \
-            If you activate the failsafe, ensure that you SMX is in the 'First Item' stage of the tutorial before attempting to retry  \
-                If the program it glitching or bugging and you don't believe SMX is the issue, try restarting the program. \
-                    If the problem persists raise an issue by sending an email to the developer. \
-                        Please ensure you include any error messages as well as a description of the problem and how to reproduce it. \
-                              If you need to recalibrate or see this tutorial again, navigate to the 'Jobs' page and click on the respective buttons.",
+    "Problem Page": "Each problem you have entered while the program is open will show all the details including the amount of tests, with a breakdown by script, and any jobs raised. \
+        Select a problem (or anything inside of it) and press the 'Enter Job' button to keep adding items into that problem. \
+            Select a problem and press the 'Delete Problem' button to remove the problem from view. \
+                To start add new problem, press the '+' button, enter a problem number and press 'Add'. \
+                    These problems that are displayed serve only as helpers to show test breakdowns and jobs raised at each site, as well as help fill in job fields in the tests. ",
+    "Troubleshooting": "If the program incorrectly selects the script, press 'Cancel' and then select 'Choose' to manually select the script. \
+        If the program is glitching or bugging and you don't believe SMX is the issue, try restarting the program. \
+            If the problem persists raise an issue by sending an email to the developer. \
+                Please ensure you include any error messages as well as a description of the problem and how to reproduce it. \
+                      If you need see this tutorial again, navigate to the Problem page and click on the Settings button to access it.",
 }
 
 
 class TutorialPage(Page):
     def setup(self) -> None:
         if self.shared.storage.tutorial_complete:
-            return self.change_page("CALIBRATION")
+            return self.change_page("PROBLEM")
 
         ttk.Label(self.frame, text="Tutorial Page").grid(row=0, column=0, sticky=tkinter.EW)
         ttk.Button(self.frame, text="Skip", command=self.end_tutorial).grid(row=0, column=3)
@@ -100,4 +88,4 @@ class TutorialPage(Page):
     def end_tutorial(self) -> None:
         with self.shared.storage.edit() as storage:
             storage.tutorial_complete = True
-        self.change_page("CALIBRATION")
+        self.change_page("PROBLEM")

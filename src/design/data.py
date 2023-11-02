@@ -1,7 +1,8 @@
+import functools
+
+from db.get_script import get_script
 from design.Script import Script
 from design.ScriptInfo import ScriptInfo
-from db.get_script import get_script
-import functools
 
 _NA = "N/A"
 _NO = "No"
@@ -55,23 +56,23 @@ _LINE_DEFAULTS: dict[int, str] = {
 
 
 _SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
-    ScriptInfo(1278, "CHANGE TILT TABLE", [], []),
-    ScriptInfo(1261, "SLING", [], ["SLING", "PATIENT TRANSFER SLING, MECHANICAL LIFT"]),
-    ScriptInfo(1279, "WALKER", ["WALK", "STAND", "STEDY"], []),
-    ScriptInfo(1227, "CEILING", [], ["HOIST, CEILING", "LIFTS, PATIENT TRANSFER, OVERHEAD TRACK"]),
-    ScriptInfo(1287, "TRACK", [], ["TRACK", "TRACK, CEILING HOIST", "CEILING TRACK"]),
-    ScriptInfo(1228, "COMMODE", [], []),
-    ScriptInfo(1222, "BED", [], []),
-    ScriptInfo(1226, "FLOOR", ["LIFTS"], ["HOIST, STANDING", "STANDING HOIST"]),
-    ScriptInfo(1223, "RECLINER", [], []),
-    ScriptInfo(1230, "TUB", ["BATH"], ["BATH BED"]),
-    ScriptInfo(1229, "SCALE", ["WEIGH"], []),
-    ScriptInfo(1113, "WHEELCHAIR", [], []),
-    ScriptInfo(859, "CHARGER", [], []),
-    ScriptInfo(1065, "BATTERY", [], []),
-    ScriptInfo(606, "CLASS II", [], []),
-    ScriptInfo(799, "FURNITURE", ["OVERBED"], []),
-    ScriptInfo(1190, "VISUAL", [], []),
+    ScriptInfo(1278, "9999TEST", "CHANGE TILT TABLE", [], []),
+    ScriptInfo(1261, "9999TEST", "SLING", [], ["SLING", "PATIENT TRANSFER SLING, MECHANICAL LIFT"]),
+    ScriptInfo(1279, "9999TEST", "WALKER", ["WALK", "STAND", "STEDY"], []),
+    ScriptInfo(1227, "9999TEST", "CEILING", [], ["HOIST, CEILING", "LIFTS, PATIENT TRANSFER, OVERHEAD TRACK"]),
+    ScriptInfo(1287, "9999TEST", "TRACK", [], ["TRACK", "TRACK, CEILING HOIST", "CEILING TRACK"]),
+    ScriptInfo(1228, "9999TEST", "COMMODE", [], []),
+    ScriptInfo(1222, "9999TEST", "BED", [], []),
+    ScriptInfo(1226, "9999TEST", "FLOOR", ["LIFTS"], ["HOIST, STANDING", "STANDING HOIST"]),
+    ScriptInfo(1223, "9999TEST", "RECLINER", [], []),
+    ScriptInfo(1230, "9999TEST", "TUB", ["BATH"], ["BATH BED"]),
+    ScriptInfo(1229, "9999TEST", "SCALE", ["WEIGH"], []),
+    ScriptInfo(1113, "9999TEST", "WHEELCHAIR", [], []),
+    ScriptInfo(859, "9999TEST", "CHARGER", [], []),
+    ScriptInfo(1065, "9999TEST", "BATTERY", [], []),
+    ScriptInfo(606, "11083TEST", "CLASS II", [], []),
+    ScriptInfo(799, "9999TEST", "FURNITURE", ["OVERBED"], []),
+    ScriptInfo(1190, "9999TEST", "VISUAL", [], []),
 )
 
 
