@@ -7,7 +7,7 @@ def get_items(item_number: str) -> list[Item]:
         item_fields = connection.execute(
             """
             SELECT logical_name, customer_barcode, description, model, manufacturer, serial_no_, room, last_spt_date
-            FROM 'devicem1_PS'
+            FROM devicem1_PS
             WHERE logical_name LIKE ?;
             """,
             (item_number + "%",),

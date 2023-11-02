@@ -15,7 +15,7 @@ def get_double_ups(problem: Problem) -> dict[str, list[str]]:
             f"""
             SELECT logical_name, description, overall
             FROM SCMobileTestsm1
-            WHERE test_id IN (?{", ?" * (len(problem.tests) - 1)})
+            WHERE test_id IN (?{", ?" * (len(problem.tests) - 1)});
             """,
             [test.id for test in problem.tests],
         ).fetchall()
@@ -32,7 +32,7 @@ def get_double_ups(problem: Problem) -> dict[str, list[str]]:
             f"""
             SELECT logical_name, actionprgn
             FROM SCMProbsUploadm1
-            WHERE test_id IN (?{", ?" * (len(problem.tests) - 1)})
+            WHERE test_id IN (?{", ?" * (len(problem.tests) - 1)});
             """,
             [test.id for test in problem.tests],
         ).fetchall()

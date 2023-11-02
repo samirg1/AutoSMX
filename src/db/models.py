@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from random import randrange
 from sqlite3 import Connection
+from typing import override
 
 from design.Job import Job
 from design.Problem import Problem
@@ -21,8 +22,8 @@ class Model(ABC):
     def insert(self, connection: Connection) -> None:
         connection.execute(
             f"""
-            INSERT INTO {self.table_name} {f"({', '.join(self.__dict__.keys())})"}
-            VALUES (?{', ?'*(len(self.__dict__)-1)});
+            INSERT INTO {self.table_name} ({", ".join(self.__dict__.keys())})
+            VALUES (?{", ?"*(len(self.__dict__)-1)});
             """,
             tuple(self.__dict__.values()),
         )
@@ -30,6 +31,7 @@ class Model(ABC):
 
 class TestModel(Model):
     @property
+    @override
     def table_name(self) -> str:
         return "SCMobileTestsm1"
 
@@ -62,6 +64,7 @@ class TestModel(Model):
 
 class ScriptTesterModel(Model):
     @property
+    @override
     def table_name(self) -> str:
         return "SCMobileTesterNumbersm1"
 
@@ -73,6 +76,7 @@ class ScriptTesterModel(Model):
 
 class ScriptLineModel(Model):
     @property
+    @override
     def table_name(self) -> str:
         return "SCMobileTestLinesm1"
 
@@ -92,6 +96,7 @@ class ScriptLineModel(Model):
 
 class JobModel(Model):
     @property
+    @override
     def table_name(self) -> str:
         return "SCMProbsUploadm1"
 
