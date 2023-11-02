@@ -12,7 +12,7 @@ class ScriptSelectionPopup(Popup):
         self.focus()
         self.master_select_script = master_select_script
         for i, script in enumerate(get_all_scripts().values()):
-            ttk.Button(self, text=script.name, command=lambda script=script: self._select_script(script)).grid(column=0, row=i, columnspan=2, sticky="w")  # type: ignore[misc]
+            tkinter.Button(self, text=script.name, command=lambda script=script: self._select_script(script)).grid(column=0, row=i, columnspan=2, sticky="w")  # type: ignore[misc]
 
     def _select_script(self, script: Script) -> None:
         self.master_select_script(script)

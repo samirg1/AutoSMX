@@ -23,7 +23,7 @@ class JobPopup(Popup):
         comment.focus()
         comment.grid(column=0, row=3, columnspan=2)
 
-        ttk.Button(self, text="Save", command=lambda: self._save_job(department.get(), contact.get(), comment.get("1.0", END))).grid(column=0, row=4, columnspan=2)
+        tkinter.Button(self, text="Save", command=lambda: self._save_job(department.get(), contact.get(), comment.get("1.0", END))).grid(column=0, row=4, columnspan=2)
 
     def _save_job(self, department: str, contact: str, comment: str) -> None:
         self.save_job(Job(department, contact, comment))

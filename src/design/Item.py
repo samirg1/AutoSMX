@@ -13,12 +13,15 @@ class Item:
     model: str = field(hash=False, eq=False)
     manufacturer: str = field(hash=False, eq=False)
     serial: str = field(hash=False, eq=False)
-    room: str = field(hash=False, eq=False)
+    room: str | None = field(hash=False, eq=False)
     last_update: datetime | None = field(hash=False, eq=False, converter=convert_stringed_date)
 
     def __str__(self) -> str:
         return f"{self.number} - {self.description}"
+    
+    def set_room(self, room: str | None):
+        object.__setattr__(self, "room", room)
 
     @property
     def full_info(self) -> str:
-        return f"{self}\nModel: {self.model}\nManufacturer: {self.manufacturer}\nSN: {self.serial}\nRoom: {self.room}\nLast Update: {'Not found' if self.last_update is None else self.last_update.strftime(r'%d-%m-%Y %I:%M%p')}"
+        return f"{self} - Model: {self.model} - Manufacturer: {self.manufacturer} - SN: {self.serial} - Last Update: {'Not found' if self.last_update is None else self.last_update.strftime(r'%d-%m-%Y %I:%M%p')}"

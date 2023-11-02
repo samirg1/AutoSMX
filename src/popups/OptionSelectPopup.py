@@ -9,7 +9,7 @@ _T = TypeVar("_T")
 
 class OptionSelectPopup(Popup, Generic[_T]):
     def __init__(self, master: Misc | None, options: list[_T], callback: Callable[[_T], None], display: Callable[[_T], str] = str) -> None:
-        super().__init__(master, "Select Options", height_factor=0.75, columns=2)
+        super().__init__(master, "Select Options", height_factor=0.75, columns=2, width=360*4)
         self.callback = callback
         self.options = options
 

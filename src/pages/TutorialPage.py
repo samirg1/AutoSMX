@@ -3,6 +3,7 @@ from io import StringIO
 from itertools import zip_longest
 from tkinter import ttk
 from tkinter.font import Font
+from design.Problem import Problem
 
 from pages.Page import Page
 
@@ -43,10 +44,13 @@ _TUTORIAL = {
 class TutorialPage(Page):
     def setup(self) -> None:
         if self.shared.storage.tutorial_complete:
+            self.shared.problem = Problem("BENETAS", "4469/COLTON CLOSE", "MITCHAM", "PM22334455", "4469", get_open_problems=False)
+            return self.change_page("TEST")
+
             return self.change_page("PROBLEM")
 
         ttk.Label(self.frame, text="Tutorial Page").grid(row=0, column=0, sticky=tkinter.EW)
-        ttk.Button(self.frame, text="Skip", command=self.end_tutorial).grid(row=0, column=3)
+        tkinter.Button(self.frame, text="Skip", command=self.end_tutorial).grid(row=0, column=3)
 
         self.frame.rowconfigure(1, minsize=20)
 

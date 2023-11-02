@@ -11,16 +11,16 @@ class ProblemPage(Page):
     def setup(self) -> None:
         # top row
         ttk.Label(self.frame, text="Problems").grid(column=0, row=0, columnspan=1)
-        add_button = ttk.Button(self.frame, text="+", command=self.add_tests)
+        add_button = tkinter.Button(self.frame, text="+", command=self.add_tests)
         add_button.grid(column=15, row=0, columnspan=1)
         add_button.focus()
         add_button.bind("<Return>", lambda _: add_button.invoke())
-        button1 = ttk.Button(self.frame, text="Enter Problem", command=lambda: self.add_tests(tree), state="disabled")
+        button1 = tkinter.Button(self.frame, text="Enter Problem", command=lambda: self.add_tests(tree), state="disabled")
         button1.grid(row=0, column=16, columnspan=1)
-        button2 = ttk.Button(self.frame, text="Delete Problem", command=lambda: self.delete_problem(tree), state="disabled")
+        button2 = tkinter.Button(self.frame, text="Delete Problem", command=lambda: self.delete_problem(tree), state="disabled")
         button2.grid(row=0, column=17, columnspan=1)
-        ttk.Button(self.frame, text="Settings", command=lambda: self.change_page("SETTINGS")).grid(column=18, row=0, columnspan=1)
-        ttk.Button(self.frame, text="Sync", command=self.sync).grid(row=0, column=19, columnspan=1)
+        tkinter.Button(self.frame, text="Settings", command=lambda: self.change_page("SETTINGS")).grid(column=18, row=0, columnspan=1)
+        tkinter.Button(self.frame, text="Sync", command=self.sync).grid(row=0, column=19, columnspan=1)
         ttk.Label(self.frame, text=f"{'-' * 300}").grid(column=0, row=1, columnspan=20)
         row = 2
 
@@ -65,7 +65,7 @@ class ProblemPage(Page):
 
         tree.bind("<<TreeviewSelect>>", lambda _: self.on_first_select(tree, button1, button2))
 
-    def on_first_select(self, tree: ttk.Treeview, *buttons: ttk.Button) -> None:
+    def on_first_select(self, tree: ttk.Treeview, *buttons: tkinter.Button) -> None:
         for button in buttons:
             button.configure(state="normal")
         tree.unbind("<<TreeviewSelect>>")

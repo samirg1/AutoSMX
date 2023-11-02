@@ -1,4 +1,5 @@
 from tkinter import Misc, StringVar, ttk
+import tkinter
 from typing import Callable
 
 from db.get_problems import get_problems
@@ -18,7 +19,7 @@ class ProblemEntryPopup(Popup):
         entry.grid(column=1, row=0)
         entry.focus()
 
-        add_button = ttk.Button(self, text="Add", command=lambda: self._get_problems(number.get()))
+        add_button = tkinter.Button(self, text="Add", command=lambda: self._get_problems(number.get()))
         add_button.grid(column=0, row=4, columnspan=2)
         entry.bind("<Return>", lambda _: self._get_problems(number.get()))
 

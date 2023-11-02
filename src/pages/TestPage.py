@@ -2,6 +2,7 @@ import tkinter
 from tkinter import StringVar, messagebox, ttk
 
 from db.add_test import add_test
+from db.edit_item import edit_item
 from db.edit_test import edit_test
 from db.get_items import get_items
 from db.get_overall_results import get_overall_results
@@ -22,7 +23,7 @@ class TestPage(Page):
         assert self.shared.problem
         self.test_problem: Problem = self.shared.problem
 
-        ttk.Button(self.frame, text="< Problems", command=lambda: self.change_page("PROBLEM")).grid(column=0, row=0, sticky="w")
+        tkinter.Button(self.frame, text="< Problems", command=lambda: self.change_page("PROBLEM")).grid(column=0, row=0, sticky="w")
 
         ttk.Label(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
         item_number = StringVar(value=self.shared.previous_item_number)
@@ -31,13 +32,19 @@ class TestPage(Page):
         item_entry.focus()
         item_entry.icursor(tkinter.END)
 
-        self.go_button = ttk.Button(self.frame, text="Go", command=lambda: self.get_items(item_number.get(), item_entry))
-        self.go_button.grid(column=0, row=2, columnspan=2)
-        self.choose_button = ttk.Button(self.frame, text="Choose", command=lambda: self.get_items(item_number.get(), item_entry, choose_script=True))
-        self.choose_button.grid(column=2, row=2)
-        button_state = "normal" if self.shared.item_number_to_tests.get(item_number.get()) else "disabled"
-        self.edit_button = ttk.Button(self.frame, text="Edit Test", command=lambda: self.get_items(item_number.get(), item_entry, editing=True), state=button_state)
-        self.edit_button.grid(column=3, row=2)
+        self.go_button = tkinter.Button(self.frame, text="Go", command=lambda: self.get_items(item_number.get(), item_entry))
+        self.go_button.grid(column=0, row=2, columnspan=1)
+        self.choose_button = tkinter.Button(self.frame, text="Choose", command=lambda: self.get_items(item_number.get(), item_entry, choose_script=True))
+        self.choose_button.grid(column=1, row=2, columnspan=1)
+
+        if self.shared.item_number_to_tests.get(item_number.get()):
+            button_state = "normal"
+            colour = "green"
+        else:
+            button_state = "disabled"
+            colour = "#F0F0F0"
+        self.edit_button = tkinter.Button(self.frame, text="Edit Test", command=lambda: self.get_items(item_number.get(), item_entry, editing=True), state=button_state, bg=colour)
+        self.edit_button.grid(column=2, row=2)
 
         item_entry.bind("<Return>", lambda _: self.go_button.invoke())
         item_entry.bind("<Alt-c>", lambda _: self.choose_button.invoke())
@@ -46,7 +53,10 @@ class TestPage(Page):
 
     def edit_button_reconfigure(self, item_number: StringVar) -> None:
         tested = self.shared.item_number_to_tests.get(item_number.get())
-        self.edit_button.configure(state=("normal" if tested else "disabled"))
+        if tested:
+            self.edit_button.configure(state="normal", bg="green")
+        else:
+            self.edit_button.configure(state="disabled", bg="#F0F0F0")
 
     def get_items(self, item_number: str, item_entry: ttk.Entry, /, *, choose_script: bool = False, editing: bool = False) -> None:
         item_entry.state(["disabled"])  # pyright: ignore
@@ -100,26 +110,27 @@ class TestPage(Page):
         self.choose_button.destroy()
         self.edit_button.destroy()
         self.go_button.configure(text="Cancel", command=lambda: self.reset_page(test.item.number))
+        self.go_button.grid(column=3, row=1)
 
         if self.is_editing:
-            self.go_button.grid(column=0, row=2, columnspan=2)
-            ttk.Button(self.frame, text="Remove", command=self.remove_test).grid(column=2, row=2, columnspan=2)
-        else:
-            self.go_button.grid(column=0, row=2, columnspan=4)
+            tkinter.Button(self.frame, text="Remove", command=self.remove_test, bg="red").grid(column=4, row=1, columnspan=1)
 
         # displaying the item and problem
-        item_label = ttk.Label(self.frame, text=f"{test.item}")
-        item_label.grid(column=0, row=3, columnspan=4)
-        Tooltip(item_label, test.item.full_info)
-        problem_label = ttk.Label(self.frame, text=f"{self.test_problem.campus}")
-        problem_label.grid(column=0, row=4, columnspan=4)
-        Tooltip(problem_label, str(self.test_problem))
-        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=5, columnspan=4)
+        item_label = ttk.Label(self.frame, text=f"{test.item.full_info}")
+        item_label.grid(column=0, row=3, columnspan=7)
+        ttk.Label(self.frame, text="Room: ").grid(column=7, row=3)
+        self.item_room = StringVar(value=test.item.room)
+        ttk.Entry(self.frame, textvariable=self.item_room).grid(column=8, row=3)
+        tkinter.Button(self.frame, text="Save", command=self.edit_item_room).grid(column=9, row=3)
+
+        ttk.Label(self.frame, text=f"{self.test_problem}").grid(column=0, row=4, columnspan=8)
+        ttk.Label(self.frame, text=f"{'-' * 300}").grid(column=0, row=5, columnspan=20)
+        self.frame.rowconfigure(6, minsize=20)
 
         # displaying the script
-        row = 6
+        row = 7
         script = self.test.script
-        ttk.Label(self.frame, text=f"{script.name}").grid(column=0, row=row, columnspan=4)
+        ttk.Label(self.frame, text=f"{script.name} ({script.number}/{script.tester_number})").grid(column=0, row=row, columnspan=8)
         row += 1
 
         if test.completed:
@@ -129,60 +140,71 @@ class TestPage(Page):
             self.saved_script_answers = stored_answers or [stest.default for stest in script.lines]
         actual_answers = [StringVar(value=ans) for ans in self.saved_script_answers]
         for i, line in enumerate(script.lines):
-            label = ttk.Label(self.frame, text=line.text, width=10)
+            _, r = divmod(i, 2)
+            label = ttk.Label(self.frame, text=line.text)
             Tooltip(label, text=line.text)
-            label.grid(column=0, row=row, columnspan=1, sticky="w")
+            label.grid(column=0 + r * 4, row=row, columnspan=1, sticky="w")
             if len(line.options) <= 1:
-                ttk.Entry(self.frame, textvariable=actual_answers[i]).grid(column=1, row=row, columnspan=3, sticky="w")
+                ttk.Entry(self.frame, textvariable=actual_answers[i]).grid(column=1 + r * 4, row=row, columnspan=3, sticky="w")
             else:
                 for j, option in enumerate(line.options):
                     rb = ttk.Radiobutton(self.frame, text=option, variable=actual_answers[i], value=option)
-                    rb.grid(column=1 + j, row=row)
+                    rb.grid(column=1 + j + r * 4, row=row)
                     if option == self.saved_script_answers[i]:
                         rb.invoke()
-            row += 1
-        self.frame.rowconfigure(row, minsize=10)
-        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=row, columnspan=4)
-        row += 1
+            row += r + ((1 + i) // len(script.lines))
+
+        self.frame.rowconfigure(row, minsize=20)
+        ttk.Label(self.frame, text=f"{'-' * 300}").grid(column=0, row=row + 1, columnspan=20)
+        self.frame.rowconfigure(row + 2, minsize=20)
+        row += 3
 
         # adding jobs
-        self.add_job_button = ttk.Button(self.frame, text="Add Job", command=self.add_job)
-        self.delete_job_button = ttk.Button(self.frame, text="X", width=1, command=self.delete_job)
-        self.add_job_button.grid(column=0, row=row, columnspan=4)
+        self.add_job_button = tkinter.Button(self.frame, text="Add Job", command=self.add_job)
+        self.delete_job_button = tkinter.Button(self.frame, text="X", width=1, command=self.delete_job)
+        self.add_job_button.grid(column=0, row=row, columnspan=8)
         if len(self.test.jobs):
             self.add_job_button.configure(text=f"Add Job ({len(self.test.jobs)})")
-            self.delete_job_button.grid(column=3, row=self.add_job_button.grid_info()["row"], sticky="e")
-        row += 1
+            self.delete_job_button.grid(column=8, row=self.add_job_button.grid_info()["row"], sticky="e")
+        self.frame.rowconfigure(row + 1, minsize=20)
+        row += 2
 
         # test comment
-        ttk.Label(self.frame, text="Comment").grid(column=0, row=row, columnspan=4)
+        ttk.Label(self.frame, text="Comment").grid(column=0, row=row, columnspan=8)
         row += 1
-        self.comment = tkinter.Text(self.frame, height=4, width=100)
+        self.comment = tkinter.Text(self.frame, height=4)
         if self.test.comments:
             self.comment.insert(tkinter.END, self.test.comments + "\n\n")
-        self.comment.grid(column=0, row=row, columnspan=4)
+        self.comment.grid(column=0, row=row, columnspan=8)
         row += 1
-        self.frame.rowconfigure(row, minsize=10)
+        self.frame.rowconfigure(row, minsize=20)
         row += 1
 
         # final results
-        ttk.Label(self.frame, text="Result").grid(column=0, row=row, columnspan=4)
+        ttk.Label(self.frame, text="Result").grid(column=0, row=row, columnspan=8)
         row += 1
         overall_results = get_overall_results(int(self.test_problem.customer_number))
         result = tkinter.StringVar(value=self.test.result or overall_results[0].nickname)
         for i, (nickname, fullname) in enumerate(overall_results):
-            button = ttk.Radiobutton(self.frame, text=nickname, variable=result, value=nickname, width=15)
+            button = ttk.Radiobutton(self.frame, text=nickname, variable=result, value=nickname)
             Tooltip(button, fullname)
-            button.grid(column=i % 4, row=row, columnspan=1)
-            row = row + 1 if i % 4 == 3 else row
-        row += 1
+            button.grid(column=i, row=row, columnspan=1)
+        self.frame.rowconfigure(row + 1, minsize=20)
+        row += 2
 
-        save = ttk.Button(self.frame, text="Save", command=lambda: self.save_test([s.get() for s in actual_answers], result.get()))
-        save.grid(column=0, row=row, columnspan=4)
+        save = tkinter.Button(self.frame, text="Save", command=lambda: self.save_test([s.get() for s in actual_answers], result.get()))
+        save.grid(column=0, row=row, columnspan=8)
         save.focus()
         save.bind("<Return>", lambda _: self.save_test([s.get() for s in actual_answers], result.get()))
         save.bind("c", lambda _: self.go_button.invoke())
         row += 1
+
+    def edit_item_room(self) -> None:
+        item_room = self.item_room.get()
+        if item_room != self.test.item.room:
+            room = self.item_room.get() or None
+            edit_item(self.test.item.number, {"room": room})
+            self.test.item.set_room(room)
 
     def remove_test(self) -> None:
         self.test_problem.remove_test(self.test)
@@ -231,6 +253,8 @@ class TestPage(Page):
             edit_test(self.test, self.test_problem)
         else:
             add_test(self.test, self.test_problem)
+
+        self.edit_item_room()
 
         with self.shared.storage.edit() as storage:
             storage.total_tests += 1
