@@ -23,10 +23,11 @@ class TestPage(Page):
         assert self.shared.problem
         self.test_problem: Problem = self.shared.problem
 
-        ctk.CTkButton(self.frame, text="< Problems", command=lambda: self.change_page("PROBLEM")).grid(column=0, row=0, sticky="w")
+        problems_button = ctk.CTkButton(self.frame, text="< Problems", command=lambda: self.change_page("PROBLEM"))
+        problems_button.grid(column=0, row=0, sticky="w")
 
         ctk.CTkLabel(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
-        item_number = ctk.StringVar(value=self.shared.previous_item_number)
+        item_number = ctk.StringVar(value=self.test_problem.previous_item_number)
         item_entry = ctk.CTkEntry(self.frame, textvariable=item_number)
         item_entry.grid(column=2, row=1, sticky="w", columnspan=2)
         item_entry.focus()
@@ -37,18 +38,21 @@ class TestPage(Page):
         self.choose_button = ctk.CTkButton(self.frame, text="Choose", command=lambda: self.get_items(item_number.get(), item_entry, choose_script=True))
         self.choose_button.grid(column=1, row=2, columnspan=1)
 
-        button_state = "normal" if item_number.get() in self.test_problem.item_number_to_tests else "disabled"
+        button_state = "normal" if self.is_tested(item_number.get()) else "disabled"
         self.edit_button = ctk.CTkButton(self.frame, text="Edit Test", command=lambda: self.get_items(item_number.get(), item_entry, editing=True), state=button_state)
         self.edit_button.grid(column=2, row=2)
 
         item_entry.bind("<Return>", lambda _: self.go_button.invoke())
         item_entry.bind("<Alt-c>", lambda _: self.choose_button.invoke())
         item_entry.bind("<Alt-e>", lambda _: self.edit_button.invoke())
+        item_entry.bind("<Alt-b>", lambda _: problems_button.invoke())
         item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
 
+    def is_tested(self, item_number: str):
+        return len(self.test_problem.item_number_to_tests.get(item_number, [])) != 0
+
     def edit_button_reconfigure(self, item_number: ctk.StringVar) -> None:
-        tested = item_number.get() in self.test_problem.item_number_to_tests
-        if tested:
+        if self.is_tested(item_number.get()):
             self.edit_button.configure(state="normal")
         else:
             self.edit_button.configure(state="disabled")
@@ -106,9 +110,6 @@ class TestPage(Page):
         self.edit_button.destroy()
         self.go_button.configure(text="Cancel", command=lambda: self.reset_page(test.item.number))
         self.go_button.grid(column=4, row=1)
-
-        if self.is_editing:
-            ctk.CTkButton(self.frame, text="Remove", command=self.remove_test).grid(column=4, row=1, columnspan=1)
 
         # displaying the item and problem
         item_label = ctk.CTkLabel(self.frame, text=f"{test.item.full_info}")
@@ -187,6 +188,11 @@ class TestPage(Page):
         save.bind("<FocusOut>", lambda _: save.configure(text_color="white"))
         save.bind("<Return>", lambda _: self.save_test([s.get() for s in actual_answers], result.get()))
         save.bind("c", lambda _: self.go_button.invoke())
+        if self.is_editing:
+            remove_button = ctk.CTkButton(self.frame, text="Remove", command=self.remove_test)
+            remove_button.grid(column=5, row=1, columnspan=1)
+            save.bind("r", lambda _: remove_button.invoke())
+
         save.focus()
         label_row += 1
 
@@ -253,7 +259,7 @@ class TestPage(Page):
         self.reset_page(self.test.item.number)
 
     def reset_page(self, item_number: str) -> None:
-        self.shared.previous_item_number = item_number
+        self.test_problem.set_previous_item_number(item_number)
         self.change_page("TEST")
 
     def update_storage(self, actual_script_answers: list[str]) -> None:

@@ -15,7 +15,6 @@ class SharedPageInfo:
         self.job_manager = job_manager
         self.problem: Problem | None = None
         self.storage = storage
-        self.previous_item_number: str = ""
 
 class Page(ABC):
     def __init__(self, frame: ctk.CTkScrollableFrame, change_page: Callable[[TPAGES], None], shared: SharedPageInfo) -> None:
