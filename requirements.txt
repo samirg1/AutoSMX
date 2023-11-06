@@ -1,1 +1,2 @@
 attrs==23.1.0
+customtkinter==5.2.1

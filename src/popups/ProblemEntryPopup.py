@@ -1,5 +1,6 @@
-from tkinter import Misc, StringVar, ttk
 from typing import Callable
+import customtkinter as ctk
+from tkinter import Misc
 
 from db.get_problems import get_problems
 from design.Problem import Problem
@@ -9,16 +10,16 @@ from popups.Popup import Popup
 
 class ProblemEntryPopup(Popup):
     def __init__(self, master: Misc | None, callback: Callable[[Problem], None]) -> None:
-        super().__init__(master, "Add Problem", height_factor=0.5, columns=2)
+        super().__init__(master, "Add Problem", height_factor=0.1, columns=2)
         self.callback = callback
 
-        ttk.Label(self, text="Problem Number").grid(column=0, row=0)
-        number = StringVar()
-        entry = ttk.Entry(self, textvariable=number)
+        ctk.CTkLabel(self, text="Problem Number").grid(column=0, row=0)
+        number = ctk.StringVar()
+        entry = ctk.CTkEntry(self, textvariable=number)
         entry.grid(column=1, row=0)
-        entry.focus()
+        self.after(100, entry.focus)
 
-        add_button = ttk.Button(self, text="Add", command=lambda: self._get_problems(number.get()))
+        add_button = ctk.CTkButton(self, text="Add", command=lambda: self._get_problems(number.get()))
         add_button.grid(column=0, row=4, columnspan=2)
         entry.bind("<Return>", lambda _: self._get_problems(number.get()))
 

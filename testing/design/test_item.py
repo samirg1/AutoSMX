@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from design.Item import Item
 
 
@@ -13,7 +14,15 @@ def test_item_creation_and_properties() -> None:
     assert item.room == "RM1"
     assert item.last_update
     assert item.last_update.strftime(r"%Y-%m-%d %H:%M:%S") == "2019-01-01 03:45:44"
-    assert item.full_info == "123 - Test Item\nModel: Model123\nManufacturer: Test Manufacturer\nSN: ABC456\nRoom: RM1\nLast Update: 01-01-2019 03:45AM"
+    assert item.full_info == "123 - Test Item - Model: Model123 - Manufacturer: Test Manufacturer - SN: ABC456 - Last Update: 01-01-2019 03:45AM"
+
+    item = Item("123", "123A", "Test Item", "Model123", "Test Manufacturer", "ABC456", "RM1", datetime.today().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3])
+    assert "Today" in item.full_info.split(" - ")[-1]
+    item = Item("123", "123A", "Test Item", "Model123", "Test Manufacturer", "ABC456", "RM1", (datetime.today() - timedelta(days=1)).strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3])
+    assert "Yesterday" in item.full_info.split(" - ")[-1]
+
+    item.set_room("123")
+    assert item.room == "123"
 
 
 def test_item_string_representation() -> None:

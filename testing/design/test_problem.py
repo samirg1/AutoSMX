@@ -65,9 +65,9 @@ def test_problem_string_representation() -> None:
     problem2 = Problem("BENETAS - ST PAULS", "CampusA", "DepartmentY", "123", "123", get_open_problems=False)
     problem3 = Problem("JEWISH ST KILDA", "CampusA", "DepartmentY", "123", "123", get_open_problems=False)
 
-    assert str(problem1) == "CampusA\nCAMPEYN - YOORALLA\n123"
-    assert str(problem2) == "CampusA\nBENETAS - ST PAULS\n123"
-    assert str(problem3) == "CampusA\nJEWISH ST KILDA\n123"
+    assert str(problem1) == "123 - CampusA - CAMPEYN - YOORALLA"
+    assert str(problem2) == "123 - CampusA - BENETAS - ST PAULS"
+    assert str(problem3) == "123 - CampusA - JEWISH ST KILDA"
 
 
 def test_problem_hashing_and_eq() -> None:

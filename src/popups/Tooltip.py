@@ -1,10 +1,10 @@
 import tkinter
-from tkinter import Widget, ttk
 from typing import Any
+import customtkinter as ctk
 
 
 class Tooltip:
-    def __init__(self, widget: Widget, text: str, *, delay: int = 400, wraplength: int = 250) -> None:
+    def __init__(self, widget: tkinter.Widget, text: str, *, delay: int = 400, wraplength: int = 250) -> None:
         self._delay = delay
         self._wraplength = wraplength
         self._widget = widget
@@ -14,7 +14,7 @@ class Tooltip:
         self._widget.bind("<ButtonPress>", self._onLeave)
         self._padding = (5, 3, 5, 3)
         self._after_id: str | None = None
-        self._tooltip: tkinter.Toplevel | None = None
+        self._tooltip: ctk.CTkToplevel | None = None
 
     def _onEnter(self, _: Any) -> None:
         self._unschedule()
@@ -31,7 +31,7 @@ class Tooltip:
             self._widget.after_cancel(self._after_id)
         self._after_id = None
 
-    def _calculate_position(self, label: ttk.Label) -> tuple[int, int]:
+    def _calculate_position(self, label: ctk.CTkLabel) -> tuple[int, int]:
         s_width, s_height = self._widget.winfo_screenwidth(), self._widget.winfo_screenheight()
         width, height = (self._padding[0] + label.winfo_reqwidth() + self._padding[2], self._padding[1] + label.winfo_reqheight() + self._padding[3])
         mouse_x, mouse_y = self._widget.winfo_pointerxy()
@@ -52,14 +52,14 @@ class Tooltip:
         return x1, max(y1, 0)
 
     def _show(self) -> None:
-        self._tooltip = tkinter.Toplevel(self._widget)
+        self._tooltip = ctk.CTkToplevel(self._widget)
         self._tooltip.attributes("-topmost", 2)  # pyright: ignore
         self._tooltip.wm_overrideredirect(True)
 
         win = tkinter.Frame(self._tooltip, borderwidth=0)
-        label = ttk.Label(win, text=self._text, justify=tkinter.LEFT, wraplength=self._wraplength)
+        label = ctk.CTkLabel(win, text=self._text, justify=tkinter.LEFT, wraplength=self._wraplength)
 
-        label.grid(padx=(self._padding[0], self._padding[2]), pady=(self._padding[1], self._padding[3]), sticky=tkinter.NSEW)
+        label.grid(padx=(self._padding[0], self._padding[2]), pady=(self._padding[1], self._padding[3]), sticky=ctk.NSEW)
         win.grid()
 
         x, y = self._calculate_position(label)

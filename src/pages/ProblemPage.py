@@ -1,5 +1,4 @@
-import tkinter
-from tkinter import ttk
+import customtkinter as ctk
 
 from design.Problem import Problem
 from pages.Page import Page
@@ -10,106 +9,74 @@ from popups.SyncPopup import SyncPopup
 class ProblemPage(Page):
     def setup(self) -> None:
         # top row
-        ttk.Label(self.frame, text="Problems").grid(column=0, row=0, columnspan=1)
-        add_button = ttk.Button(self.frame, text="+", command=self.add_tests)
-        add_button.grid(column=1, row=0, columnspan=1)
-        add_button.focus()
+        ctk.CTkLabel(self.frame, text="Problems").grid(column=0, row=0, columnspan=17)
+        add_button = ctk.CTkButton(self.frame, text="+", command=self.add_tests)
+        add_button.grid(column=17, row=0, columnspan=1)
+        add_button.bind("<FocusIn>", lambda _: add_button.configure(text_color="black"))
+        add_button.bind("<FocusOut>", lambda _: add_button.configure(text_color="white"))
+        self.frame.after(100, add_button.focus)
         add_button.bind("<Return>", lambda _: add_button.invoke())
-        ttk.Button(self.frame, text="Settings", command=lambda: self.change_page("SETTINGS")).grid(column=2, row=0, columnspan=2)
-        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=1, columnspan=4)
+        for i, campus in enumerate(self.shared.problems.keys(), start=1):
+            add_button.bind(f"{i}", lambda _, campus=campus: self.add_tests(campus))  # type: ignore[misc]
+            add_button.bind(f"<Alt-Key-{i}>", lambda _, campus=campus: self.delete_problem(campus))  # type: ignore[misc]
+        ctk.CTkButton(self.frame, text="Settings", command=lambda: self.change_page("SETTINGS")).grid(column=18, row=0, columnspan=1)
+        ctk.CTkButton(self.frame, text="Sync", command=self.sync).grid(row=0, column=19, columnspan=1)
+        ctk.CTkLabel(self.frame, text=f"{'-' * 600}").grid(column=0, row=1, columnspan=20)
         row = 2
 
-        # tree setup
-        tree = ttk.Treeview(self.frame, columns=("text", "number"), show="tree headings", height=10, selectmode="browse")
-        style = ttk.Style(self.frame)
-        style.configure("Treeview", rowheight=60)  # pyright: ignore
-        tree.column("#0", width=0)
-        tree.column("text", anchor=tkinter.W)
-        tree.column("number", width=10, anchor=tkinter.CENTER)
-        tree.heading("text", text="Jobs")
-        tree.heading("number", text="#")
-
-        # default
         if not self.shared.problems:
-            tree.insert("", tkinter.END, values=("No problems yet, click '+' to add",))
-            tree.configure(selectmode="none")
+            ctk.CTkLabel(self.frame, text="No problems yet, click '+' to add").grid(row=row, column=0, sticky=ctk.EW, columnspan=20)
 
-        # add each problem to the tree
         for campus, problem in self.shared.problems.items():
-            problem_node = tree.insert("", tkinter.END, campus, values=(f"{problem}",))
+            ctk.CTkLabel(self.frame, text=f"{problem}").grid(row=row, column=0, sticky=ctk.W, columnspan=18)
+            ctk.CTkButton(self.frame, text="Enter", command=lambda campus=campus: self.add_tests(campus)).grid(row=row, column=18, columnspan=1)  # type: ignore[misc]
+            ctk.CTkButton(self.frame, text="Delete", command=lambda campus=campus: self.delete_problem(campus)).grid(row=row, column=19, columnspan=1)  # type: ignore[misc]
+            row += 1
 
             if problem.open_problems:
-                open_problem_node = tree.insert(problem_node, tkinter.END, values=("Open Problems", len(problem.open_problems)))
+                ctk.CTkLabel(self.frame, text=f"Open Problems ({len(problem.open_problems)})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
+                row += 1
                 for open_problem in problem.open_problems:
-                    tree.insert(open_problem_node, tkinter.END, values=(f"{open_problem}",))
+                    ctk.CTkLabel(self.frame, text=f"- {open_problem}").grid(row=row, column=2, sticky=ctk.W, columnspan=18)
+                    row += 1
 
             problem_jobs = self.shared.job_manager.problem_to_jobs.get(problem, [])
             if problem_jobs:
-                job_node = tree.insert(problem_node, tkinter.END, values=("Jobs Raised", len(problem_jobs)))
+                ctk.CTkLabel(self.frame, text=f"Jobs Raised ({len(problem_jobs)})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
+                row += 1
                 for job in problem_jobs:
                     item = self.shared.job_manager.job_to_item[job]
-                    first_line = str(job).split("\n")[0]
-                    tree.insert(job_node, tkinter.END, values=(f"{first_line}\n{item.description}\n{item.number}",))
+                    comment = job.comment.replace("\n", " | ")
+                    ctk.CTkLabel(self.frame, text=f"- {item.description} ({item.number}): {comment}").grid(row=row, column=2, sticky=ctk.W, columnspan=18)
+                    row += 1
 
             if problem.tests:
-                test_node = tree.insert(problem_node, tkinter.END, values=("Tests", f"{len(problem.tests)}"))
+                ctk.CTkLabel(self.frame, text=f"Tests ({len(problem.tests)})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
+                row += 1
                 for script_name, value in problem.test_breakdown.items():
-                    tree.insert(test_node, tkinter.END, values=(f"{script_name}", value))
+                    ctk.CTkLabel(self.frame, text=f"- {script_name} ({value})").grid(row=row, column=2, sticky=ctk.W, columnspan=18)
+                    row += 1
 
-        # completing tree setup
-        scrollbar = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # pyright: ignore
-        tree.configure(yscroll=scrollbar.set)  # type: ignore
-        scrollbar.grid(row=row, column=4, sticky=tkinter.NS)
-        tree.grid(row=row, column=0, columnspan=4, sticky=tkinter.EW)
-        row += 1
+            self.frame.rowconfigure(row, minsize=20)
+            row += 1
 
-        # add job manipulation buttons
-        button1 = ttk.Button(self.frame, text="Enter Problem", command=lambda: self.add_tests(tree), state="disabled")
-        button1.grid(row=row, column=0, columnspan=4)
-        button2 = ttk.Button(self.frame, text="Delete Problem", command=lambda: self.delete_problem(tree), state="disabled")
-        button2.grid(row=row + 1, column=0, columnspan=4)
-        row += 2
-
-        tree.bind("<<TreeviewSelect>>", lambda _: self.on_first_select(tree, button1, button2))
-
-        self.frame.rowconfigure(row, minsize=10)
-        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=row + 1, columnspan=4)
-        row += 2
-
-        ttk.Button(self.frame, text="Sync", command=self.sync).grid(row=row, column=0, columnspan=4)
-        row += 1
-
-    def on_first_select(self, tree: ttk.Treeview, *buttons: ttk.Button) -> None:
-        for button in buttons:
-            button.configure(state="normal")
-        tree.unbind("<<TreeviewSelect>>")
-
-    def get_selected_problem(self, tree: ttk.Treeview) -> Problem:
-        item = tree.focus()
-        possible_parent1 = tree.parent(item)
-        parent1 = possible_parent1 if possible_parent1 else item
-        possible_parent2 = tree.parent(parent1)
-        parent2 = possible_parent2 if possible_parent2 else parent1
-
-        return self.shared.problems[parent2]
-
-    def delete_problem(self, tree: ttk.Treeview) -> None:
-        problem = self.get_selected_problem(tree)
+    def delete_problem(self, campus: str) -> None:
+        problem = self.shared.problems[campus]
         del self.shared.problems[problem.campus]
         if problem in self.shared.job_manager.problem_to_jobs:
             del self.shared.job_manager.problem_to_jobs[problem]
         self.change_page("PROBLEM")
 
-    def add_tests(self, tree: ttk.Treeview | None = None) -> None:
-        if tree is None:
+    def add_tests(self, campus: str | None = None) -> None:
+        if campus is None:
             ProblemEntryPopup(self.frame, lambda problem: self.add_problem(problem))
         else:
-            self.add_problem(self.get_selected_problem(tree))
+            self.add_problem(self.shared.problems[campus], go_to_tests=True)
 
-    def add_problem(self, problem: Problem) -> None:
+    def add_problem(self, problem: Problem, *, go_to_tests: bool = False) -> None:
         self.shared.problem = problem
         self.shared.problems[problem.campus] = problem
-        self.change_page("TEST")
+        self.change_page("TEST" if go_to_tests else "PROBLEM")
 
     def sync(self) -> None:
         SyncPopup(self.frame, self.shared.problem).mainloop()

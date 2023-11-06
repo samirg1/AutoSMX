@@ -1,8 +1,7 @@
 import os
 import pathlib
 import sys
-import tkinter
-from tkinter import PhotoImage, ttk
+import customtkinter as ctk
 
 from design.JobManager import JobManager
 from pages.ProblemPage import ProblemPage
@@ -15,16 +14,13 @@ from storage.Storage import Storage
 _APPLICATION_PATH = os.path.dirname(sys.executable)
 
 
-class App(tkinter.Tk):
+class App(ctk.CTk):
     def __init__(self) -> None:
         super().__init__()
-        maxWidth = self.winfo_screenwidth()
-        width = 360
-        height = self.winfo_screenheight()
-        self.geometry(f"{width}x{height}+{maxWidth - width}+0")
+        self.geometry(f"1500x750+10+10")
         self.title("AutoSMX")
-        self.attributes("-topmost", 1)  # pyright: ignore
-        self.iconphoto(True, PhotoImage(file=pathlib.Path(_APPLICATION_PATH, "autosmx.png")))
+
+        self.after(201, lambda: self.iconbitmap(pathlib.Path(_APPLICATION_PATH, "autosmx.ico")))  # pyright: ignore
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
@@ -40,12 +36,10 @@ class App(tkinter.Tk):
 
         self.change_page("TUTORIAL")
 
-    def _frame(self) -> ttk.Frame:
-        frame = ttk.Frame(self, padding=10)
-        frame.columnconfigure(0, weight=1)
-        frame.columnconfigure(1, weight=1)
-        frame.columnconfigure(2, weight=1)
-        frame.columnconfigure(3, weight=1)
+    def _frame(self) -> ctk.CTkScrollableFrame:
+        frame = ctk.CTkScrollableFrame(self)
+        for i in range(20):
+            frame.columnconfigure(i, weight=1)
         return frame
 
     def change_page(self, page: TPAGES) -> None:

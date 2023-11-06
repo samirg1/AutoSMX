@@ -11,4 +11,4 @@ def test_get_open_problems(mock_sql_connect: MockSqlObject) -> None:
     problems = get_open_problems("location")
 
     assert len(problems) == 1
-    assert repr(problems[0]) == "123 - Opened: 01-01-2019\ndescription\nbed (serial)"
+    assert repr(problems[0]) == "123 - Opened: 01-01-2019 - bed (serial) : description"
