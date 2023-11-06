@@ -1,9 +1,8 @@
-import tkinter
 from io import StringIO
 from itertools import zip_longest
 from tkinter import ttk
 from tkinter.font import Font
-from design.Problem import Problem
+import customtkinter as ctk
 
 from pages.Page import Page
 
@@ -44,18 +43,15 @@ _TUTORIAL = {
 class TutorialPage(Page):
     def setup(self) -> None:
         if self.shared.storage.tutorial_complete:
-            self.shared.problem = Problem("BENETAS", "4469/COLTON CLOSE", "MITCHAM", "PM22334455", "4469", get_open_problems=False)
-            return self.change_page("TEST")
-
             return self.change_page("PROBLEM")
 
-        ttk.Label(self.frame, text="Tutorial Page").grid(row=0, column=0, sticky=tkinter.EW)
-        tkinter.Button(self.frame, text="Skip", command=self.end_tutorial).grid(row=0, column=3)
+        ctk.CTkLabel(self.frame, text="Tutorial Page").grid(row=0, column=0, sticky=ctk.EW)
+        ctk.CTkButton(self.frame, text="Skip", command=self.end_tutorial).grid(row=0, column=3)
 
         self.frame.rowconfigure(1, minsize=20)
 
         # tree setup
-        tree = ttk.Treeview(self.frame, columns=("#1"), show="tree", height=15, selectmode=tkinter.NONE)
+        tree = ttk.Treeview(self.frame, columns=("#1"), show="tree", height=15, selectmode=ctk.NONE)
         style = ttk.Style(self.frame)
         style.configure("Treeview", rowheight=60)  # pyright: ignore[reportUnknownMemberType]
         tree.column("#0", width=0)
@@ -63,18 +59,18 @@ class TutorialPage(Page):
         assert column
 
         for section_name, section in _TUTORIAL.items():
-            section_node = tree.insert("", tkinter.END, values=(section_name,), open=True)
+            section_node = tree.insert("", ctk.END, values=(section_name,), open=True)
             text_lines = self.adjust_newlines(section, column["width"])
             for group in zip_longest(*(iter(text_lines),) * 3, fillvalue=" "):
                 text = StringIO()
                 for i, line in enumerate(group):
                     text.write(line + ("\n" if i != len(group) - 1 else ""))
-                tree.insert(section_node, tkinter.END, values=(text.getvalue(),))
+                tree.insert(section_node, ctk.END, values=(text.getvalue(),))
 
-        scrollbar_y = ttk.Scrollbar(self.frame, orient=tkinter.VERTICAL, command=tree.yview)  # pyright: ignore
+        scrollbar_y = ttk.Scrollbar(self.frame, orient=ctk.VERTICAL, command=tree.yview)  # pyright: ignore
         tree.configure(yscroll=scrollbar_y.set)  # type: ignore
-        scrollbar_y.grid(row=2, column=4, sticky=tkinter.NS)
-        tree.grid(row=2, column=0, columnspan=4, sticky=tkinter.EW)
+        scrollbar_y.grid(row=2, column=4, sticky=ctk.NS)
+        tree.grid(row=2, column=0, columnspan=4, sticky=ctk.EW)
 
     def adjust_newlines(self, val: str, width: int) -> list[str]:
         font = Font(font="TkDefaultFont")

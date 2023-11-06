@@ -1,15 +1,14 @@
-import tkinter
-from tkinter import ttk
+import customtkinter as ctk
 
 from pages.Page import Page
 
 
 class SettingsPage(Page):
     def setup(self) -> None:
-        tkinter.Button(self.frame, text="<", command=lambda: self.change_page("PROBLEM")).grid(column=0, row=0, columnspan=1)
-        ttk.Label(self.frame, text="Settings").grid(column=1, row=0, columnspan=3, sticky=tkinter.NSEW)
-        ttk.Label(self.frame, text=f"{'-' * 50}").grid(column=0, row=1, columnspan=4)
-        tkinter.Button(self.frame, text="View Tutorial >", command=self.tutorial).grid(column=0, row=2, sticky=tkinter.W)
+        ctk.CTkButton(self.frame, text="<", command=lambda: self.change_page("PROBLEM")).grid(column=0, row=0, columnspan=1)
+        ctk.CTkLabel(self.frame, text="Settings").grid(column=1, row=0, columnspan=3, sticky=ctk.NSEW)
+        ctk.CTkLabel(self.frame, text=f"{'-' * 600}").grid(column=0, row=1, columnspan=4)
+        ctk.CTkButton(self.frame, text="View Tutorial >", command=self.tutorial).grid(column=0, row=2, sticky=ctk.W)
 
     def tutorial(self) -> None:
         with self.shared.storage.edit() as storage:

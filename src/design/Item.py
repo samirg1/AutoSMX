@@ -18,8 +18,8 @@ class Item:
 
     def __str__(self) -> str:
         return f"{self.number} - {self.description}"
-    
-    def set_room(self, room: str | None):
+
+    def set_room(self, room: str | None) -> None:
         object.__setattr__(self, "room", room)
 
     @property
@@ -28,9 +28,9 @@ class Item:
         if self.last_update is not None:
             today = datetime.today()
             if self.last_update.date() == today.date():
-                last_update = f"Today {self.last_update.strftime("%I:%M%p")}"
+                last_update = f"Today {self.last_update.strftime('%I:%M%p')}"
             elif self.last_update.date() == (today - timedelta(days=1)).date():
-                last_update = f"Yesterday {self.last_update.strftime("%I:%M%p")}"
+                last_update = f"Yesterday {self.last_update.strftime('%I:%M%p')}"
             else:
                 last_update = self.last_update.strftime(r"%d-%m-%Y %I:%M%p")
         return f"{self} - Model: {self.model} - Manufacturer: {self.manufacturer} - SN: {self.serial} - Last Update: {last_update}"

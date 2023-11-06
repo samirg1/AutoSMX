@@ -1,7 +1,7 @@
 import os
 import sys
-from tkinter import Misc, ttk
-import tkinter
+import customtkinter as ctk
+from tkinter import Misc
 
 from db.get_connection import BASE_FILE
 from db.presync_check import get_double_ups
@@ -17,21 +17,21 @@ class SyncPopup(Popup):
         if problem is None:
             return self._sync()
 
-        ttk.Label(self, text="Checking double ups...").grid(column=0, row=row, columnspan=2, sticky="W")
+        ctk.CTkLabel(self, text="Checking double ups...").grid(column=0, row=row, columnspan=2, sticky="W")
         row += 1
         double_ups: dict[str, list[str]] = get_double_ups(problem)
         if not double_ups:
-            ttk.Label(self, text="No double ups found").grid(column=0, row=row, columnspan=2)
+            ctk.CTkLabel(self, text="No double ups found").grid(column=0, row=row, columnspan=2)
             row += 1
         else:
             for title, doubles in double_ups.items():
-                ttk.Label(self, text=title).grid(column=0, row=row, columnspan=2)
+                ctk.CTkLabel(self, text=title).grid(column=0, row=row, columnspan=2)
                 row += 1
                 for text in doubles:
-                    ttk.Label(self, text=text).grid(column=0, row=row, columnspan=2, sticky="W")
+                    ctk.CTkLabel(self, text=text).grid(column=0, row=row, columnspan=2, sticky="W")
                     row += 1
 
-        tkinter.Button(self, text="Sync", command=self._sync).grid(column=0, row=row, columnspan=2)
+        ctk.CTkButton(self, text="Sync", command=self._sync).grid(column=0, row=row, columnspan=2)
         row += 1
 
     def _sync(self) -> None:
