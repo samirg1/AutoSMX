@@ -37,10 +37,7 @@ class TestPage(Page):
         self.choose_button = ctk.CTkButton(self.frame, text="Choose", command=lambda: self.get_items(item_number.get(), item_entry, choose_script=True))
         self.choose_button.grid(column=1, row=2, columnspan=1)
 
-        if self.shared.item_number_to_tests.get(item_number.get()):
-            button_state = "normal"
-        else:
-            button_state = "disabled"
+        button_state = "normal" if item_number.get() in self.test_problem.item_number_to_tests else "disabled"
         self.edit_button = ctk.CTkButton(self.frame, text="Edit Test", command=lambda: self.get_items(item_number.get(), item_entry, editing=True), state=button_state)
         self.edit_button.grid(column=2, row=2)
 
@@ -50,7 +47,7 @@ class TestPage(Page):
         item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
 
     def edit_button_reconfigure(self, item_number: ctk.StringVar) -> None:
-        tested = self.shared.item_number_to_tests.get(item_number.get())
+        tested = item_number.get() in self.test_problem.item_number_to_tests
         if tested:
             self.edit_button.configure(state="normal")
         else:
@@ -60,7 +57,7 @@ class TestPage(Page):
         item_entry.configure(state="disabled")
         self.frame.focus()
 
-        if editing and item_number not in self.shared.item_number_to_tests:
+        if editing and item_number not in self.test_problem.item_number_to_tests:
             return self.item_not_found(item_number)
 
         items = get_items(item_number)
@@ -77,7 +74,7 @@ class TestPage(Page):
         if not self.is_editing:
             return self.get_script(Test(item), choose_script)
 
-        possible_tests = self.shared.item_number_to_tests.get(item.number, None)
+        possible_tests = self.test_problem.item_number_to_tests.get(item.number, None)
         if possible_tests is None:
             return self.item_not_found(item.number)
 
@@ -202,7 +199,6 @@ class TestPage(Page):
 
     def remove_test(self) -> None:
         self.test_problem.remove_test(self.test)
-        self.shared.item_number_to_tests[self.test.item.number].remove(self.test)
         for job in self.test.jobs:
             self.shared.job_manager.delete_job(self.test_problem, job)
         edit_test(self.test, self.test_problem, remove_only=True)
@@ -238,9 +234,6 @@ class TestPage(Page):
         self.test.complete(comment, result, script_answers)
         if self.is_editing:
             self.test_problem.remove_test(self.test)
-        else:
-            new = self.shared.item_number_to_tests.get(self.test.item.number, []) + [self.test]
-            self.shared.item_number_to_tests[self.test.item.number] = new
         self.test_problem.add_test(self.test)
 
         if self.is_editing:
