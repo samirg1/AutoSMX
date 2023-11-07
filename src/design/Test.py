@@ -64,6 +64,8 @@ class Test:
                 raise InvalidTestResultError("Failed script line but used a 'Pass' overall result option")
 
         for answer, line in zip(script_answers, self.script.lines):
+            if line.required and answer in ("", " "):
+                raise InvalidTestResultError(f"Required line '{line.text}' not filled")
             line.result = "" if answer == " " else "N/A" if answer == "" else answer
         self.comments = comment
         self.result = result

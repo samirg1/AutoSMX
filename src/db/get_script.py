@@ -3,7 +3,7 @@ from design.Script import Script, ScriptLine
 from design.ScriptInfo import ScriptInfo
 
 
-def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition_lines: set[int]) -> Script:
+def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition_lines: set[int], required_lines: set[int]) -> Script:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
         script_name, service_type = connection.execute(
             """
@@ -14,7 +14,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
             (script_info.number,),
         ).fetchone()
 
-        script_line_fields: list[tuple[int, str, int, str, str]] = connection.execute(
+        script_line_fields: list[tuple[int, str, float, str, str]] = connection.execute(
             """
             SELECT z_rv, script_line_text, line_no, answer_type, answer_id
             FROM SCMobileScriptLinesm1
@@ -45,8 +45,8 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
                     (possible_id,),
                 ).fetchall():
                     break
-
-            line = ScriptLine(text, line_no, *(text[0] for text in raw))
+            
+            line = ScriptLine(text, int(line_no), *(text[0] for text in raw), required=(z_rv in required_lines))
             if z_rv in condition_lines:
                 line.default = "1"
             else:

@@ -137,7 +137,7 @@ class TestPage(Page):
             self.saved_script_answers = stored_answers or [stest.default for stest in script.lines]
         actual_answers = [ctk.StringVar(value=ans) for ans in self.saved_script_answers]
         for i, line in enumerate(script.lines):
-            label = ctk.CTkLabel(self.frame, text=line.text, width=10)
+            label = ctk.CTkLabel(self.frame, text=line.text, width=10, text_color=("indian red" if line.required else "black"))
             Tooltip(label, text=line.text)
             label.grid(column=0, row=row, sticky=ctk.W)
             if len(line.options) <= 1:
