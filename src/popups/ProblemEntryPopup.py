@@ -22,6 +22,7 @@ class ProblemEntryPopup(Popup):
         add_button = ctk.CTkButton(self, text="Add", command=lambda: self._get_problems(number.get()))
         add_button.grid(column=0, row=4, columnspan=2)
         entry.bind("<Return>", lambda _: self._get_problems(number.get()))
+        entry.bind("<Alt-c>", lambda _: self.destroy())
 
     def _get_problems(self, number: str) -> None:
         problems = get_problems(number)

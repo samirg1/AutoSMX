@@ -11,6 +11,10 @@ class ScriptError(ValueError):
     ...
 
 
+class InvalidTestResultError(ValueError):
+    ...
+
+
 class Test:
     def __init__(self, item: Item) -> None:
         self.item = item
@@ -43,9 +47,25 @@ class Test:
         self.jobs.append(job)
 
     def complete(self, comment: str, result: str, script_answers: list[str]) -> None:
+        comment = comment.strip()
+        if result == "":
+            raise InvalidTestResultError("Test result not selected")
+
+        if self.jobs:
+            if comment == "":
+                raise InvalidTestResultError("Job raised but no overall comment present")
+            elif result == "Pass":
+                raise InvalidTestResultError("Job raised but overall result is 'Pass'")
+
+        if any(answer == "Fail" for answer in script_answers):
+            if comment == "":
+                raise InvalidTestResultError("Failed script line but no overall comment present")
+            elif result.startswith("Pass"):
+                raise InvalidTestResultError("Failed script line but used a 'Pass' overall result option")
+
         for answer, line in zip(script_answers, self.script.lines):
             line.result = "" if answer == " " else "N/A" if answer == "" else answer
-        self.comments = comment.strip()
+        self.comments = comment
         self.result = result
         if not self.completed:
             self.id = get_new_test_id()

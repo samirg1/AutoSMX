@@ -10,7 +10,7 @@ from design.Item import Item
 from design.Job import Job
 from design.Problem import Problem
 from design.Script import Script
-from design.Test import ScriptError, Test
+from design.Test import InvalidTestResultError, ScriptError, Test
 from pages.Page import Page
 from popups.JobPopup import JobPopup
 from popups.OptionSelectPopup import OptionSelectPopup
@@ -155,7 +155,7 @@ class TestPage(Page):
         self.add_job_button.grid(column=9, row=label_row, columnspan=8)
         if len(self.test.jobs):
             self.add_job_button.configure(text=f"Add Job ({len(self.test.jobs)})")
-            self.delete_job_button.grid(column=17, row=label_row, sticky=ctk.E)
+            self.delete_job_button.grid(column=15, row=label_row, sticky=ctk.E)
         self.frame.rowconfigure(label_row + 1, minsize=20)
         label_row += 2
 
@@ -174,7 +174,7 @@ class TestPage(Page):
         ctk.CTkLabel(self.frame, text="Result").grid(column=9, row=label_row, columnspan=8)
         label_row += 1
         overall_results = get_overall_results(int(self.test_problem.customer_number))
-        result = ctk.StringVar(value=self.test.result or overall_results[0].nickname)
+        result = ctk.StringVar(value=self.test.result or "")
         for i, (nickname, fullname) in enumerate(overall_results):
             button = ctk.CTkRadioButton(self.frame, text=nickname, variable=result, value=nickname)
             Tooltip(button, fullname)
@@ -188,10 +188,14 @@ class TestPage(Page):
         save.bind("<FocusOut>", lambda _: save.configure(text_color="white"))
         save.bind("<Return>", lambda _: self.save_test([s.get() for s in actual_answers], result.get()))
         save.bind("c", lambda _: self.go_button.invoke())
+        save.bind("j", lambda _: self.add_job_button.invoke())
+        save.bind("d", lambda _: self.delete_job_button.invoke())
         if self.is_editing:
             remove_button = ctk.CTkButton(self.frame, text="Remove", command=self.remove_test)
             remove_button.grid(column=5, row=1, columnspan=1)
             save.bind("r", lambda _: remove_button.invoke())
+        for i, (nickname, _) in enumerate(overall_results,start=1):
+            save.bind(f"{i}", lambda _, nickname=nickname: result.set(nickname))
 
         save.focus()
         label_row += 1
@@ -223,9 +227,11 @@ class TestPage(Page):
             self.test.add_job(job)
         self.shared.job_manager.add_job(self.test.item, self.test_problem, job)
         self.add_job_button.configure(text=f"Add Job ({len(self.test.jobs)})")
-        self.delete_job_button.grid(column=3, row=self.add_job_button.grid_info()["row"], sticky="e")
+        self.delete_job_button.grid(column=15, row=self.add_job_button.grid_info()["row"], sticky=ctk.E)
 
     def delete_job(self) -> None:
+        if len(self.test.jobs) == 0:
+            return
         with self.shared.storage.edit():
             job = self.test.jobs.pop()
         self.shared.job_manager.delete_job(self.test_problem, job)
@@ -243,7 +249,11 @@ class TestPage(Page):
     def save_test(self, script_answers: list[str], result: str) -> None:
         comment = self.comment.get("1.0", ctk.END)
         with self.shared.storage.edit():
-            self.test.complete(comment, result, script_answers)
+            try:
+                self.test.complete(comment, result, script_answers)
+            except InvalidTestResultError as e:
+                tkinter.messagebox.showerror("Invalid Answers", f"{e}")  # type: ignore
+                return
             if self.is_editing:
                 self.test_problem.remove_test(self.test)
             self.test_problem.add_test(self.test)

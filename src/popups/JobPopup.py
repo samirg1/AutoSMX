@@ -21,10 +21,14 @@ class JobPopup(Popup):
 
         ctk.CTkLabel(self, text="Comment").grid(column=0, row=2)
         comment = tkinter.Text(self, height=4, width=100)
-        comment.focus()
+        self.after(100, comment.focus)
         comment.grid(column=0, row=3, columnspan=2)
 
-        ctk.CTkButton(self, text="Save", command=lambda: self._save_job(department.get(), contact.get(), comment.get("1.0", ctk.END))).grid(column=0, row=4, columnspan=2)
+        save_button = ctk.CTkButton(self, text="Save", command=lambda: self._save_job(department.get(), contact.get(), comment.get("1.0", ctk.END)))
+        save_button.grid(column=0, row=4, columnspan=2)
+
+        comment.bind("<Alt-s>", lambda _: save_button.invoke())
+        comment.bind("<Alt-c>", lambda _: self.destroy())
 
     def _save_job(self, department: str, contact: str, comment: str) -> None:
         self.save_job(Job(department, contact, comment))
