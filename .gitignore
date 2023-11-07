@@ -1,6 +1,6 @@
 create_autosmx_dmg.sh
 create_autosmx_exe.ps1
-store.json
+store.pkl
 **/**.vscode
 **/**.DS_Store
 

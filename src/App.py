@@ -25,7 +25,7 @@ class App(ctk.CTk):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
-        shared = SharedPageInfo({}, JobManager(), Storage(pathlib.Path(_APPLICATION_PATH, "store.json")))
+        shared = SharedPageInfo(JobManager(), Storage(pathlib.Path(_APPLICATION_PATH, "store.pkl")))
         self.pages: dict[TPAGES, Page] = {
             "TUTORIAL": TutorialPage(self._frame(), self.change_page, shared),
             "SETTINGS": SettingsPage(self._frame(), self.change_page, shared),

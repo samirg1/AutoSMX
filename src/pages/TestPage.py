@@ -23,10 +23,11 @@ class TestPage(Page):
         assert self.shared.problem
         self.test_problem: Problem = self.shared.problem
 
-        ctk.CTkButton(self.frame, text="< Problems", command=lambda: self.change_page("PROBLEM")).grid(column=0, row=0, sticky="w")
+        problems_button = ctk.CTkButton(self.frame, text="< Problems", command=lambda: self.change_page("PROBLEM"))
+        problems_button.grid(column=0, row=0, sticky="w")
 
         ctk.CTkLabel(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
-        item_number = ctk.StringVar(value=self.shared.previous_item_number)
+        item_number = ctk.StringVar(value=self.test_problem.previous_item_number)
         item_entry = ctk.CTkEntry(self.frame, textvariable=item_number)
         item_entry.grid(column=2, row=1, sticky="w", columnspan=2)
         item_entry.focus()
@@ -37,21 +38,21 @@ class TestPage(Page):
         self.choose_button = ctk.CTkButton(self.frame, text="Choose", command=lambda: self.get_items(item_number.get(), item_entry, choose_script=True))
         self.choose_button.grid(column=1, row=2, columnspan=1)
 
-        if self.shared.item_number_to_tests.get(item_number.get()):
-            button_state = "normal"
-        else:
-            button_state = "disabled"
+        button_state = "normal" if self.is_tested(item_number.get()) else "disabled"
         self.edit_button = ctk.CTkButton(self.frame, text="Edit Test", command=lambda: self.get_items(item_number.get(), item_entry, editing=True), state=button_state)
         self.edit_button.grid(column=2, row=2)
 
         item_entry.bind("<Return>", lambda _: self.go_button.invoke())
         item_entry.bind("<Alt-c>", lambda _: self.choose_button.invoke())
         item_entry.bind("<Alt-e>", lambda _: self.edit_button.invoke())
+        item_entry.bind("<Alt-b>", lambda _: problems_button.invoke())
         item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
 
+    def is_tested(self, item_number: str) -> bool:
+        return len(self.test_problem.item_number_to_tests.get(item_number, [])) != 0
+
     def edit_button_reconfigure(self, item_number: ctk.StringVar) -> None:
-        tested = self.shared.item_number_to_tests.get(item_number.get())
-        if tested:
+        if self.is_tested(item_number.get()):
             self.edit_button.configure(state="normal")
         else:
             self.edit_button.configure(state="disabled")
@@ -60,7 +61,7 @@ class TestPage(Page):
         item_entry.configure(state="disabled")
         self.frame.focus()
 
-        if editing and item_number not in self.shared.item_number_to_tests:
+        if editing and item_number not in self.test_problem.item_number_to_tests:
             return self.item_not_found(item_number)
 
         items = get_items(item_number)
@@ -77,7 +78,7 @@ class TestPage(Page):
         if not self.is_editing:
             return self.get_script(Test(item), choose_script)
 
-        possible_tests = self.shared.item_number_to_tests.get(item.number, None)
+        possible_tests = self.test_problem.item_number_to_tests.get(item.number, None)
         if possible_tests is None:
             return self.item_not_found(item.number)
 
@@ -109,9 +110,6 @@ class TestPage(Page):
         self.edit_button.destroy()
         self.go_button.configure(text="Cancel", command=lambda: self.reset_page(test.item.number))
         self.go_button.grid(column=4, row=1)
-
-        if self.is_editing:
-            ctk.CTkButton(self.frame, text="Remove", command=self.remove_test).grid(column=4, row=1, columnspan=1)
 
         # displaying the item and problem
         item_label = ctk.CTkLabel(self.frame, text=f"{test.item.full_info}")
@@ -190,19 +188,26 @@ class TestPage(Page):
         save.bind("<FocusOut>", lambda _: save.configure(text_color="white"))
         save.bind("<Return>", lambda _: self.save_test([s.get() for s in actual_answers], result.get()))
         save.bind("c", lambda _: self.go_button.invoke())
+        if self.is_editing:
+            remove_button = ctk.CTkButton(self.frame, text="Remove", command=self.remove_test)
+            remove_button.grid(column=5, row=1, columnspan=1)
+            save.bind("r", lambda _: remove_button.invoke())
+
         save.focus()
         label_row += 1
 
     def edit_item_room(self) -> None:
-        item_room = self.item_room.get()
-        if item_room != self.test.item.room:
-            room = self.item_room.get() or None
-            edit_item(self.test.item.number, {"room": room})
-            self.test.item.set_room(room)
+        with self.shared.storage.edit():
+            item_room = self.item_room.get()
+            if item_room != self.test.item.room:
+                room = self.item_room.get() or None
+                edit_item(self.test.item.number, {"room": room})
+                self.test.item.set_room(room)
 
     def remove_test(self) -> None:
-        self.test_problem.remove_test(self.test)
-        self.shared.item_number_to_tests[self.test.item.number].remove(self.test)
+        with self.shared.storage.edit():
+            self.test_problem.remove_test(self.test)
+
         for job in self.test.jobs:
             self.shared.job_manager.delete_job(self.test_problem, job)
         edit_test(self.test, self.test_problem, remove_only=True)
@@ -214,13 +219,15 @@ class TestPage(Page):
 
     def save_job(self, job: Job) -> None:
         self.comment.insert(ctk.END, job.test_comment + "\n\n")
-        self.test.add_job(job)
+        with self.shared.storage.edit():
+            self.test.add_job(job)
         self.shared.job_manager.add_job(self.test.item, self.test_problem, job)
         self.add_job_button.configure(text=f"Add Job ({len(self.test.jobs)})")
         self.delete_job_button.grid(column=3, row=self.add_job_button.grid_info()["row"], sticky="e")
 
     def delete_job(self) -> None:
-        job = self.test.jobs.pop()
+        with self.shared.storage.edit():
+            job = self.test.jobs.pop()
         self.shared.job_manager.delete_job(self.test_problem, job)
         current_comment = self.comment.get("1.0", ctk.END).strip()
         self.comment.delete("1.0", ctk.END)
@@ -235,13 +242,11 @@ class TestPage(Page):
 
     def save_test(self, script_answers: list[str], result: str) -> None:
         comment = self.comment.get("1.0", ctk.END)
-        self.test.complete(comment, result, script_answers)
-        if self.is_editing:
-            self.test_problem.remove_test(self.test)
-        else:
-            new = self.shared.item_number_to_tests.get(self.test.item.number, []) + [self.test]
-            self.shared.item_number_to_tests[self.test.item.number] = new
-        self.test_problem.add_test(self.test)
+        with self.shared.storage.edit():
+            self.test.complete(comment, result, script_answers)
+            if self.is_editing:
+                self.test_problem.remove_test(self.test)
+            self.test_problem.add_test(self.test)
 
         if self.is_editing:
             edit_test(self.test, self.test_problem)
@@ -260,7 +265,8 @@ class TestPage(Page):
         self.reset_page(self.test.item.number)
 
     def reset_page(self, item_number: str) -> None:
-        self.shared.previous_item_number = item_number
+        with self.shared.storage.edit():
+            self.test_problem.set_previous_item_number(item_number)
         self.change_page("TEST")
 
     def update_storage(self, actual_script_answers: list[str]) -> None:

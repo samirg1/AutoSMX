@@ -19,8 +19,12 @@ def test_problem_creation_and_properties(mock_sql_connect: MockSqlObject) -> Non
     assert problem.department == "DepartmentY"
     assert problem.number == "123"
     assert problem.customer_number == "123"
+    assert problem.previous_item_number == ""
     assert problem.open_problems == []
     assert len(problem.tests) == 0
+
+    problem.set_previous_item_number("1234")
+    assert problem.previous_item_number == "1234"
 
 
 def test_problem_add_test(mock_sql_connect_scripts: MockSqlObject) -> None:
