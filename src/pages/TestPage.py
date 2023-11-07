@@ -48,7 +48,7 @@ class TestPage(Page):
         item_entry.bind("<Alt-b>", lambda _: problems_button.invoke())
         item_number.trace_add("write", lambda _, __, ___: self.edit_button_reconfigure(item_number))
 
-    def is_tested(self, item_number: str):
+    def is_tested(self, item_number: str) -> bool:
         return len(self.test_problem.item_number_to_tests.get(item_number, [])) != 0
 
     def edit_button_reconfigure(self, item_number: ctk.StringVar) -> None:
@@ -197,14 +197,17 @@ class TestPage(Page):
         label_row += 1
 
     def edit_item_room(self) -> None:
-        item_room = self.item_room.get()
-        if item_room != self.test.item.room:
-            room = self.item_room.get() or None
-            edit_item(self.test.item.number, {"room": room})
-            self.test.item.set_room(room)
+        with self.shared.storage.edit():
+            item_room = self.item_room.get()
+            if item_room != self.test.item.room:
+                room = self.item_room.get() or None
+                edit_item(self.test.item.number, {"room": room})
+                self.test.item.set_room(room)
 
     def remove_test(self) -> None:
-        self.test_problem.remove_test(self.test)
+        with self.shared.storage.edit():
+            self.test_problem.remove_test(self.test)
+
         for job in self.test.jobs:
             self.shared.job_manager.delete_job(self.test_problem, job)
         edit_test(self.test, self.test_problem, remove_only=True)
@@ -216,13 +219,15 @@ class TestPage(Page):
 
     def save_job(self, job: Job) -> None:
         self.comment.insert(ctk.END, job.test_comment + "\n\n")
-        self.test.add_job(job)
+        with self.shared.storage.edit():
+            self.test.add_job(job)
         self.shared.job_manager.add_job(self.test.item, self.test_problem, job)
         self.add_job_button.configure(text=f"Add Job ({len(self.test.jobs)})")
         self.delete_job_button.grid(column=3, row=self.add_job_button.grid_info()["row"], sticky="e")
 
     def delete_job(self) -> None:
-        job = self.test.jobs.pop()
+        with self.shared.storage.edit():
+            job = self.test.jobs.pop()
         self.shared.job_manager.delete_job(self.test_problem, job)
         current_comment = self.comment.get("1.0", ctk.END).strip()
         self.comment.delete("1.0", ctk.END)
@@ -237,10 +242,11 @@ class TestPage(Page):
 
     def save_test(self, script_answers: list[str], result: str) -> None:
         comment = self.comment.get("1.0", ctk.END)
-        self.test.complete(comment, result, script_answers)
-        if self.is_editing:
-            self.test_problem.remove_test(self.test)
-        self.test_problem.add_test(self.test)
+        with self.shared.storage.edit():
+            self.test.complete(comment, result, script_answers)
+            if self.is_editing:
+                self.test_problem.remove_test(self.test)
+            self.test_problem.add_test(self.test)
 
         if self.is_editing:
             edit_test(self.test, self.test_problem)
@@ -259,7 +265,8 @@ class TestPage(Page):
         self.reset_page(self.test.item.number)
 
     def reset_page(self, item_number: str) -> None:
-        self.test_problem.set_previous_item_number(item_number)
+        with self.shared.storage.edit():
+            self.test_problem.set_previous_item_number(item_number)
         self.change_page("TEST")
 
     def update_storage(self, actual_script_answers: list[str]) -> None:

@@ -10,11 +10,11 @@ TPAGES = Literal["PROBLEM", "TEST", "TUTORIAL", "SETTINGS"]
 
 
 class SharedPageInfo:
-    def __init__(self, problems: dict[str, Problem], job_manager: JobManager, storage: Storage) -> None:
-        self.problems = problems
+    def __init__(self, job_manager: JobManager, storage: Storage) -> None:
         self.job_manager = job_manager
         self.problem: Problem | None = None
         self.storage = storage
+
 
 class Page(ABC):
     def __init__(self, frame: ctk.CTkScrollableFrame, change_page: Callable[[TPAGES], None], shared: SharedPageInfo) -> None:
