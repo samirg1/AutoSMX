@@ -59,7 +59,7 @@ _REQUIRED_FREE_TEXT_FIELDS = {
     *_CONDITION_LINES,
     461,  # CLASS I: earth resistance power lead only
     464,  # : insulation resistance
-    465,  # : earth leakage current 
+    465,  # : earth leakage current
     466,  # : earth leakage current noc
     471,  # : mains lead number
     472,  # : touch current normal condition

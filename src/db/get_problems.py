@@ -14,7 +14,7 @@ def get_problems(problem_number: str) -> list[Problem]:
                 WHERE number LIKE ? OR number LIKE ?;
                 """,
                 (f"PM{problem_number}%", f"{problem_number}%"),
-            ).fetchall()
+            ).fetchall(),
         )
 
     return [Problem(*fields) for fields in problem_fields]

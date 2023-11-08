@@ -54,6 +54,7 @@ failures: list[tuple[type, Any]] = [
     (list[int], (1,)),
 ]
 
+
 @pytest.mark.parametrize(("t", "obj"), failures)
 def test_validate_type_fail(t: type, obj: Any) -> None:
     with pytest.raises(_ValidateTypeError):
