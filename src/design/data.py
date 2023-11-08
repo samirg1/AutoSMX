@@ -91,7 +91,7 @@ _SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
     ScriptInfo(799, "9999TEST", "FURNITURE", ["OVERBED"], []),
     ScriptInfo(1190, "9999TEST", "VISUAL", [], []),
     ScriptInfo(1302, "9999TEST", "HR900 BED", [], []),
-    ScriptInfo(605, "11083TEST", "Class I", [], []),
+    ScriptInfo(605, "11083TEST", "CLASS I", [], []),
 )
 
 
