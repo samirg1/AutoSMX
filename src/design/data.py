@@ -84,6 +84,3 @@ _SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
 @functools.lru_cache(maxsize=1)
 def get_all_scripts() -> dict[str, Script]:
     return {info.nickname: get_script(info, _LINE_DEFAULTS, _CONDITION_LINES, _REQUIRED_FREE_TEXT_FIELDS) for info in _SCRIPT_INFOS}
-
-
-SCRIPT_DOWNS: dict[int, int] = {script.number: i for i, script in enumerate(_SCRIPT_INFOS)}

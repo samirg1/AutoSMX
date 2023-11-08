@@ -1,5 +1,5 @@
 # pyright: reportUnusedImport=false
-from design.data import SCRIPT_DOWNS, get_all_scripts
+from design.data import get_all_scripts
 from design.Item import Item
 from design.Job import Job
 from design.JobManager import JobManager
