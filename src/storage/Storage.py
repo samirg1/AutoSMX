@@ -4,14 +4,17 @@ import pickle
 from typing import Generator
 
 from design.Problem import Problem
+from design.JobManager import JobManager
 
 
 class Storage:
-    __slots__ = ("_file_path", "problems", "total_tests", "test_breakdown", "tutorial_complete", "item_model_to_script_answers")
+    __slots__ = ("_file_path", "problems", "problem", "job_manager", "total_tests", "test_breakdown", "tutorial_complete", "item_model_to_script_answers")
 
     def __init__(self, file_path: pathlib.Path) -> None:
         self._file_path = file_path
         self.problems: dict[str, Problem] = {}
+        self.problem: Problem | None = None
+        self.job_manager = JobManager()
         self.tutorial_complete = False
         self.total_tests = 0
         self.test_breakdown: dict[str, int] = {}
