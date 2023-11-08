@@ -10,7 +10,7 @@ from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
 
-_APPLICATION_PATH = os.path.dirname(sys.executable)
+_APPLICATION_PATH = ""#os.path.dirname(sys.executable)
 
 
 class App(ctk.CTk):
