@@ -194,7 +194,7 @@ class TestPage(Page):
         save.bind("d", lambda _: self.delete_job_button.invoke())
         if self.is_editing:
             remove_button = ctk.CTkButton(self.frame, text="Remove", command=self.remove_test)
-            remove_button.grid(column=5, row=1, columnspan=1)
+            remove_button.grid(column=5, row=1, columnspan=10, sticky=ctk.W)
             save.bind("r", lambda _: remove_button.invoke())
         for i, (nickname, _) in enumerate(overall_results,start=1):
             save.bind(f"{i}", lambda _, nickname=nickname: result.set(nickname))
