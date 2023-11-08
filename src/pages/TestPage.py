@@ -116,7 +116,8 @@ class TestPage(Page):
         item_label.grid(column=0, row=3, columnspan=20)
         ctk.CTkLabel(self.frame, text="Room: ").grid(column=8, row=4)
         self.item_room = ctk.StringVar(value=test.item.room)
-        ctk.CTkEntry(self.frame, textvariable=self.item_room).grid(column=9, row=4)
+        room_entry = ctk.CTkEntry(self.frame, textvariable=self.item_room)
+        room_entry.grid(column=9, row=4)
         ctk.CTkButton(self.frame, text="Save", command=self.edit_item_room).grid(column=10, row=4)
 
         ctk.CTkLabel(self.frame, text=f"{self.test_problem}").grid(column=0, row=5, columnspan=20)
@@ -174,7 +175,7 @@ class TestPage(Page):
         ctk.CTkLabel(self.frame, text="Result").grid(column=9, row=label_row, columnspan=8)
         label_row += 1
         overall_results = get_overall_results(int(self.test_problem.customer_number))
-        result = ctk.StringVar(value=self.test.result or "")
+        result = ctk.StringVar(value=self.test.result or "Pass")
         for i, (nickname, fullname) in enumerate(overall_results):
             button = ctk.CTkRadioButton(self.frame, text=nickname, variable=result, value=nickname)
             Tooltip(button, fullname)
@@ -184,6 +185,7 @@ class TestPage(Page):
 
         save = ctk.CTkButton(self.frame, text="Save", command=lambda: self.save_test([s.get() for s in actual_answers], result.get()))
         save.grid(column=9, row=label_row, columnspan=8)
+        room_entry.bind("<Return>", lambda _: save.invoke())
         save.bind("<FocusIn>", lambda _: save.configure(text_color="black"))
         save.bind("<FocusOut>", lambda _: save.configure(text_color="white"))
         save.bind("<Return>", lambda _: self.save_test([s.get() for s in actual_answers], result.get()))
