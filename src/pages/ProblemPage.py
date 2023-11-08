@@ -61,7 +61,7 @@ class ProblemPage(Page):
             self.frame.rowconfigure(row, minsize=20)
             row += 1
 
-            self.frame.after(100, add_button.focus)
+            self.frame.after(201, add_button.focus)
 
     def delete_problem(self, campus: str) -> None:
         with self.storage.edit() as storage:
