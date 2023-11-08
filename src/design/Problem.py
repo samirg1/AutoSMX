@@ -37,5 +37,5 @@ class Problem:
     def set_previous_item_number(self, number: str) -> None:
         object.__setattr__(self, "previous_item_number", number)
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return f"{self.number} - {self.campus} - {self.company}"

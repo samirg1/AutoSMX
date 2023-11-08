@@ -31,5 +31,5 @@ class Script:
     def is_for(self, item_description: str) -> bool:
         return any(term in item_description for term in self.search_terms)
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return self.name

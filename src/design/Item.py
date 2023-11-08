@@ -16,7 +16,7 @@ class Item:
     room: str | None = field(hash=False, eq=False)
     last_update: datetime | None = field(hash=False, eq=False, converter=convert_stringed_date)
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return f"{self.number} - {self.description}"
 
     def set_room(self, room: str | None) -> None:

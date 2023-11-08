@@ -16,5 +16,5 @@ class Job:
             case _:
                 pass
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return f"{self.comment}"
