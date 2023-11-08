@@ -42,7 +42,7 @@ _TUTORIAL = {
 
 class TutorialPage(Page):
     def setup(self) -> None:
-        if self.shared.storage.tutorial_complete:
+        if self.storage.tutorial_complete:
             return self.change_page("PROBLEM")
 
         ctk.CTkLabel(self.frame, text="Tutorial Page").grid(row=0, column=0, sticky=ctk.EW)
@@ -86,6 +86,6 @@ class TutorialPage(Page):
         return lines
 
     def end_tutorial(self) -> None:
-        with self.shared.storage.edit() as storage:
+        with self.storage.edit() as storage:
             storage.tutorial_complete = True
         self.change_page("PROBLEM")

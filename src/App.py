@@ -3,9 +3,8 @@ import pathlib
 import sys
 import customtkinter as ctk
 
-from design.JobManager import JobManager
 from pages.ProblemPage import ProblemPage
-from pages.Page import TPAGES, Page, SharedPageInfo
+from pages.Page import TPAGES, Page
 from pages.SettingsPage import SettingsPage
 from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
@@ -25,12 +24,12 @@ class App(ctk.CTk):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
-        shared = SharedPageInfo(JobManager(), Storage(pathlib.Path(_APPLICATION_PATH, "store.pkl")))
+        storage = Storage(pathlib.Path(_APPLICATION_PATH, "store.pkl"))
         self.pages: dict[TPAGES, Page] = {
-            "TUTORIAL": TutorialPage(self._frame(), self.change_page, shared),
-            "SETTINGS": SettingsPage(self._frame(), self.change_page, shared),
-            "PROBLEM": ProblemPage(self._frame(), self.change_page, shared),
-            "TEST": TestPage(self._frame(), self.change_page, shared),
+            "TUTORIAL": TutorialPage(self._frame(), self.change_page, storage),
+            "SETTINGS": SettingsPage(self._frame(), self.change_page, storage),
+            "PROBLEM": ProblemPage(self._frame(), self.change_page, storage),
+            "TEST": TestPage(self._frame(), self.change_page, storage),
         }
         self.current_page: Page | None = None
 

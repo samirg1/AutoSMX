@@ -8,7 +8,6 @@ from db.get_items import get_items
 from db.get_overall_results import get_overall_results
 from design.Item import Item
 from design.Job import Job
-from design.Problem import Problem
 from design.Script import Script
 from design.Test import InvalidTestResultError, ScriptError, Test
 from pages.Page import Page
@@ -20,8 +19,8 @@ from popups.Tooltip import Tooltip
 
 class TestPage(Page):
     def setup(self) -> None:
-        assert self.shared.problem
-        self.test_problem: Problem = self.shared.problem
+        assert self.storage.problem
+        self.test_problem = self.storage.problem
 
         problems_button = ctk.CTkButton(self.frame, text="< Problems", command=lambda: self.change_page("PROBLEM"))
         problems_button.grid(column=0, row=0, sticky="w")
@@ -134,7 +133,7 @@ class TestPage(Page):
         if test.completed:
             self.saved_script_answers = [line.result for line in test.script.lines]
         else:
-            stored_answers = self.shared.storage.item_model_to_script_answers.get(self.test.item_model)
+            stored_answers = self.storage.item_model_to_script_answers.get(self.test.item_model)
             self.saved_script_answers = stored_answers or [stest.default for stest in script.lines]
         actual_answers = [ctk.StringVar(value=ans) for ans in self.saved_script_answers]
         for i, line in enumerate(script.lines):
@@ -196,14 +195,14 @@ class TestPage(Page):
             remove_button = ctk.CTkButton(self.frame, text="Remove", command=self.remove_test)
             remove_button.grid(column=5, row=1, columnspan=10, sticky=ctk.W)
             save.bind("r", lambda _: remove_button.invoke())
-        for i, (nickname, _) in enumerate(overall_results,start=1):
+        for i, (nickname, _) in enumerate(overall_results, start=1):
             save.bind(f"{i}", lambda _, nickname=nickname: result.set(nickname))
 
         save.focus()
         label_row += 1
 
     def edit_item_room(self) -> None:
-        with self.shared.storage.edit():
+        with self.storage.edit():
             item_room = self.item_room.get()
             if item_room != self.test.item.room:
                 room = self.item_room.get() or None
@@ -211,11 +210,11 @@ class TestPage(Page):
                 self.test.item.set_room(room)
 
     def remove_test(self) -> None:
-        with self.shared.storage.edit():
+        with self.storage.edit() as storage:
             self.test_problem.remove_test(self.test)
 
-        for job in self.test.jobs:
-            self.shared.job_manager.delete_job(self.test_problem, job)
+            for job in self.test.jobs:
+                storage.job_manager.delete_job(self.test_problem, job)
         edit_test(self.test, self.test_problem, remove_only=True)
         return self.reset_page(self.test.item.number)
 
@@ -225,18 +224,18 @@ class TestPage(Page):
 
     def save_job(self, job: Job) -> None:
         self.comment.insert(ctk.END, job.test_comment + "\n\n")
-        with self.shared.storage.edit():
+        with self.storage.edit() as storage:
             self.test.add_job(job)
-        self.shared.job_manager.add_job(self.test.item, self.test_problem, job)
+            storage.job_manager.add_job(self.test.item, self.test_problem, job)
         self.add_job_button.configure(text=f"Add Job ({len(self.test.jobs)})")
         self.delete_job_button.grid(column=15, row=self.add_job_button.grid_info()["row"], sticky=ctk.E)
 
     def delete_job(self) -> None:
         if len(self.test.jobs) == 0:
             return
-        with self.shared.storage.edit():
+        with self.storage.edit() as storage:
             job = self.test.jobs.pop()
-        self.shared.job_manager.delete_job(self.test_problem, job)
+            storage.job_manager.delete_job(self.test_problem, job)
         current_comment = self.comment.get("1.0", ctk.END).strip()
         self.comment.delete("1.0", ctk.END)
         self.comment.insert(ctk.END, current_comment.replace(job.test_comment, ""))
@@ -250,7 +249,7 @@ class TestPage(Page):
 
     def save_test(self, script_answers: list[str], result: str) -> None:
         comment = self.comment.get("1.0", ctk.END)
-        with self.shared.storage.edit():
+        with self.storage.edit():
             try:
                 self.test.complete(comment, result, script_answers)
             except InvalidTestResultError as e:
@@ -267,7 +266,7 @@ class TestPage(Page):
 
         self.edit_item_room()
 
-        with self.shared.storage.edit() as storage:
+        with self.storage.edit() as storage:
             storage.total_tests += 1
             storage.test_breakdown[self.test.script.nickname] = storage.test_breakdown.get(self.test.script.nickname, 0) + 1
 
@@ -277,7 +276,7 @@ class TestPage(Page):
         self.reset_page(self.test.item.number)
 
     def reset_page(self, item_number: str) -> None:
-        with self.shared.storage.edit():
+        with self.storage.edit():
             self.test_problem.set_previous_item_number(item_number)
         self.change_page("TEST")
 
@@ -286,7 +285,7 @@ class TestPage(Page):
             return
 
         default = [stest.default for stest in self.test.script.lines]
-        with self.shared.storage.edit() as storage:
+        with self.storage.edit() as storage:
             if actual_script_answers == default:
                 del storage.item_model_to_script_answers[self.test.item_model]
             else:

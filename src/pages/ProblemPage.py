@@ -8,7 +8,7 @@ from popups.SyncPopup import SyncPopup
 
 class ProblemPage(Page):
     def setup(self) -> None:
-        self.problems = self.shared.storage.problems
+        self.problems = self.storage.problems
 
         # top row
         ctk.CTkLabel(self.frame, text="Problems").grid(column=0, row=0, columnspan=17)
@@ -41,12 +41,12 @@ class ProblemPage(Page):
                     ctk.CTkLabel(self.frame, text=f"- {open_problem}").grid(row=row, column=2, sticky=ctk.W, columnspan=18)
                     row += 1
 
-            problem_jobs = self.shared.job_manager.problem_to_jobs.get(problem, [])
+            problem_jobs = self.storage.job_manager.problem_to_jobs.get(problem, [])
             if problem_jobs:
                 ctk.CTkLabel(self.frame, text=f"Jobs Raised ({len(problem_jobs)})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
                 row += 1
                 for job in problem_jobs:
-                    item = self.shared.job_manager.job_to_item[job]
+                    item = self.storage.job_manager.job_to_item[job]
                     comment = job.comment.replace("\n", " | ")
                     ctk.CTkLabel(self.frame, text=f"- {item.description} ({item.number}): {comment}").grid(row=row, column=2, sticky=ctk.W, columnspan=18)
                     row += 1
@@ -64,11 +64,11 @@ class ProblemPage(Page):
             self.frame.after(100, add_button.focus)
 
     def delete_problem(self, campus: str) -> None:
-        with self.shared.storage.edit() as storage:
+        with self.storage.edit() as storage:
             problem = self.problems[campus]
             del storage.problems[problem.campus]
-        if problem in self.shared.job_manager.problem_to_jobs:
-            del self.shared.job_manager.problem_to_jobs[problem]
+        if problem in self.storage.job_manager.problem_to_jobs:
+            del self.storage.job_manager.problem_to_jobs[problem]
         self.change_page("PROBLEM")
 
     def add_tests(self, campus: str | None = None) -> None:
@@ -78,10 +78,10 @@ class ProblemPage(Page):
             self.add_problem(self.problems[campus], go_to_tests=True)
 
     def add_problem(self, problem: Problem, *, go_to_tests: bool = False) -> None:
-        self.shared.problem = problem
-        with self.shared.storage.edit() as storage:
+        self.storage.problem = problem
+        with self.storage.edit() as storage:
             storage.problems[problem.campus] = problem
         self.change_page("TEST" if go_to_tests else "PROBLEM")
 
     def sync(self) -> None:
-        SyncPopup(self.frame, self.shared.storage.problems).mainloop()
+        SyncPopup(self.frame, self.storage.problems).mainloop()
