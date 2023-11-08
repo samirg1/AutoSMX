@@ -1,28 +1,35 @@
 from db.get_connection import DatabaseFilenames, get_connection
 from design.Script import Script, ScriptLine
 from design.ScriptInfo import ScriptInfo
+from utils.validate_type import validate_type
 
 
 def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition_lines: set[int], required_lines: set[int]) -> Script:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
-        script_name, service_type = connection.execute(
-            """
-            SELECT script_name, service_type
-            FROM SCMOBILESCRIPTSM1
-            WHERE script_no = ?;
-            """,
-            (script_info.number,),
-        ).fetchone()
+        script_name, service_type = validate_type(
+            tuple[str, str],
+            connection.execute(
+                """
+                SELECT script_name, service_type
+                FROM SCMOBILESCRIPTSM1
+                WHERE script_no = ?;
+                """,
+                (script_info.number,),
+            ).fetchone(),
+        )
 
-        script_line_fields: list[tuple[int, str, float, str, str]] = connection.execute(
-            """
-            SELECT z_rv, script_line_text, line_no, answer_type, answer_id
-            FROM SCMobileScriptLinesm1
-            WHERE script_no = ?
-            ORDER BY win32_page, win32_order;
-            """,
-            (script_info.number,),
-        ).fetchall()
+        script_line_fields = validate_type(
+            list[tuple[int, str, float, str | None, str | None]],
+            connection.execute(
+                """
+                SELECT z_rv, script_line_text, line_no, answer_type, answer_id
+                FROM SCMobileScriptLinesm1
+                WHERE script_no = ?
+                ORDER BY win32_page, win32_order;
+                """,
+                (script_info.number,),
+            ).fetchall(),
+        )
 
         lines: list[ScriptLine] = []
         for z_rv, text, line_no, answer_type, answer_id in script_line_fields:
@@ -35,17 +42,20 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
 
             raw: list[tuple[str]] = []
             for possible_id in (answer_id, answer_type):
-                if raw := connection.execute(
-                    """
-                    SELECT answer_text
-                    FROM SCMobileAnswers
-                    WHERE answer_id == ?
-                    ORDER BY z_rv;
-                    """,
-                    (possible_id,),
-                ).fetchall():
+                if raw := validate_type(
+                    list[tuple[str]],
+                    connection.execute(
+                        """
+                        SELECT answer_text
+                        FROM SCMobileAnswers
+                        WHERE answer_id == ?
+                        ORDER BY z_rv;
+                        """,
+                        (possible_id,),
+                    ).fetchall(),
+                ):
                     break
-            
+
             line = ScriptLine(text, int(line_no), *(text[0] for text in raw), required=(z_rv in required_lines))
             if z_rv in condition_lines:
                 line.default = "1"

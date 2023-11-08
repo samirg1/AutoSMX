@@ -2,6 +2,7 @@ from collections import Counter
 
 from db.get_connection import get_connection, DatabaseFilenames
 from design.Problem import Problem
+from utils.validate_type import validate_type
 
 
 def get_double_ups(problem: Problem) -> dict[str, list[str]]:
@@ -11,31 +12,37 @@ def get_double_ups(problem: Problem) -> dict[str, list[str]]:
         return {}
 
     with get_connection(DatabaseFilenames.TESTS) as connection:
-        current_tests: list[tuple[str, str, str]] = connection.execute(
-            f"""
-            SELECT logical_name, description, overall
-            FROM SCMobileTestsm1
-            WHERE test_id IN (?{", ?" * (len(problem.tests) - 1)});
-            """,
-            [test.id for test in problem.tests],
-        ).fetchall()
+        current_tests = validate_type(
+            list[tuple[str, str, str]],
+            connection.execute(
+                f"""
+                SELECT logical_name, description, overall
+                FROM SCMobileTestsm1
+                WHERE test_id IN (?{", ?" * (len(problem.tests) - 1)});
+                """,
+                [test.id for test in problem.tests],
+            ).fetchall(),
+        )
 
         test_counter = Counter(number for number, *_ in current_tests)
         for number, count in test_counter.items():
             if count > 1:
-                double_tests = [test for test in current_tests if test[0] == number]
+                double_tests = [test for test in problem.tests if test.item.number == number]
                 old = double_ups.get("Tests", [])
-                old.extend(f"{number}: {desc} -> {overall}" for number, desc, overall in double_tests)
+                old.extend(f"{number}: {test.item.description} ({test.script.nickname}) -> {test.result}" for test in double_tests)
                 double_ups["Tests"] = old
 
-        current_jobs: list[tuple[str, str]] = connection.execute(
-            f"""
-            SELECT logical_name, actionprgn
-            FROM SCMProbsUploadm1
-            WHERE test_id IN (?{", ?" * (len(problem.tests) - 1)});
-            """,
-            [test.id for test in problem.tests],
-        ).fetchall()
+        current_jobs = validate_type(
+            list[tuple[str, str]],
+            connection.execute(
+                f"""
+                SELECT logical_name, actionprgn
+                FROM SCMProbsUploadm1
+                WHERE test_id IN (?{", ?" * (len(problem.tests) - 1)});
+                """,
+                [test.id for test in problem.tests],
+            ).fetchall(),
+        )
 
         job_counter = Counter(number for number, *_ in current_jobs)
         for number, count in job_counter.items():

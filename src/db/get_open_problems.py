@@ -2,6 +2,7 @@ from typing import NamedTuple
 
 from db.convert_stringed_date import convert_stringed_date
 from db.get_connection import DatabaseFilenames, get_connection
+from utils.validate_type import validate_type
 
 
 class OpenProblem(NamedTuple):
@@ -9,7 +10,7 @@ class OpenProblem(NamedTuple):
     description: str
     date_opened: str
     asset_description: str
-    asset_serial: str
+    asset_serial: str | None
 
     def __repr__(self) -> str:
         converted = convert_stringed_date(self.date_opened)
@@ -19,13 +20,16 @@ class OpenProblem(NamedTuple):
 
 def get_open_problems(location: str) -> list[OpenProblem]:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
-        results = connection.execute(
-            """
-            SELECT number, brief_description, open_time, asset_description, serial_no_
-            FROM probsummarym1
-            WHERE location == ? AND problem_status == 'open';
-            """,
-            (location,),
-        ).fetchall()
+        results = validate_type(
+            list[tuple[str, str, str, str, str | None]],
+            connection.execute(
+                """
+                SELECT number, brief_description, open_time, asset_description, serial_no_
+                FROM probsummarym1
+                WHERE location == ? AND problem_status == 'open';
+                """,
+                (location,),
+            ).fetchall(),
+        )
 
     return [OpenProblem(*res) for res in results]

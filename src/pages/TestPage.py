@@ -220,7 +220,7 @@ class TestPage(Page):
         return self.reset_page(self.test.item.number)
 
     def add_job(self) -> None:
-        job_popup = JobPopup(self.frame, self.test_problem.department, self.test_problem.company, self.save_job)
+        job_popup = JobPopup(self.frame, self.test_problem.department or "", self.test_problem.company, self.save_job)
         job_popup.mainloop()
 
     def save_job(self, job: Job) -> None:

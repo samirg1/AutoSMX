@@ -1,4 +1,5 @@
 from db.get_connection import DatabaseFilenames, get_connection
+from utils.validate_type import validate_type
 
 
 class NoTestIDsError(RuntimeError):
@@ -7,13 +8,16 @@ class NoTestIDsError(RuntimeError):
 
 def get_new_test_id() -> str:
     with get_connection(DatabaseFilenames.SETTINGS, mode="rw") as connection:
-        res: tuple[str, int, int] | None = connection.execute(
-            """
-            SELECT TABLENAME, LASTUSED, LASTRESERVED
-            FROM SCMIDTABLE
-            WHERE TABLENAME == 'SCMobileTestsm1' AND LASTUSED <> LASTRESERVED;
-            """
-        ).fetchone()
+        res = validate_type(
+            tuple[str, int, int] | None,
+            connection.execute(
+                """
+                SELECT TABLENAME, LASTUSED, LASTRESERVED
+                FROM SCMIDTABLE
+                WHERE TABLENAME == 'SCMobileTestsm1' AND LASTUSED <> LASTRESERVED;
+                """
+            ).fetchone(),
+        )
 
         if res is None:
             raise NoTestIDsError

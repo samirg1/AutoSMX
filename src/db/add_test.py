@@ -5,6 +5,7 @@ from db.models import JobModel, ScriptLineModel, ScriptTesterModel, TestModel
 from design.Problem import Problem
 from design.Script import ScriptLine
 from design.Test import Test
+from utils.validate_type import validate_type
 
 
 def add_test(test: Test, problem: Problem) -> None:
@@ -35,14 +36,17 @@ def add_test(test: Test, problem: Problem) -> None:
                 (test.date, next_spt_date, test.item.number, test.script.service_type),
             )
 
-            services: list[tuple[str, float, str, str]] = asset_connection.execute(
-                """
-                SELECT service_type, service_interval, service_last, service_next
-                FROM DEVICEA4
-                WHERE logical_name = ?;
-                """,
-                (test.item.number,),
-            ).fetchall()
+            services = validate_type(
+                list[tuple[str, float, str, str]],
+                asset_connection.execute(
+                    """
+                    SELECT service_type, service_interval, service_last, service_next
+                    FROM DEVICEA4
+                    WHERE logical_name = ?;
+                    """,
+                    (test.item.number,),
+                ).fetchall(),
+            )
 
             servicearray = "\n".join("^".join(f"{int(s) if isinstance(s, float) else s}" for s in service) + "^" for service in services)
 

@@ -84,4 +84,4 @@ class ProblemPage(Page):
         self.change_page("TEST" if go_to_tests else "PROBLEM")
 
     def sync(self) -> None:
-        SyncPopup(self.frame, self.shared.problem).mainloop()
+        SyncPopup(self.frame, self.shared.storage.problems).mainloop()

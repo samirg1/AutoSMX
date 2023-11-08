@@ -32,7 +32,7 @@ class Test:
         return f"{self.script.name} -> {self.item.model}"
 
     def determine_script(self) -> Script:
-        if self.item.description != "":
+        if self.item.description and self.item.description != "":
             for script in get_all_scripts().values():
                 if self.item.description in script.exact_matches:
                     return script

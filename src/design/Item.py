@@ -8,11 +8,11 @@ from db.convert_stringed_date import convert_stringed_date
 @frozen(repr=False)
 class Item:
     number: str
-    customer_barcode: str = field(hash=False, eq=False)
-    description: str = field(hash=False, eq=False)
-    model: str = field(hash=False, eq=False)
-    manufacturer: str = field(hash=False, eq=False)
-    serial: str = field(hash=False, eq=False)
+    customer_barcode: str | None = field(hash=False, eq=False)
+    description: str | None = field(hash=False, eq=False)
+    model: str | None = field(hash=False, eq=False)
+    manufacturer: str | None = field(hash=False, eq=False)
+    serial: str | None = field(hash=False, eq=False)
     room: str | None = field(hash=False, eq=False)
     last_update: datetime | None = field(hash=False, eq=False, converter=convert_stringed_date)
 

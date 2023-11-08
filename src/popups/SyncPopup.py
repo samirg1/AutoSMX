@@ -10,29 +10,27 @@ from popups.Popup import Popup
 
 
 class SyncPopup(Popup):
-    def __init__(self, master: Misc | None, problem: Problem | None):
+    def __init__(self, master: Misc | None, problems: dict[str, Problem]):
         super().__init__(master, "Sync", height_factor=0.8, columns=2)
         row = 0
 
-        if problem is None:
-            return self._sync()
-
-        ctk.CTkLabel(self, text="Checking double ups...").grid(column=0, row=row, columnspan=2, sticky="W")
-        row += 1
-        double_ups: dict[str, list[str]] = get_double_ups(problem)
-        if not double_ups:
-            ctk.CTkLabel(self, text="No double ups found").grid(column=0, row=row, columnspan=2)
+        for problem in problems.values():
+            ctk.CTkLabel(self, text=f"Checking double ups for {problem.number}...").grid(column=0, row=row, columnspan=2, sticky="W")
             row += 1
-        else:
-            for title, doubles in double_ups.items():
-                ctk.CTkLabel(self, text=title).grid(column=0, row=row, columnspan=2)
+            double_ups: dict[str, list[str]] = get_double_ups(problem)
+            if not double_ups:
+                ctk.CTkLabel(self, text="No double ups found").grid(column=0, row=row, columnspan=2)
                 row += 1
-                for text in doubles:
-                    ctk.CTkLabel(self, text=text).grid(column=0, row=row, columnspan=2, sticky="W")
+            else:
+                for title, doubles in double_ups.items():
+                    ctk.CTkLabel(self, text=title).grid(column=0, row=row, columnspan=2)
                     row += 1
+                    for text in doubles:
+                        ctk.CTkLabel(self, text=text).grid(column=0, row=row, columnspan=2, sticky="W")
+                        row += 1
 
-        ctk.CTkButton(self, text="Sync", command=self._sync).grid(column=0, row=row, columnspan=2)
-        row += 1
+            ctk.CTkButton(self, text="Sync", command=self._sync).grid(column=0, row=row, columnspan=2)
+            row += 1
 
     def _sync(self) -> None:
         if sys.platform == "win32":
