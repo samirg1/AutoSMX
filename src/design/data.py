@@ -39,6 +39,10 @@ _LINE_DEFAULTS: dict[int, str] = {
     8321: _NA,  # SCALE: charger
     2824: _NA,  # CHARGER: battery
     2827: _NA,  # : accessories
+    460: _NA,  # CLASSI: fuses and circuit
+    462: _SPACE,  # : earth Resistance with detachable lead
+    463: _SPACE,  # : earth Resistance fixed power lead
+    468: _NA,  # : battery
     481: _NA,  # CLASSII: battery
     483: _NA,  # : accessories
     477: _SPACE,  # : earth resistance
@@ -53,6 +57,14 @@ _LINE_DEFAULTS: dict[int, str] = {
 
 _REQUIRED_FREE_TEXT_FIELDS = {
     *_CONDITION_LINES,
+    461,  # CLASS I: earth resistance power lead only
+    464,  # : insulation resistance
+    465,  # : earth leakage current 
+    466,  # : earth leakage current noc
+    471,  # : mains lead number
+    472,  # : touch current normal condition
+    473,  # : touch current sfc
+    474,  # : touch current noc
     478,  # CLASSII: insulation resistance
     479,  # : insulation resistance enclosure
     484,  # : mains lead number
@@ -78,6 +90,8 @@ _SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
     ScriptInfo(606, "11083TEST", "CLASS II", [], []),
     ScriptInfo(799, "9999TEST", "FURNITURE", ["OVERBED"], []),
     ScriptInfo(1190, "9999TEST", "VISUAL", [], []),
+    ScriptInfo(1302, "9999TEST", "HR900 BED", [], []),
+    ScriptInfo(605, "11083TEST", "Class I", [], []),
 )
 
 
