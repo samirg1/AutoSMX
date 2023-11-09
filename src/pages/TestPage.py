@@ -5,6 +5,7 @@ from db.add_test import add_test
 from db.edit_item import edit_item
 from db.edit_test import edit_test
 from db.get_items import get_items
+from db.get_new_test_id import NoTestIDsError
 from db.get_overall_results import get_overall_results
 from design.Item import Item
 from design.Job import Job
@@ -254,6 +255,9 @@ class TestPage(Page):
                 self.test.complete(comment, result, script_answers)
             except InvalidTestResultError as e:
                 tkinter.messagebox.showerror("Invalid Answers", f"{e}")  # type: ignore
+                return
+            except NoTestIDsError:
+                tkinter.messagebox.showerror("Error occured", "No test IDs left, perform a manual sync")  # type: ignore
                 return
             if self.is_editing:
                 self.test_problem.remove_test(self.test)
