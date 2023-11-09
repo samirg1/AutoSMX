@@ -1,5 +1,5 @@
 import types
-from typing import Any, Type, TypeVar, get_origin, get_args
+from typing import Any, Type, TypeVar, cast, get_origin, get_args
 
 
 _T = TypeVar("_T")
@@ -17,7 +17,7 @@ def validate_type(t: Type[_T], obj: Any) -> _T:
     _ValidateTypeError.t = t
     _ValidateTypeError.obj = obj
     _validate_type_aux(t, obj)
-    return obj
+    return cast(_T, obj)
 
 
 def _validate_type_aux(expected: Type[_T], actual: Any | list[Any] | tuple[Any, ...], parent: str = "") -> _T:

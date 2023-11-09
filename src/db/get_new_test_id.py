@@ -9,10 +9,10 @@ class NoTestIDsError(RuntimeError):
 def get_new_test_id() -> str:
     with get_connection(DatabaseFilenames.SETTINGS, mode="rw") as connection:
         res = validate_type(
-            tuple[str, int, int] | None,
+            tuple[int, int] | None,
             connection.execute(
                 """
-                SELECT TABLENAME, LASTUSED, LASTRESERVED
+                SELECT LASTUSED, LASTRESERVED
                 FROM SCMIDTABLE
                 WHERE TABLENAME == 'SCMobileTestsm1' AND LASTUSED <> LASTRESERVED;
                 """
@@ -22,7 +22,7 @@ def get_new_test_id() -> str:
         if res is None:
             raise NoTestIDsError
 
-        _, current, end = res
+        current, end = res
 
         with connection:
             connection.execute(

@@ -29,8 +29,8 @@ class SyncPopup(Popup):
                         ctk.CTkLabel(self, text=text).grid(column=0, row=row, columnspan=2, sticky="W")
                         row += 1
 
-            ctk.CTkButton(self, text="Sync", command=self._sync).grid(column=0, row=row, columnspan=2)
-            row += 1
+        ctk.CTkButton(self, text="Sync", command=self._sync).grid(column=0, row=row, columnspan=2)
+        row += 1
 
     def _sync(self) -> None:
         if sys.platform == "win32":

@@ -196,7 +196,7 @@ class TestPage(Page):
             remove_button.grid(column=5, row=1, columnspan=10, sticky=ctk.W)
             save.bind("r", lambda _: remove_button.invoke())
         for i, (nickname, _) in enumerate(overall_results, start=1):
-            save.bind(f"{i}", lambda _, nickname=nickname: result.set(nickname))
+            save.bind(f"{i}", lambda _, nickname=nickname: result.set(nickname))  # type: ignore[misc]
 
         save.focus()
         label_row += 1

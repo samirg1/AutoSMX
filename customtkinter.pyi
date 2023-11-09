@@ -4,7 +4,6 @@ from tkinter.constants import *
 from tkinter.font import _FontDescription  # pyright: ignore[reportPrivateUsage]
 from tkinter.ttk import _Padding, _TtkCompound, Frame, Label, Button, Entry, Radiobutton  # pyright: ignore[reportPrivateUsage]
 from typing import Any, Literal, overload
-from typing_extensions import Literal
 
 class CTk(Tk): ...
 class CTkFrame(Frame): ...
