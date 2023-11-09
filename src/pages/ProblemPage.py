@@ -1,3 +1,4 @@
+from collections import Counter
 import customtkinter as ctk
 
 from design.Problem import Problem
@@ -5,6 +6,8 @@ from pages.Page import Page
 from popups.ProblemEntryPopup import ProblemEntryPopup
 from popups.SyncPopup import SyncPopup
 
+_DEFAULT_COLOUR = "black"
+_SYNC_COLOUR = "SteelBlue4"
 
 class ProblemPage(Page):
     def setup(self) -> None:
@@ -43,19 +46,31 @@ class ProblemPage(Page):
 
             problem_jobs = self.storage.job_manager.problem_to_jobs.get(problem, [])
             if problem_jobs:
-                ctk.CTkLabel(self.frame, text=f"Jobs Raised ({len(problem_jobs)})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
+                synced = sum(1 for job in problem_jobs if job.synced)
+                ctk.CTkLabel(self.frame, text=f"Jobs Raised ({synced})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
+                if synced != len(problem_jobs):
+                    ctk.CTkLabel(self.frame, text=f" (+{len(problem_jobs) - synced})", text_color=_SYNC_COLOUR).grid(row=row, column=3, sticky=ctk.W, columnspan=19)
                 row += 1
                 for job in problem_jobs:
+                    colour = _DEFAULT_COLOUR if job.synced else _SYNC_COLOUR
                     item = self.storage.job_manager.job_to_item[job]
                     comment = job.comment.replace("\n", " | ")
-                    ctk.CTkLabel(self.frame, text=f"- {item.description} ({item.number}): {comment}").grid(row=row, column=2, sticky=ctk.W, columnspan=18)
+                    ctk.CTkLabel(self.frame, text=f"- {item.description} ({item.number}): {comment}", text_color=colour).grid(row=row, column=2, sticky=ctk.W, columnspan=18)
                     row += 1
 
             if problem.tests:
-                ctk.CTkLabel(self.frame, text=f"Tests ({len(problem.tests)})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
+                synced = sum(1 for test in problem.tests if test.synced)
+                ctk.CTkLabel(self.frame, text=f"Tests ({synced})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
+                if synced != len(problem.tests):
+                    ctk.CTkLabel(self.frame, text=f" (+{len(problem.tests) - synced})", text_color=_SYNC_COLOUR).grid(row=row, column=3, sticky=ctk.W, columnspan=19)
                 row += 1
+
+                unsynced_counter = Counter(test.script.nickname for test in problem.tests if not test.synced)
                 for script_name, value in problem.test_breakdown.items():
-                    ctk.CTkLabel(self.frame, text=f"- {script_name} ({value})").grid(row=row, column=2, sticky=ctk.W, columnspan=18)
+                    unsynced = unsynced_counter[script_name]
+                    ctk.CTkLabel(self.frame, text=f"- {script_name} ({value - unsynced})").grid(row=row, column=2, sticky=ctk.W, columnspan=18)
+                    if unsynced != 0:
+                        ctk.CTkLabel(self.frame, text=f" (+{unsynced})", text_color=_SYNC_COLOUR).grid(row=row, column=4, sticky=ctk.W, columnspan=18)
                     row += 1
 
             self.frame.rowconfigure(row, minsize=20)

@@ -27,7 +27,9 @@ def get_double_ups(problem: Problem) -> dict[str, list[str]]:
         test_counter = Counter(number for number, *_ in current_tests)
         for number, count in test_counter.items():
             if count > 1:
-                double_tests = [test for test in problem.tests if test.item.number == number]
+                double_tests = [test for test in problem.tests if test.item.number == number and not test.synced]
+                if not double_tests:
+                    continue
                 old = double_ups.get("Tests", [])
                 old.extend(f"{number}: {test.item.description} ({test.script.nickname}) -> {test.result}" for test in double_tests)
                 double_ups["Tests"] = old

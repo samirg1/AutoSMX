@@ -26,6 +26,12 @@ class Test:
         self.user = ""
         self.date = ""
         self.completed = False
+        self.synced = False
+
+    def __eq__(self, __value: object) -> bool:
+        if isinstance(__value, Test):
+            return __value.id == self.id
+        return NotImplemented
 
     @property
     def item_model(self) -> str:

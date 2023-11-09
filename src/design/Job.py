@@ -6,6 +6,7 @@ class Job:
         self.test_comment = self.comment
         self.part_quantity = 0
         self.part_number = ""
+        self.synced = False
 
         lines = self.comment.split("\n")
         match lines[-1].split(" "):

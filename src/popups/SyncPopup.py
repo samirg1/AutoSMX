@@ -29,14 +29,17 @@ class SyncPopup(Popup):
                         ctk.CTkLabel(self, text=text).grid(column=0, row=row, columnspan=2, sticky="W")
                         row += 1
 
-        ctk.CTkButton(self, text="Sync", command=self._sync).grid(column=0, row=row, columnspan=2)
+        ctk.CTkButton(self, text="Sync", command=lambda: self._sync(problems)).grid(column=0, row=row, columnspan=2)
         row += 1
 
-    def _sync(self) -> None:
+    def _sync(self, problems: dict[str, Problem]) -> None:
         if sys.platform == "win32":
             with open(rf"{BASE_FILE}\SCMSync.log", "w"):
                 ...
 
             os.startfile("C:\\Program Files (x86)\\SMX\\SCMSync.exe")
+
+        for problem in problems.values():
+            problem.sync()
 
         self.destroy()
