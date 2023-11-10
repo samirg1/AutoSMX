@@ -1,6 +1,7 @@
-from db.get_connection import DatabaseFilenames, get_connection
+from db.get_connection import get_connection
 from design.Script import Script, ScriptLine
 from design.ScriptInfo import ScriptInfo
+from utils.constants import DatabaseFilenames
 from utils.validate_type import validate_type
 
 

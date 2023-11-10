@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 
 from attrs import field, frozen
 
-from db.convert_stringed_date import convert_stringed_date
+from utils.convert_stringed_date import convert_stringed_date
+from utils.constants import DAYMONTHYEAR_FORMAT, SIMPLIFIED_TIME_FORMAT
 
 
 @frozen(repr=False)
@@ -28,9 +29,9 @@ class Item:
         if self.last_update is not None:
             today = datetime.today()
             if self.last_update.date() == today.date():
-                last_update = f"Today {self.last_update.strftime('%I:%M%p')}"
+                last_update = f"Today {self.last_update.strftime(SIMPLIFIED_TIME_FORMAT)}"
             elif self.last_update.date() == (today - timedelta(days=1)).date():
-                last_update = f"Yesterday {self.last_update.strftime('%I:%M%p')}"
+                last_update = f"Yesterday {self.last_update.strftime(SIMPLIFIED_TIME_FORMAT)}"
             else:
-                last_update = self.last_update.strftime(r"%d-%m-%Y %I:%M%p")
+                last_update = self.last_update.strftime(f"{DAYMONTHYEAR_FORMAT} {SIMPLIFIED_TIME_FORMAT}")
         return f"{self} - Model: {self.model} - Manufacturer: {self.manufacturer} - SN: {self.serial} - Last Update: {last_update}"

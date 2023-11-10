@@ -1,6 +1,6 @@
 import configparser
 
-from db.get_connection import BASE_FILE
+from utils.constants import BASE_FILE
 
 
 def get_user() -> str:

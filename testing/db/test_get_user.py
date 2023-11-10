@@ -1,4 +1,4 @@
-from db.get_connection import BASE_FILE
+from utils.constants import BASE_FILE
 from db.get_user import get_user
 from testing.conftest import MockConfigObject
 

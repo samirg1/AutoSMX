@@ -4,6 +4,7 @@ from typing import Callable
 
 from design.Job import Job
 from popups.Popup import Popup
+from utils.constants import CTK_TEXT_START
 
 
 class JobPopup(Popup):
@@ -24,7 +25,7 @@ class JobPopup(Popup):
         self.after(100, comment.focus)
         comment.grid(column=0, row=3, columnspan=2)
 
-        save_button = ctk.CTkButton(self, text="Save", command=lambda: self._save_job(department.get(), contact.get(), comment.get("1.0", ctk.END)))
+        save_button = ctk.CTkButton(self, text="Save", command=lambda: self._save_job(department.get(), contact.get(), comment.get(CTK_TEXT_START, ctk.END)))
         save_button.grid(column=0, row=4, columnspan=2)
 
         comment.bind("<Alt-s>", lambda _: save_button.invoke())

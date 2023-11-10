@@ -5,6 +5,7 @@ from design.Item import Item
 from design.Job import Job
 from design.Script import Script
 from db.get_new_test_id import get_new_test_id
+from utils.get_sysmodtime import get_sysmodtime
 
 
 class ScriptError(ValueError):
@@ -78,5 +79,5 @@ class Test:
         if not self.completed:
             self.id = get_new_test_id()
             self.user = get_user()
-        self.date = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
+        self.date = get_sysmodtime(datetime.now())
         self.completed = True

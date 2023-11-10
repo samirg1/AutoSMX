@@ -1,17 +1,17 @@
 from datetime import datetime
-from typing import Any, Literal
+from typing import Any
 
-from db.get_connection import get_connection, DatabaseFilenames
+from db.get_connection import get_connection
+from utils.constants import EDITABLE_ITEM_FIELDS, DatabaseFilenames
+from utils.get_sysmodtime import get_sysmodtime
 
-_EDITABLE_ITEM_FIELDS = Literal["room"]
 
-
-def edit_item(number: str, update: dict[_EDITABLE_ITEM_FIELDS, Any]) -> None:
+def edit_item(number: str, update: dict[EDITABLE_ITEM_FIELDS, Any]) -> None:
     if not update:
         return
 
     fields = tuple(update.items())
-    time = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
+    time = get_sysmodtime(datetime.now())
     with get_connection(DatabaseFilenames.TESTS, mode="rw") as connection:
         with connection:
             connection.execute(

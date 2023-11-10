@@ -1,17 +1,14 @@
-import os
 import pathlib
-import sys
 import customtkinter as ctk
 
 from pages.ProblemPage import ProblemPage
-from pages.Page import TPAGES, Page
+from pages.Page import Page
 from pages.SettingsPage import SettingsPage
 from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
-
-_APPLICATION_PATH = os.path.dirname(sys.executable)
-
+from utils.constants import PAGE_NAMES
+from utils.constants import APPLICATION_PATH
 
 class App(ctk.CTk):
     def __init__(self) -> None:
@@ -19,13 +16,13 @@ class App(ctk.CTk):
         self.geometry(f"1500x750+10+10")
         self.title("AutoSMX")
 
-        self.after(201, lambda: self.iconbitmap(pathlib.Path(_APPLICATION_PATH, "autosmx.ico")))  # pyright: ignore
+        self.after(201, lambda: self.iconbitmap(pathlib.Path(APPLICATION_PATH, "autosmx.ico")))  # pyright: ignore
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
-        storage = Storage(pathlib.Path(_APPLICATION_PATH, "store.pkl"))
-        self.pages: dict[TPAGES, Page] = {
+        storage = Storage()
+        self.pages: dict[PAGE_NAMES, Page] = {
             "TUTORIAL": TutorialPage(self._frame(), self.change_page, storage),
             "SETTINGS": SettingsPage(self._frame(), self.change_page, storage),
             "PROBLEM": ProblemPage(self._frame(), self.change_page, storage),
@@ -41,7 +38,7 @@ class App(ctk.CTk):
             frame.columnconfigure(i, weight=1)
         return frame
 
-    def change_page(self, page: TPAGES) -> None:
+    def change_page(self, page: PAGE_NAMES) -> None:
         if self.current_page is not None:
             self.current_page.frame.grid_remove()
             for widget in self.current_page.frame.winfo_children():
@@ -49,7 +46,7 @@ class App(ctk.CTk):
 
         self.current_page = self.pages[page]
         self.current_page.setup()
-        self.current_page.frame.grid(row=0, column=0, sticky="nsew")
+        self.current_page.frame.grid(row=0, column=0, sticky=ctk.NSEW)
 
 
 def main() -> None:

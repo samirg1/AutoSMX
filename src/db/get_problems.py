@@ -1,5 +1,6 @@
-from db.get_connection import DatabaseFilenames, get_connection
+from db.get_connection import get_connection
 from design.Problem import Problem
+from utils.constants import DatabaseFilenames
 from utils.validate_type import validate_type
 
 

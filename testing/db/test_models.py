@@ -1,5 +1,5 @@
 import pytest
-from db.get_connection import DatabaseFilenames, get_connection
+from db.get_connection import get_connection
 from db.models import TestModel, ScriptLineModel, ScriptTesterModel, JobModel
 from design.Item import Item
 from design.Job import Job
@@ -7,6 +7,7 @@ from design.Problem import Problem
 from design.Script import Script, ScriptLine
 from design.Test import Test
 from testing.conftest import MockConfigObject, MockSqlObject
+from utils.constants import DatabaseFilenames
 
 TestModel.__test__ = False  # type: ignore
 Test.__test__ = False  # type: ignore

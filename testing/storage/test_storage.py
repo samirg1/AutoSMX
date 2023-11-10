@@ -47,7 +47,8 @@ def get_file_for_testing() -> Generator[Callable[..., pathlib.Path], None, None]
 def test_empty_missing_invalid_json(file_name: str, get_file_for_testing: Callable[[str], pathlib.Path]) -> None:
     name = get_file_for_testing(file_name)
     _EMPTY_DATA["_file_path"] = name
-    storage = Storage(name)
+    storage = Storage()
+    storage._file_path = name  # pyright: ignore[reportPrivateUsage]
     for key, value in _EMPTY_DATA.items():
         assert getattr(storage, key) == value
 
@@ -58,7 +59,8 @@ def test_empty_missing_invalid_json(file_name: str, get_file_for_testing: Callab
 
 def test_storage_edit_and_save(get_file_for_testing: Callable[[str], pathlib.Path]) -> None:
     file = get_file_for_testing("storage.json")
-    storage = Storage(file)
+    storage = Storage()
+    storage._file_path = file  # pyright: ignore[reportPrivateUsage]
 
     with storage.edit():
         storage.total_tests += 1
@@ -73,7 +75,8 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], pathlib.Pat
         assert data["tutorial_complete"]
         assert data["item_model_to_script_answers"] == {"test": ["test"]}
 
-    storage2 = Storage(file)
+    storage2 = Storage()
+    storage2._file_path = file  # pyright: ignore[reportPrivateUsage]
     assert storage2.total_tests == 1
     assert storage2.test_breakdown == {"test": 1}
     assert storage2.tutorial_complete

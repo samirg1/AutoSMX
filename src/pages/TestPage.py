@@ -16,6 +16,8 @@ from popups.JobPopup import JobPopup
 from popups.OptionSelectPopup import OptionSelectPopup
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.Tooltip import Tooltip
+from utils.add_focus_bindings import add_focus_bindings
+from utils.constants import CTK_TEXT_START, DEFAULT_TEXT_COLOUR_LABEL, ERROR_TEXT_COLOUR_LABEL, HORIZONTAL_LINE
 
 
 class TestPage(Page):
@@ -24,12 +26,12 @@ class TestPage(Page):
         self.test_problem = self.storage.problem
 
         problems_button = ctk.CTkButton(self.frame, text="< Problems", command=lambda: self.change_page("PROBLEM"))
-        problems_button.grid(column=0, row=0, sticky="w")
+        problems_button.grid(column=0, row=0, sticky=ctk.W)
 
         ctk.CTkLabel(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
         item_number = ctk.StringVar(value=self.test_problem.previous_item_number)
         item_entry = ctk.CTkEntry(self.frame, textvariable=item_number)
-        item_entry.grid(column=2, row=1, sticky="w", columnspan=2)
+        item_entry.grid(column=2, row=1, sticky=ctk.W, columnspan=2)
         item_entry.focus()
         item_entry.icursor(ctk.END)
 
@@ -121,7 +123,7 @@ class TestPage(Page):
         ctk.CTkButton(self.frame, text="Save", command=self.edit_item_room).grid(column=10, row=4)
 
         ctk.CTkLabel(self.frame, text=f"{self.test_problem}").grid(column=0, row=5, columnspan=20)
-        ctk.CTkLabel(self.frame, text=f"{'-' * 600}").grid(column=0, row=6, columnspan=20)
+        ctk.CTkLabel(self.frame, text=HORIZONTAL_LINE).grid(column=0, row=6, columnspan=20)
         self.frame.rowconfigure(7, minsize=20)
 
         # displaying the script
@@ -138,11 +140,11 @@ class TestPage(Page):
             self.saved_script_answers = stored_answers or [stest.default for stest in script.lines]
         actual_answers = [ctk.StringVar(value=ans) for ans in self.saved_script_answers]
         for i, line in enumerate(script.lines):
-            label = ctk.CTkLabel(self.frame, text=line.text, width=10, text_color=("indian red" if line.required else "black"))
+            label = ctk.CTkLabel(self.frame, text=line.text, width=10, text_color=(ERROR_TEXT_COLOUR_LABEL if line.required else DEFAULT_TEXT_COLOUR_LABEL))
             Tooltip(label, text=line.text)
             label.grid(column=0, row=row, sticky=ctk.W)
             if len(line.options) <= 1:
-                ctk.CTkEntry(self.frame, textvariable=actual_answers[i]).grid(column=2, row=row, columnspan=1, sticky="w")
+                ctk.CTkEntry(self.frame, textvariable=actual_answers[i]).grid(column=2, row=row, columnspan=1, sticky=ctk.W)
             else:
                 ctk.CTkSegmentedButton(self.frame, values=list(line.options), variable=actual_answers[i]).grid(column=2, row=row, columnspan=1)
             row += 1
@@ -175,7 +177,7 @@ class TestPage(Page):
         ctk.CTkLabel(self.frame, text="Result").grid(column=9, row=label_row, columnspan=8)
         label_row += 1
         overall_results = get_overall_results(int(self.test_problem.customer_number))
-        result = ctk.StringVar(value=self.test.result or "Pass")
+        result = ctk.StringVar(value=self.test.result or overall_results[0].nickname)
         for i, (nickname, fullname) in enumerate(overall_results):
             button = ctk.CTkRadioButton(self.frame, text=nickname, variable=result, value=nickname)
             Tooltip(button, fullname)
@@ -186,9 +188,8 @@ class TestPage(Page):
         save = ctk.CTkButton(self.frame, text="Save", command=lambda: self.save_test([s.get() for s in actual_answers], result.get()))
         save.grid(column=9, row=label_row, columnspan=8)
         room_entry.bind("<Return>", lambda _: save.invoke())
-        save.bind("<FocusIn>", lambda _: save.configure(text_color="black"))
-        save.bind("<FocusOut>", lambda _: save.configure(text_color="white"))
-        save.bind("<Return>", lambda _: self.save_test([s.get() for s in actual_answers], result.get()))
+        add_focus_bindings(save)
+        save.bind("<Return>", lambda _: save.invoke())
         save.bind("c", lambda _: self.go_button.invoke())
         save.bind("j", lambda _: self.add_job_button.invoke())
         save.bind("d", lambda _: self.delete_job_button.invoke())
@@ -237,8 +238,8 @@ class TestPage(Page):
         with self.storage.edit() as storage:
             job = self.test.jobs.pop()
             storage.job_manager.delete_job(self.test_problem, job)
-        current_comment = self.comment.get("1.0", ctk.END).strip()
-        self.comment.delete("1.0", ctk.END)
+        current_comment = self.comment.get(CTK_TEXT_START, ctk.END).strip()
+        self.comment.delete(CTK_TEXT_START, ctk.END)
         self.comment.insert(ctk.END, current_comment.replace(job.test_comment, ""))
 
         add_job_text = "Add Job"
@@ -249,7 +250,7 @@ class TestPage(Page):
         self.add_job_button.configure(text=add_job_text)
 
     def save_test(self, script_answers: list[str], result: str) -> None:
-        comment = self.comment.get("1.0", ctk.END)
+        comment = self.comment.get(CTK_TEXT_START, ctk.END)
         with self.storage.edit():
             try:
                 self.test.complete(comment, result, script_answers)

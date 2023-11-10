@@ -1,15 +1,17 @@
 from datetime import datetime, timedelta
 
-from db.get_connection import DatabaseFilenames, get_connection
+from db.get_connection import get_connection
 from db.models import JobModel, ScriptLineModel, ScriptTesterModel, TestModel
 from design.Problem import Problem
 from design.Script import ScriptLine
 from design.Test import Test
+from utils.constants import DatabaseFilenames
+from utils.get_sysmodtime import get_sysmodtime
 from utils.validate_type import validate_type
 
 
 def add_test(test: Test, problem: Problem) -> None:
-    next_spt_date = (datetime.now() + timedelta(days=366)).strftime(r"%Y-%m-%d %H:%M:%S.%f")[:-3]
+    next_spt_date = get_sysmodtime((datetime.now() + timedelta(days=366)))
 
     with get_connection(DatabaseFilenames.TESTS, mode="rw") as connection, get_connection(DatabaseFilenames.ASSETS, mode="rw") as asset_connection:
         with connection, asset_connection:

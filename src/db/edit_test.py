@@ -1,7 +1,8 @@
-from db.get_connection import get_connection, DatabaseFilenames
+from db.get_connection import get_connection
 from db.add_test import add_test
 from design.Problem import Problem
 from design.Test import Test
+from utils.constants import DatabaseFilenames
 
 
 def edit_test(test: Test, problem: Problem, *, remove_only: bool = False) -> None:

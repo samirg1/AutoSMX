@@ -1,16 +1,12 @@
 from abc import ABC, abstractmethod
-from random import randrange
 from sqlite3 import Connection
 from typing import override
+from utils.rand_hex import rand_hex
 
 from design.Job import Job
 from design.Problem import Problem
 from design.Script import ScriptLine
 from design.Test import Test
-
-
-def rand_hex(n: int) -> str:
-    return f"{randrange(16**n):0{n}x}".upper()
 
 
 class Model(ABC):

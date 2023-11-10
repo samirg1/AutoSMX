@@ -5,13 +5,14 @@ from typing import Generator
 
 from design.Problem import Problem
 from design.JobManager import JobManager
+from utils.constants import APPLICATION_PATH
 
 
 class Storage:
     __slots__ = ("_file_path", "problems", "problem", "job_manager", "total_tests", "test_breakdown", "tutorial_complete", "item_model_to_script_answers")
 
-    def __init__(self, file_path: pathlib.Path) -> None:
-        self._file_path = file_path
+    def __init__(self) -> None:
+        self._file_path = pathlib.Path(APPLICATION_PATH, "store.pkl")
         self.problems: dict[str, Problem] = {}
         self.problem: Problem | None = None
         self.job_manager = JobManager()

@@ -1,17 +1,8 @@
-import os
 import sqlite3
 from contextlib import contextmanager
-from enum import StrEnum
 from typing import Generator, Literal
 
-BASE_FILE = rf"C:\Users\{os.getenv('USERNAME')}\AppData\Local\SMXMobile"
-
-
-class DatabaseFilenames(StrEnum):
-    TESTS = "SCMTests"
-    ASSETS = "SCMAssets"
-    LOOKUP = "SCMLookup"
-    SETTINGS = "Settings"
+from utils.constants import BASE_FILE, DatabaseFilenames
 
 
 @contextmanager

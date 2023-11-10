@@ -1,7 +1,8 @@
 from typing import NamedTuple
 
-from db.convert_stringed_date import convert_stringed_date
-from db.get_connection import DatabaseFilenames, get_connection
+from utils.convert_stringed_date import convert_stringed_date
+from db.get_connection import get_connection
+from utils.constants import DAYMONTHYEAR_FORMAT, DatabaseFilenames
 from utils.validate_type import validate_type
 
 
@@ -14,7 +15,7 @@ class OpenProblem(NamedTuple):
 
     def __repr__(self) -> str:
         converted = convert_stringed_date(self.date_opened)
-        date_opened = "Not found" if converted is None else converted.strftime(r"%d-%m-%Y")
+        date_opened = "Not found" if converted is None else converted.strftime(DAYMONTHYEAR_FORMAT)
         return f"{self.number} - Opened: {date_opened} - {self.asset_description} ({self.asset_serial}) : {self.description}"
 
 
