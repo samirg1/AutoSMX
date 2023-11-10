@@ -3,7 +3,7 @@ from collections import Counter
 from db.get_connection import get_connection
 from design.Problem import Problem
 from utils.constants import DatabaseFilenames
-from utils.validate_type import validate_type
+from typeguard import check_type
 
 
 def get_double_ups(problem: Problem) -> dict[str, list[str]]:
@@ -13,8 +13,7 @@ def get_double_ups(problem: Problem) -> dict[str, list[str]]:
         return {}
 
     with get_connection(DatabaseFilenames.TESTS) as connection:
-        current_tests = validate_type(
-            list[tuple[str, str, str]],
+        current_tests = check_type(
             connection.execute(
                 f"""
                 SELECT logical_name, description, overall
@@ -23,6 +22,7 @@ def get_double_ups(problem: Problem) -> dict[str, list[str]]:
                 """,
                 [test.id for test in problem.tests],
             ).fetchall(),
+            list[tuple[str, str, str]],
         )
 
         test_counter = Counter(number for number, *_ in current_tests)
@@ -35,8 +35,7 @@ def get_double_ups(problem: Problem) -> dict[str, list[str]]:
                 old.extend(f"{number}: {test.item.description} ({test.script.nickname}) -> {test.result}" for test in double_tests)
                 double_ups["Tests"] = old
 
-        current_jobs = validate_type(
-            list[tuple[str, str]],
+        current_jobs = check_type(
             connection.execute(
                 f"""
                 SELECT logical_name, actionprgn
@@ -45,6 +44,7 @@ def get_double_ups(problem: Problem) -> dict[str, list[str]]:
                 """,
                 [test.id for test in problem.tests],
             ).fetchall(),
+            list[tuple[str, str]],
         )
 
         job_counter = Counter(number for number, *_ in current_jobs)

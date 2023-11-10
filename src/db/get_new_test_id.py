@@ -1,6 +1,6 @@
 from db.get_connection import get_connection
 from utils.constants import DatabaseFilenames
-from utils.validate_type import validate_type
+from typeguard import check_type
 
 
 class NoTestIDsError(RuntimeError):
@@ -9,8 +9,7 @@ class NoTestIDsError(RuntimeError):
 
 def get_new_test_id() -> str:
     with get_connection(DatabaseFilenames.SETTINGS, mode="rw") as connection:
-        res = validate_type(
-            tuple[int, int] | None,
+        res = check_type(
             connection.execute(
                 """
                 SELECT LASTUSED, LASTRESERVED
@@ -18,6 +17,7 @@ def get_new_test_id() -> str:
                 WHERE TABLENAME == 'SCMobileTestsm1' AND LASTUSED <> LASTRESERVED;
                 """
             ).fetchone(),
+            tuple[int, int] | None,
         )
 
         if res is None:

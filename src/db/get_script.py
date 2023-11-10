@@ -2,13 +2,12 @@ from db.get_connection import get_connection
 from design.Script import Script, ScriptLine
 from design.ScriptInfo import ScriptInfo
 from utils.constants import DatabaseFilenames
-from utils.validate_type import validate_type
+from typeguard import check_type
 
 
 def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition_lines: set[int], required_lines: set[int]) -> Script:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
-        script_name, service_type = validate_type(
-            tuple[str, str],
+        script_name, service_type = check_type(
             connection.execute(
                 """
                 SELECT script_name, service_type
@@ -17,10 +16,10 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
                 """,
                 (script_info.number,),
             ).fetchone(),
+            tuple[str, str],
         )
 
-        script_line_fields = validate_type(
-            list[tuple[int, str, float, str | None, str | None]],
+        script_line_fields = check_type(
             connection.execute(
                 """
                 SELECT z_rv, script_line_text, line_no, answer_type, answer_id
@@ -30,6 +29,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
                 """,
                 (script_info.number,),
             ).fetchall(),
+            list[tuple[int, str, float, str | None, str | None]],
         )
 
         lines: list[ScriptLine] = []
@@ -43,8 +43,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
 
             raw: list[tuple[str]] = []
             for possible_id in (answer_id, answer_type):
-                if raw := validate_type(
-                    list[tuple[str]],
+                if raw := check_type(
                     connection.execute(
                         """
                         SELECT answer_text
@@ -54,6 +53,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
                         """,
                         (possible_id,),
                     ).fetchall(),
+                    list[tuple[str]],
                 ):
                     break
 

@@ -3,7 +3,7 @@ import os
 import sys
 from typing import Literal
 
-APPLICATION_PATH = os.path.dirname(sys.executable)
+APPLICATION_PATH = ""# os.path.dirname(sys.executable)
 
 PAGE_NAMES = Literal["PROBLEM", "TEST", "TUTORIAL", "SETTINGS"]
 EDITABLE_ITEM_FIELDS = Literal["room"]

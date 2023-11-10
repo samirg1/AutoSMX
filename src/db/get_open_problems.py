@@ -3,8 +3,7 @@ from typing import NamedTuple
 from utils.convert_stringed_date import convert_stringed_date
 from db.get_connection import get_connection
 from utils.constants import DAYMONTHYEAR_FORMAT, DatabaseFilenames
-from utils.validate_type import validate_type
-
+from typeguard import check_type
 
 class OpenProblem(NamedTuple):
     number: str
@@ -21,8 +20,7 @@ class OpenProblem(NamedTuple):
 
 def get_open_problems(location: str) -> list[OpenProblem]:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
-        results = validate_type(
-            list[tuple[str, str, str, str, str | None]],
+        results = check_type(
             connection.execute(
                 """
                 SELECT number, brief_description, open_time, asset_description, serial_no_
@@ -31,6 +29,7 @@ def get_open_problems(location: str) -> list[OpenProblem]:
                 """,
                 (location,),
             ).fetchall(),
+            list[tuple[str, str, str, str, str | None]],
         )
 
     return [OpenProblem(*res) for res in results]

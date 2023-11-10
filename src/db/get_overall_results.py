@@ -3,8 +3,7 @@ from typing import NamedTuple
 
 from db.get_connection import get_connection
 from utils.constants import DatabaseFilenames
-from utils.validate_type import validate_type
-
+from typeguard import check_type
 
 class TestResult(NamedTuple):
     nickname: str
@@ -14,8 +13,7 @@ class TestResult(NamedTuple):
 @functools.lru_cache(maxsize=5)
 def get_overall_results(customer_id: int) -> list[TestResult]:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
-        results = validate_type(
-            list[tuple[str, str]],
+        results = check_type(
             connection.execute(
                 """
                 SELECT overall_id, overall_text
@@ -25,6 +23,7 @@ def get_overall_results(customer_id: int) -> list[TestResult]:
                 """,
                 (customer_id, f"%{customer_id},%"),
             ).fetchall(),
+            list[tuple[str, str]],
         )
 
     return [TestResult(nickname, fullname) for nickname, fullname in results]

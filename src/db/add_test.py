@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typeguard import check_type
 
 from db.get_connection import get_connection
 from db.models import JobModel, ScriptLineModel, ScriptTesterModel, TestModel
@@ -7,7 +8,6 @@ from design.Script import ScriptLine
 from design.Test import Test
 from utils.constants import DatabaseFilenames
 from utils.get_sysmodtime import get_sysmodtime
-from utils.validate_type import validate_type
 
 
 def add_test(test: Test, problem: Problem) -> None:
@@ -38,8 +38,7 @@ def add_test(test: Test, problem: Problem) -> None:
                 (test.date, next_spt_date, test.item.number, test.script.service_type),
             )
 
-            services = validate_type(
-                list[tuple[str, float, str, str]],
+            services = check_type(
                 asset_connection.execute(
                     """
                     SELECT service_type, service_interval, service_last, service_next
@@ -48,6 +47,7 @@ def add_test(test: Test, problem: Problem) -> None:
                     """,
                     (test.item.number,),
                 ).fetchall(),
+                list[tuple[str, float, str, str]],
             )
 
             servicearray = "\n".join("^".join(f"{int(s) if isinstance(s, float) else s}" for s in service) + "^" for service in services)
