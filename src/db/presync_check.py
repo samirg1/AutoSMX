@@ -47,12 +47,15 @@ def get_double_ups(problem: Problem) -> dict[str, list[str]]:
         )
 
         job_counter = Counter(number for number, *_ in current_jobs)
+        jobs_items = [(job, test.item.number) for test in problem.tests for job in test.jobs]
         for number, count in job_counter.items():
             if count > 1:
-                double_jobs = [job for job in current_jobs if job[0] == number]
+                double_jobs = [job for job in jobs_items if job[1] == number and not job[0].synced]
+                if not double_jobs:
+                    continue
                 old = double_ups.get("Jobs", [])
-                first_lines = [actionprgn.split("\n")[0] for _, actionprgn in double_jobs]
-                old.extend(f"{number}: {line}" for (number, _), line in zip(double_jobs, first_lines))
+                first_lines = [job[0].comment.split("\n")[0] for job in double_jobs]
+                old.extend(f"{item}: {line}" for (_, item), line in zip(double_jobs, first_lines))
                 double_ups["Jobs"] = old
 
     return double_ups
