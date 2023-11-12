@@ -11,7 +11,7 @@ class Job:
         self.synced = False
 
         for part, quantity in parts:
-            self.comment += f"\n{part.number} X {quantity}"
+            self.comment += f"\n{quantity} X {part.number}"
 
     def __repr__(self) -> str:
         return f"{self.comment}"

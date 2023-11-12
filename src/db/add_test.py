@@ -4,7 +4,6 @@ from typeguard import check_type
 from db.get_connection import get_connection
 from db.models import JobModel, ScriptLineModel, ScriptTesterModel, TestModel
 from design.Problem import Problem
-from design.Script import ScriptLine
 from design.Test import Test
 from utils.constants import DatabaseFilenames
 from utils.get_sysmodtime import get_sysmodtime
@@ -18,11 +17,7 @@ def add_test(test: Test, problem: Problem) -> None:
             TestModel(test, problem).insert(connection)
             ScriptTesterModel(test).insert(connection)
 
-            lines = test.script.lines
-            if test.script.number == 1287:
-                track_header_line = ScriptLine(text="Disclaimer: Tests carried out are subject to conditions, available on request", number=1)
-                lines = (track_header_line, *lines)
-
+            lines = test.script.lines + test.script.header_lines
             for line in lines:
                 ScriptLineModel(test, line).insert(connection)
 

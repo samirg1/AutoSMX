@@ -21,7 +21,8 @@ class Script:
     number: int
     tester_number: str = field(hash=False, eq=False)
     service_type: str = field(hash=False, eq=False)
-    lines: tuple[ScriptLine, ...] = field(factory=tuple, hash=False, eq=False)
+    lines: tuple[ScriptLine, ...] = field(hash=False, eq=False)
+    header_lines: tuple[ScriptLine, ...] = field(hash=False, eq=False)
     exact_matches: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
     search_terms: list[str] = field(factory=list, kw_only=True, hash=False, eq=False)
 

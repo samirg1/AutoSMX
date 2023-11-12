@@ -33,10 +33,10 @@ def test_problem_add_test(mock_sql_connect_scripts: MockSqlObject) -> None:
     test1 = Test(Item("001", "001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759"))
     test2 = Test(Item("002", "001", "Test Item 2", "ModelY", "ManufacturerY", "XYZ002", "RM1", "2019-01-01 03:45:44.759"))
 
-    custom1 = Script("Custom1", "Custom Script", 1, "999", "type", (), exact_matches=["Test Item 1"])
+    custom1 = Script("Custom1", "Custom Script", 1, "999", "type", (), (), exact_matches=["Test Item 1"])
     get_all_scripts()["Custom1"] = custom1
     test1.script = test1.determine_script()
-    custom2 = Script("Custom2", "Custom Script", 1, "999", "type", (), exact_matches=["Test Item 2"])
+    custom2 = Script("Custom2", "Custom Script", 1, "999", "type", (), (), exact_matches=["Test Item 2"])
     get_all_scripts()["Custom2"] = custom2
     test2.script = test2.determine_script()
 
@@ -51,7 +51,7 @@ def test_problem_add_test(mock_sql_connect_scripts: MockSqlObject) -> None:
 
 
 def test_problem_remove_test(mock_sql_connect_scripts: MockSqlObject) -> None:
-    custom1 = Script("Custom1", "Custom Script", 1, "999", "type", (), exact_matches=["Test Item 1"])
+    custom1 = Script("Custom1", "Custom Script", 1, "999", "type", (), (), exact_matches=["Test Item 1"])
     get_all_scripts()["Custom1"] = custom1
     test1 = Test(Item("001", "001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759"))
     test1.script = test1.determine_script()

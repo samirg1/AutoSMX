@@ -28,7 +28,7 @@ def test_test_determine_script(mock_sql_connect_scripts: MockSqlObject) -> None:
     test = Test(item)
 
     # Adding a custom script for testing
-    custom_script = Script("CustomScript", "Custom Script", 1, "999", "type")
+    custom_script = Script("CustomScript", "Custom Script", 1, "999", "type", (), ())
     get_all_scripts()["CustomScript"] = custom_script
 
     test.script = custom_script
@@ -42,12 +42,12 @@ def test_test_add_testjob(mock_sql_connect_scripts: MockSqlObject) -> None:
     item = Item("001", "001", "SLING 123", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
     test = Test(item)
 
-    custom_script = Script("SLING", "Custom Script", 1, "999", "type")
+    custom_script = Script("SLING", "Custom Script", 1, "999", "type", (), ())
     get_all_scripts()["SLING"] = custom_script
     test.script = test.determine_script()
     assert test.script.nickname == "SLING"
 
-    job = Job("Quality Control", "John Doe", "Performing testing on batch 1")
+    job = Job("Quality Control", "John Doe", "Performing testing on batch 1", [])
     test.add_job(job)
 
     assert len(test.jobs) == 1
@@ -58,7 +58,7 @@ def test_test_complete_and_full_info(mock_sql_connect_scripts: MockSqlObject) ->
     item = Item("001", "001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
     test = Test(item)
 
-    custom = Script("CustomScript", "Custom Script", 1, "999", "type", (), exact_matches=["Test Item"])
+    custom = Script("CustomScript", "Custom Script", 1, "999", "type", (), (), exact_matches=["Test Item"])
     get_all_scripts()["CustomScript"] = custom
     test.script = test.determine_script()
     assert test.script.nickname == "CustomScript"
@@ -70,7 +70,7 @@ def test_test_complete(mock_sql_connect: MockSqlObject, mock_config_parse: MockC
     item = Item("001", "001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
     test = Test(item)
     line = ScriptLine("Test 1", 1, "Pass", "Fail")
-    test.script = Script("CustomScript", "Custom Script", 1, "999", "type", (line,), exact_matches=["Test Item"])
+    test.script = Script("CustomScript", "Custom Script", 1, "999", "type", (line,), (), exact_matches=["Test Item"])
     test.complete("comment", "result", ["Pass"])
 
     assert test.comments == "comment"
@@ -84,6 +84,6 @@ def test_test_complete(mock_sql_connect: MockSqlObject, mock_config_parse: MockC
 def test_test_item_model_property() -> None:
     item = Item("001", "001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
     test = Test(item)
-    test.script = Script("CustomScript", "Custom Script", 1, "999", "type")
+    test.script = Script("CustomScript", "Custom Script", 1, "999", "type", (), ())
 
     assert test.item_model == "Custom Script -> ModelX"

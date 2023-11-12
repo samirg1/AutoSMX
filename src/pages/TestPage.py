@@ -133,11 +133,23 @@ class TestPage(Page):
         label_row = row + 1
         row += 1
 
+        if script.nickname == "CEILING" and test.item.manufacturer == "MOLIFT":
+            line = next(line for line in script.lines if line.number == 19)
+            line.required = True
+
         if test.completed:
             self.saved_script_answers = [line.result for line in test.script.lines]
         else:
             stored_answers = self.storage.item_model_to_script_answers.get(self.test.item_model)
             self.saved_script_answers = stored_answers or [stest.default for stest in script.lines]
+
+        if script.nickname == "CEILING":
+            self.saved_script_answers[-3] = ""
+        elif script.nickname == "CLASS II":
+            self.saved_script_answers[-1] = ""
+            self.saved_script_answers[-3] = ""
+            self.saved_script_answers[-4] = ""
+
         actual_answers = [ctk.StringVar(value=ans) for ans in self.saved_script_answers]
         for i, line in enumerate(script.lines):
             label = ctk.CTkLabel(self.frame, text=line.text, width=10, text_color=(ERROR_TEXT_COLOUR_LABEL if line.required else DEFAULT_TEXT_COLOUR_LABEL))
@@ -177,7 +189,8 @@ class TestPage(Page):
         ctk.CTkLabel(self.frame, text="Result").grid(column=9, row=label_row, columnspan=8)
         label_row += 1
         overall_results = get_overall_results(int(self.test_problem.customer_number))
-        result = ctk.StringVar(value=self.test.result or overall_results[0].nickname)
+        value = self.test.result or (overall_results[0].nickname if self.storage.skip_overall_result_check else "")
+        result = ctk.StringVar(value=value)
         for i, (nickname, fullname) in enumerate(overall_results):
             button = ctk.CTkRadioButton(self.frame, text=nickname, variable=result, value=nickname)
             Tooltip(button, fullname)

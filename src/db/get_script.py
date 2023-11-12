@@ -33,8 +33,10 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
         )
 
         lines: list[ScriptLine] = []
+        header_lines: list[ScriptLine] = []
         for z_rv, text, line_no, answer_type, answer_id in script_line_fields:
             if "header" in (answer_type, answer_id):
+                header_lines.append(ScriptLine(text, int(line_no)))
                 continue
 
             if z_rv == 8236:
@@ -66,5 +68,13 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
             lines.append(line)
 
     return Script(
-        script_info.nickname, script_name, script_info.number, script_info.tester_number, service_type, tuple(lines), search_terms=script_info.search_terms, exact_matches=script_info.exact_matches
+        script_info.nickname,
+        script_name,
+        script_info.number,
+        script_info.tester_number,
+        service_type,
+        tuple(lines),
+        tuple(header_lines),
+        search_terms=script_info.search_terms,
+        exact_matches=script_info.exact_matches,
     )
