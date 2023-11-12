@@ -40,9 +40,10 @@ class TestPage(Page):
         self.choose_button = ctk.CTkButton(self.frame, text="Choose", command=lambda: self.get_items(item_number.get(), item_entry, choose_script=True))
         self.choose_button.grid(column=1, row=2, columnspan=1)
 
-        button_state = "normal" if self.is_tested(item_number.get()) else "disabled"
-        self.edit_button = ctk.CTkButton(self.frame, text="Edit Test", command=lambda: self.get_items(item_number.get(), item_entry, editing=True), state=button_state)
+        self.tooltip: Tooltip | None = None
+        self.edit_button = ctk.CTkButton(self.frame, text="Edit Test", command=lambda: self.get_items(item_number.get(), item_entry, editing=True))
         self.edit_button.grid(column=2, row=2)
+        self.edit_button_reconfigure(item_number)
 
         item_entry.bind("<Return>", lambda _: self.go_button.invoke())
         item_entry.bind("<Alt-c>", lambda _: self.choose_button.invoke())
@@ -54,10 +55,16 @@ class TestPage(Page):
         return len(self.test_problem.item_number_to_tests.get(item_number, [])) != 0
 
     def edit_button_reconfigure(self, item_number: ctk.StringVar) -> None:
+        if self.tooltip:
+            self.tooltip.remove()
         if self.is_tested(item_number.get()):
-            self.edit_button.configure(state="normal")
+            self.edit_button.configure(state="normal")    
+            self.tooltip = None
         else:
             self.edit_button.configure(state="disabled")
+            possibles = [number for number, lst in self.test_problem.item_number_to_tests.items() if number.startswith(item_number.get()) and len(lst)]
+            if len(possibles) == 1:
+                self.tooltip = Tooltip(self.edit_button, f"Did you mean '{possibles[0]}'")
 
     def get_items(self, item_number: str, item_entry: ctk.CTkEntry, /, *, choose_script: bool = False, editing: bool = False) -> None:
         item_entry.configure(state="disabled")

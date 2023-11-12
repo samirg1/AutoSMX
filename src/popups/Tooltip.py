@@ -16,6 +16,12 @@ class Tooltip:
         self._after_id: str | None = None
         self._tooltip: ctk.CTkToplevel | None = None
 
+    def remove(self) -> None:
+        self._widget.unbind("<Enter>")
+        self._widget.unbind("<Leave>")
+        self._widget.unbind("<ButtonPress>")
+        del self
+
     def _onEnter(self, _: Any) -> None:
         self._unschedule()
         self._after_id = self._widget.after(self._delay, self._show)
