@@ -17,25 +17,25 @@ class SyncPopup(Popup):
         row = 0
 
         for problem in problems.values():
-            ctk.CTkLabel(self, text=f"Checking double ups for {problem.number}...").grid(column=0, row=row, columnspan=2, sticky=ctk.W)
+            ctk.CTkLabel(self.frame, text=f"Checking double ups for {problem.number}...").grid(column=0, row=row, columnspan=2, sticky=ctk.W)
             row += 1
             double_ups: dict[str, list[str]] = get_double_ups(problem)
             if not double_ups:
-                ctk.CTkLabel(self, text="No double ups found").grid(column=0, row=row, columnspan=2)
+                ctk.CTkLabel(self.frame, text="No double ups found").grid(column=0, row=row, columnspan=2)
                 row += 1
             else:
                 for title, doubles in double_ups.items():
-                    ctk.CTkLabel(self, text=title).grid(column=0, row=row, columnspan=2)
+                    ctk.CTkLabel(self.frame, text=title).grid(column=0, row=row, columnspan=2)
                     row += 1
                     for text in doubles:
-                        ctk.CTkLabel(self, text=text).grid(column=0, row=row, columnspan=2, sticky=ctk.W)
+                        ctk.CTkLabel(self.frame, text=text).grid(column=0, row=row, columnspan=2, sticky=ctk.W)
                         row += 1
 
-        ctk.CTkButton(self, text="Sync", command=lambda: self._sync(problems)).grid(column=0, row=row, columnspan=2)
+        ctk.CTkButton(self.frame, text="Sync", command=lambda: self._sync(problems)).grid(column=0, row=row, columnspan=2)
         row += 1
 
         if not connected_to_internet():
-            ctk.CTkLabel(self, text="Not connected to internet", text_color=ERROR_TEXT_COLOUR_LABEL).grid(row=row, column=0, columnspan=2)
+            ctk.CTkLabel(self.frame, text="Not connected to internet", text_color=ERROR_TEXT_COLOUR_LABEL).grid(row=row, column=0, columnspan=2)
             row += 1
 
     def _sync(self, problems: dict[str, Problem]) -> None:

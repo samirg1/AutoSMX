@@ -14,16 +14,16 @@ class SearchPartPopup(Popup):
         self.buttons: list[ctk.CTkButton] = []
 
         description = ctk.StringVar()
-        ctk.CTkLabel(self, text="Part Description").grid(row=0, column=0)
-        ctk.CTkEntry(self, textvariable=description).grid(row=0, column=1)
+        ctk.CTkLabel(self.frame, text="Part Description").grid(row=0, column=0)
+        ctk.CTkEntry(self.frame, textvariable=description).grid(row=0, column=1)
         manufacturer = ctk.StringVar()
-        ctk.CTkLabel(self, text="Manufacturer").grid(row=1, column=0)
-        ctk.CTkEntry(self, textvariable=manufacturer).grid(row=1, column=1)
+        ctk.CTkLabel(self.frame, text="Manufacturer").grid(row=1, column=0)
+        ctk.CTkEntry(self.frame, textvariable=manufacturer).grid(row=1, column=1)
         part_number = ctk.StringVar()
-        ctk.CTkLabel(self, text="Manufacturer Part Number").grid(row=2, column=0)
-        ctk.CTkEntry(self, textvariable=part_number).grid(row=2, column=1)
+        ctk.CTkLabel(self.frame, text="Manufacturer Part Number").grid(row=2, column=0)
+        ctk.CTkEntry(self.frame, textvariable=part_number).grid(row=2, column=1)
 
-        ctk.CTkButton(self, text="Search", command=lambda: self._search(description.get(), manufacturer.get(), part_number.get())).grid(row=3,column=0, columnspan=2)
+        ctk.CTkButton(self.frame, text="Search", command=lambda: self._search(description.get(), manufacturer.get(), part_number.get())).grid(row=3,column=0, columnspan=2)
 
     def _search(self, description: str, manufacturer: str, part_number: str) -> None:
         parts = get_parts({"part_desc": description, "manufacturer": manufacturer, "manufacturer_part_number": part_number})
@@ -33,9 +33,9 @@ class SearchPartPopup(Popup):
             button.grid_remove()
 
         for row, part in enumerate(parts, start=4):
-            label = ctk.CTkLabel(self, text=f"PN: {part.number} - {part.description}")
+            label = ctk.CTkLabel(self.frame, text=f"PN: {part.number} - {part.description}")
             label.grid(row=row, column=0, sticky=ctk.W)
-            button = ctk.CTkButton(self, text="Go", command=lambda part=part: self._select_part(part))
+            button = ctk.CTkButton(self.frame, text="Go", command=lambda part=part: self._select_part(part))
             button.grid(row=row, column=1)
 
             self.labels.append(label)

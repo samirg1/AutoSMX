@@ -13,7 +13,7 @@ class OptionSelectPopup(Popup, Generic[_T]):
         self._callback = callback
 
         for row, option in enumerate(options):
-            ctk.CTkButton(self, text=display(option), command=lambda option=option: self._select(option)).grid(row=row, column=0, sticky=ctk.W)  # type: ignore[misc]
+            ctk.CTkButton(self.frame, text=display(option), command=lambda option=option: self._select(option)).grid(row=row, column=0, sticky=ctk.W)  # type: ignore[misc]
 
     def _select(self, option: _T) -> None:
         self._callback(option)

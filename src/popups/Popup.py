@@ -16,8 +16,13 @@ class Popup(ctk.CTkToplevel):
 
         self.geometry(f"{width}x{height}+{(1500 - width) // 2 + 10}+{start_height}")
 
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+        self.frame = ctk.CTkScrollableFrame(self)
         for i in range(columns):
-            self.columnconfigure(i, weight=1)
+            self.frame.columnconfigure(i, weight=1)
+
+        self.frame.grid(row=0, column=0, sticky=ctk.NSEW)
 
         self.after(100, self.lift)
 
