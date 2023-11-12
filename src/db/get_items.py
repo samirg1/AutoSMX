@@ -19,5 +19,3 @@ def get_items(item_number: str) -> list[Item]:
         )
 
     return [Item(*fields) for fields in item_fields]
-
-print(get_items("359924"))

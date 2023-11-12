@@ -15,7 +15,6 @@ class Popup(ctk.CTkToplevel):
         start_height = (750 - height) // 2 + 10
 
         self.geometry(f"{width}x{height}+{(1500 - width) // 2 + 10}+{start_height}")
-        self.attributes("-topmost", 2)  # pyright: ignore
 
         for i in range(columns):
             self.columnconfigure(i, weight=1)
