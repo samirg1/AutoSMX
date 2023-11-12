@@ -2,13 +2,14 @@ from attrs import field, frozen
 
 
 class ScriptLine:
-    def __init__(self, text: str, number: int, *options: str, required: bool = False) -> None:
+    def __init__(self, text: str, number: int, *options: str, required: bool = False, use_saved: bool = True) -> None:
         self.text = text
         self.number = number
         self.default = options[0] if options else ""
         self.options = options
         self.result = ""
         self.required = required
+        self.use_saved = use_saved
 
     def __repr__(self) -> str:
         return f"{self.text} -> {self.options}"

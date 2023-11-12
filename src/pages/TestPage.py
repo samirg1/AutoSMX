@@ -143,13 +143,6 @@ class TestPage(Page):
             stored_answers = self.storage.item_model_to_script_answers.get(self.test.item_model)
             self.saved_script_answers = stored_answers or [stest.default for stest in script.lines]
 
-        if script.nickname == "CEILING":
-            self.saved_script_answers[-3] = ""
-        elif script.nickname == "CLASS II":
-            self.saved_script_answers[-1] = ""
-            self.saved_script_answers[-3] = ""
-            self.saved_script_answers[-4] = ""
-
         actual_answers = [ctk.StringVar(value=ans) for ans in self.saved_script_answers]
         for i, line in enumerate(script.lines):
             label = ctk.CTkLabel(self.frame, text=line.text, width=10, text_color=(ERROR_TEXT_COLOUR_LABEL if line.required else DEFAULT_TEXT_COLOUR_LABEL))
@@ -299,9 +292,13 @@ class TestPage(Page):
         self.change_page("TEST")
 
     def update_storage(self, actual_script_answers: list[str]) -> None:
+        for i, (line, answer) in enumerate(zip(self.test.script.lines, actual_script_answers)):
+            if not line.use_saved or answer == "Fail":
+                actual_script_answers[i] = line.default
+
         if self.saved_script_answers == actual_script_answers:
             return
-
+        
         default = [stest.default for stest in self.test.script.lines]
         with self.storage.edit() as storage:
             if actual_script_answers == default:

@@ -71,6 +71,22 @@ _REQUIRED_FREE_TEXT_FIELDS = {
     9851,  # TRACK: load test kg
 }
 
+_NON_PERSISTENT_LINES = {
+    *_CONDITION_LINES,
+    461,  # CLASS I: earth resistance power lead only
+    464,  # : insulation resistance
+    465,  # : earth leakage current
+    466,  # : earth leakage current noc
+    471,  # : mains lead number
+    472,  # : touch current normal condition
+    473,  # : touch current sfc
+    474,  # : touch current noc
+    478,  # CLASSII: insulation resistance
+    479,  # : insulation resistance enclosure
+    484,  # : mains lead number
+    8304, # CEILING: number of lifts
+}
+
 
 _SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
     ScriptInfo(1278, "9999TEST", "CHANGE TILT TABLE", [], []),
@@ -97,4 +113,4 @@ _SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
 
 @functools.lru_cache(maxsize=1)
 def get_all_scripts() -> dict[str, Script]:
-    return {info.nickname: get_script(info, _LINE_DEFAULTS, _CONDITION_LINES, _REQUIRED_FREE_TEXT_FIELDS) for info in _SCRIPT_INFOS}
+    return {info.nickname: get_script(info, _LINE_DEFAULTS, _CONDITION_LINES, _REQUIRED_FREE_TEXT_FIELDS, _NON_PERSISTENT_LINES) for info in _SCRIPT_INFOS}
