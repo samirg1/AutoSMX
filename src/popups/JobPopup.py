@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import tkinter
-from typing import Callable
+from typing import Callable, Iterable
 from db.get_parts import get_parts
 
 from design.Job import Job
@@ -11,9 +11,10 @@ from utils.constants import CTK_TEXT_START
 
 
 class JobPopup(Popup):
-    def __init__(self, master: tkinter.Misc | None, default_dept: str, default_contact: str, save_job: Callable[[Job], None]):
+    def __init__(self, master: tkinter.Misc | None, default_dept: str, default_contact: str, save_job: Callable[[Job], None], previous_parts: Iterable[Part]):
         super().__init__(master, "Add Job", height_factor=0.5, columns=2)
         self.save_job = save_job
+        self.previous_parts = previous_parts
 
         ctk.CTkLabel(self.frame, text="Department").grid(column=0, row=0)
         department = ctk.StringVar(value=default_dept)
@@ -64,7 +65,7 @@ class JobPopup(Popup):
         part_label.configure(text="Part not found" if part is None else part.description)
 
     def _search(self, part_var: ctk.StringVar) -> None:
-        SearchPartPopup(self, part_var).mainloop()
+        SearchPartPopup(self, part_var, self.previous_parts).mainloop()
 
     def _save_job(self, department: str, contact: str, comment: str) -> None:
         part_quantities: list[tuple[Part, int]] = []

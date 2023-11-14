@@ -2,14 +2,16 @@ from contextlib import contextmanager
 import pathlib
 import pickle
 from typing import Generator
+from design.Part import Part
 
 from design.Problem import Problem
 from design.JobManager import JobManager
+from utils.MRUList import MRUList
 from utils.constants import APPLICATION_PATH
 
 
 class Storage:
-    __slots__ = ("_file_path", "problems", "problem", "job_manager", "total_tests", "test_breakdown", "tutorial_complete", "skip_overall_result_check", "item_model_to_script_answers")
+    __slots__ = ("_file_path", "problems", "problem", "job_manager", "previous_parts", "total_tests", "test_breakdown", "tutorial_complete", "skip_overall_result_check", "item_model_to_script_answers")
 
     def __init__(self) -> None:
         self._file_path = pathlib.Path(APPLICATION_PATH, "store.pkl")
@@ -20,6 +22,7 @@ class Storage:
         self.skip_overall_result_check = False
         self.total_tests = 0
         self.test_breakdown: dict[str, int] = {}
+        self.previous_parts: MRUList[Part] = MRUList()
         self.item_model_to_script_answers: dict[str, list[str]] = {}
 
         try:

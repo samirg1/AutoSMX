@@ -1,4 +1,5 @@
 from tkinter import Misc
+from typing import Iterable
 from db.get_parts import get_parts
 from design.Part import Part
 from popups.Popup import Popup
@@ -6,7 +7,7 @@ import customtkinter as ctk
 
 
 class SearchPartPopup(Popup):
-    def __init__(self, master: Misc | None, callback_var: ctk.StringVar) -> None:
+    def __init__(self, master: Misc | None, callback_var: ctk.StringVar, previous_parts: Iterable[Part]) -> None:
         super().__init__(master, "Part Search", width=360*3, height_factor=0.75, columns=2)
         self.callback_var = callback_var
 
@@ -25,14 +26,27 @@ class SearchPartPopup(Popup):
 
         ctk.CTkButton(self.frame, text="Search", command=lambda: self._search(description.get(), manufacturer.get(), part_number.get())).grid(row=3,column=0, columnspan=2)
 
+        self._display_parts(previous_parts, previous=True)
+
     def _search(self, description: str, manufacturer: str, part_number: str) -> None:
         parts = get_parts({"part_desc": description, "manufacturer": manufacturer, "manufacturer_part_number": part_number})
-        
-        for label, button in zip(self.labels, self.buttons):
+        self._display_parts(parts)
+
+    def _display_parts(self, parts: Iterable[Part], *, previous: bool = False) -> None:
+        start = 4
+        for label in self.labels:
             label.grid_remove()
+        
+        for button in self.buttons:
             button.grid_remove()
 
-        for row, part in enumerate(parts, start=4):
+        if previous:
+            label = ctk.CTkLabel(self.frame, text="Previously Used")
+            label.grid(row=start, column=0, columnspan=2, sticky=ctk.EW)
+            self.labels.append(label)
+            start += 1
+
+        for row, part in enumerate(parts, start=start):
             label = ctk.CTkLabel(self.frame, text=f"PN: {part.number} - {part.description}")
             label.grid(row=row, column=0, sticky=ctk.W)
             button = ctk.CTkButton(self.frame, text="Go", command=lambda part=part: self._select_part(part))

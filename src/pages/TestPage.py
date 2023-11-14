@@ -234,7 +234,7 @@ class TestPage(Page):
         return self.reset_page(self.test.item.number)
 
     def add_job(self) -> None:
-        job_popup = JobPopup(self.frame, self.test_problem.department or "", self.test_problem.company, self.save_job)
+        job_popup = JobPopup(self.frame, self.test_problem.department or "", self.test_problem.company, self.save_job, self.storage.previous_parts)
         job_popup.mainloop()
 
     def save_job(self, job: Job) -> None:
@@ -242,6 +242,8 @@ class TestPage(Page):
         with self.storage.edit() as storage:
             self.test.add_job(job)
             storage.job_manager.add_job(self.test.item, self.test_problem, job)
+            for part, _ in job.part_quantities:
+                storage.previous_parts.add(part)
         self.add_job_button.configure(text=f"Add Job ({len(self.test.jobs)})")
         self.delete_job_button.grid(column=15, row=self.add_job_button.grid_info()["row"], sticky=ctk.E)
 
