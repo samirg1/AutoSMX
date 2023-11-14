@@ -67,6 +67,7 @@ _REQUIRED_FREE_TEXT_FIELDS = {
     474,  # : touch current noc
     478,  # CLASSII: insulation resistance
     479,  # : insulation resistance enclosure
+    485,  # : touch current
     484,  # : mains lead number
     9851,  # TRACK: load test kg
 }
@@ -83,6 +84,7 @@ _NON_PERSISTENT_LINES = {
     474,  # : touch current noc
     478,  # CLASSII: insulation resistance
     479,  # : insulation resistance enclosure
+    485,  # : touch current
     484,  # : mains lead number
     8304, # CEILING: number of lifts
 }
