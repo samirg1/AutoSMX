@@ -26,3 +26,5 @@ def test_mru_list(mods: list[int], expected: list[int], string: str) -> None:
     assert len(lst) == len(expected)
     assert repr(lst) == f"MRUList({string})"
     assert [l for l in lst] == expected
+
+    assert lst != 1

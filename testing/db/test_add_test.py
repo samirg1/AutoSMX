@@ -15,11 +15,10 @@ Test.__test__ = False  # type: ignore
     "mock_sql_connect",
     (
         [
-            ("None", 20, 30),  # get test id
+            (20, 30),  # get test id
             [],  # get open problems
             None,  # insert test
             None,  # insert script-tester
-            None,  # insert header line
             None,  # insert regular line
             None,  # insert job
             None,  # update item services
@@ -31,16 +30,16 @@ Test.__test__ = False  # type: ignore
 )
 def test_add_test(mock_sql_connect: MockSqlObject, mock_config_parse: MockConfigObject) -> None:
     test = Test(Item("1", "1A", "d", "m", "manu", "s", "r", None))
-    line = ScriptLine("Test 1", 1, "Pass", "Fail")
-    test.script = Script("CustomScript", "Custom Script", 1287, "999", "type", (line,))
-    test.add_job(Job("dept", "contact", "comment"))
+    line = ScriptLine("Test 1", 1, 1, "Pass", "Fail")
+    test.script = Script("CustomScript", "Custom Script", 1287, "999", "type", (line,), ())
+    test.add_job(Job("dept", "contact", "comment", []))
     test.complete("comments", "result", [])
     problem = Problem("comp", "camp", "dept", "PM123", "customer_no", get_open_problems=False)
 
     add_test(test, problem)
 
     calls = mock_sql_connect.calls
-    assert len(calls) == 10
+    assert len(calls) == 9
 
     sql, params = calls[-3]
     assert "UPDATE DEVICEA4" in sql

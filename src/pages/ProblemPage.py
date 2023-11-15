@@ -81,8 +81,11 @@ class ProblemPage(Page):
         with self.storage.edit() as storage:
             problem = self.problems[campus]
             del storage.problems[problem.campus]
-        if problem in self.storage.job_manager.problem_to_jobs:
-            del self.storage.job_manager.problem_to_jobs[problem]
+            if problem in self.storage.job_manager.problem_to_jobs:
+                del self.storage.job_manager.problem_to_jobs[problem]
+                for test in problem.tests:
+                    for job in test.jobs:
+                        del self.storage.job_manager.job_to_item[job]
         self.change_page("PROBLEM")
 
     def add_tests(self, campus: str | None = None) -> None:

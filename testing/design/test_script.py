@@ -13,8 +13,8 @@ def test_script_creation() -> None:
 
 
 def test_script_creation_with_tests() -> None:
-    test1 = ScriptLine("Test 1", 1, "Pass", "Fail")
-    test2 = ScriptLine("Test 2", 1, "N/A", "Yes", "No")
+    test1 = ScriptLine("Test 1", 1, 1, "Pass", "Fail")
+    test2 = ScriptLine("Test 2", 1, 1, "N/A", "Yes", "No")
     script = Script("Nickname", "Test Script", 1, "999TEST", "type", (test1, test2), ())
     assert script.nickname == "Nickname"
     assert script.name == "Test Script"

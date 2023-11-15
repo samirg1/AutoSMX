@@ -13,11 +13,11 @@ TestModel.__test__ = False  # type: ignore
 Test.__test__ = False  # type: ignore
 
 
-@pytest.mark.parametrize("mock_sql_connect", ([("None", 20, 30), None, None],), indirect=True)
+@pytest.mark.parametrize("mock_sql_connect", ([(20, 30), None, None],), indirect=True)
 def test_test_model(mock_sql_connect: MockSqlObject, mock_config_parse: MockConfigObject) -> None:
     test = Test(Item("1", "1A", "d", "m", "manu", "s", "r", None))
-    test.script = Script("CustomScript", "Custom Script", 1, "999", "type")
-    test.complete("", "", [])
+    test.script = Script("CustomScript", "Custom Script", 1, "999", "type", (), ())
+    test.complete("", "Pass", [])
     problem = Problem("", "", "", "", "", get_open_problems=False)
 
     model = TestModel(test, problem)
@@ -57,11 +57,11 @@ def test_test_model(mock_sql_connect: MockSqlObject, mock_config_parse: MockConf
     assert model.table_name in mock_sql_connect.calls[-1][0]
 
 
-@pytest.mark.parametrize("mock_sql_connect", ([("None", 20, 30), None, None],), indirect=True)
+@pytest.mark.parametrize("mock_sql_connect", ([(20, 30), None, None],), indirect=True)
 def test_script_tester_model(mock_sql_connect: MockSqlObject, mock_config_parse: MockConfigObject) -> None:
     test = Test(Item("1", "1A", "d", "m", "manu", "s", "r", None))
-    test.script = Script("CustomScript", "Custom Script", 1, "999", "type")
-    test.complete("", "", [])
+    test.script = Script("CustomScript", "Custom Script", 1, "999", "type", (), ())
+    test.complete("", "Pass", [])
 
     model = ScriptTesterModel(test)
 
@@ -79,12 +79,12 @@ def test_script_tester_model(mock_sql_connect: MockSqlObject, mock_config_parse:
     assert model.table_name in mock_sql_connect.calls[-1][0]
 
 
-@pytest.mark.parametrize("mock_sql_connect", ([("None", 20, 30), None, None],), indirect=True)
+@pytest.mark.parametrize("mock_sql_connect", ([(20, 30), None, None],), indirect=True)
 def test_script_line_model(mock_sql_connect: MockSqlObject, mock_config_parse: MockConfigObject) -> None:
     test = Test(Item("1", "1A", "d", "m", "manu", "s", "r", None))
-    test.script = Script("CustomScript", "Custom Script", 1, "999", "type")
-    test.complete("", "", [])
-    line = ScriptLine("Test 1", 1, "Pass", "Fail")
+    test.script = Script("CustomScript", "Custom Script", 1, "999", "type", (), ())
+    test.complete("", "Pass", [])
+    line = ScriptLine("Test 1", 1, 1, "Pass", "Fail")
 
     model = ScriptLineModel(test, line)
 
@@ -110,13 +110,13 @@ def test_script_line_model(mock_sql_connect: MockSqlObject, mock_config_parse: M
     assert model.table_name in mock_sql_connect.calls[-1][0]
 
 
-@pytest.mark.parametrize("mock_sql_connect", ([("None", 20, 30), None, None],), indirect=True)
+@pytest.mark.parametrize("mock_sql_connect", ([(20, 30), None, None],), indirect=True)
 def test_job_model(mock_sql_connect: MockSqlObject, mock_config_parse: MockConfigObject) -> None:
     test = Test(Item("1", "1A", "d", "m", "manu", "s", "r", None))
-    test.script = Script("CustomScript", "Custom Script", 1, "999", "type")
-    test.complete("", "", [])
+    test.script = Script("CustomScript", "Custom Script", 1, "999", "type", (), ())
+    test.complete("", "Pass", [])
     problem = Problem("", "", "", "", "", get_open_problems=False)
-    job = Job("dept", "contact", "comment")
+    job = Job("dept", "contact", "comment", [])
 
     model = JobModel(test, problem, job)
 

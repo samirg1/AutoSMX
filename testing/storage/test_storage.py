@@ -4,15 +4,22 @@ import os
 from typing import Any, Callable, Generator
 
 import pytest
+from design import JobManager
 
 from storage.Storage import Storage
+from utils.MRUList import MRUList
 
 _EMPTY_DATA: dict[str, Any] = {
+    "problem": None,
     "problems": {},
     "total_tests": 0,
     "test_breakdown": {},
     "tutorial_complete": False,
     "item_model_to_script_answers": {},
+    "added_scripts": [],
+    "job_manager": JobManager(),
+    "previous_parts": MRUList(),
+    "skip_overall_result_check": False,
 }
 
 
@@ -43,14 +50,16 @@ def get_file_for_testing() -> Generator[Callable[..., pathlib.Path], None, None]
         pickle.dump(original_file_content, file)
 
 
-@pytest.mark.parametrize("file_name", ["empty.json", "storage.json", "invalid.json", "missing.json"])
+@pytest.mark.parametrize("file_name", ["empty.pkl", "storage.pkl", "invalid.pkl", "missing.pkl"])
 def test_empty_missing_invalid_json(file_name: str, get_file_for_testing: Callable[[str], pathlib.Path]) -> None:
     name = get_file_for_testing(file_name)
     _EMPTY_DATA["_file_path"] = name
-    storage = Storage()
-    storage._file_path = name  # pyright: ignore[reportPrivateUsage]
+    storage = Storage(_file_path=name)
     for key, value in _EMPTY_DATA.items():
         assert getattr(storage, key) == value
+
+    with storage.edit():
+        ...
 
     with open(name, mode="rb") as file:
         data = pickle.load(file)
@@ -58,9 +67,8 @@ def test_empty_missing_invalid_json(file_name: str, get_file_for_testing: Callab
 
 
 def test_storage_edit_and_save(get_file_for_testing: Callable[[str], pathlib.Path]) -> None:
-    file = get_file_for_testing("storage.json")
-    storage = Storage()
-    storage._file_path = file  # pyright: ignore[reportPrivateUsage]
+    file = get_file_for_testing("storage.pkl")
+    storage = Storage(_file_path=file)
 
     with storage.edit():
         storage.total_tests += 1
@@ -75,8 +83,7 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], pathlib.Pat
         assert data["tutorial_complete"]
         assert data["item_model_to_script_answers"] == {"test": ["test"]}
 
-    storage2 = Storage()
-    storage2._file_path = file  # pyright: ignore[reportPrivateUsage]
+    storage2 = Storage(_file_path=file)
     assert storage2.total_tests == 1
     assert storage2.test_breakdown == {"test": 1}
     assert storage2.tutorial_complete

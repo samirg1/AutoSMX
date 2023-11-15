@@ -7,7 +7,7 @@ from typeguard import check_type
 
 def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition_lines: set[int], required_lines: set[int], non_persistent_lines: set[int]) -> Script:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
-        script_name, service_type = check_type(
+        res = check_type(
             connection.execute(
                 """
                 SELECT script_name, service_type
@@ -16,8 +16,13 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
                 """,
                 (script_info.number,),
             ).fetchone(),
-            tuple[str, str],
+            tuple[str, str] | None,
         )
+
+        if res is None:
+            raise ValueError
+
+        script_name, service_type = res
 
         script_line_fields = check_type(
             connection.execute(
@@ -36,7 +41,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
         header_lines: list[ScriptLine] = []
         for z_rv, text, line_no, answer_type, answer_id in script_line_fields:
             if "header" in (answer_type, answer_id):
-                header_lines.append(ScriptLine(text, int(line_no)))
+                header_lines.append(ScriptLine(text, int(line_no), z_rv))
                 continue
 
             if z_rv == 8236:
@@ -59,7 +64,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
                 ):
                     break
 
-            line = ScriptLine(text, int(line_no), *(text[0] for text in raw), required=(z_rv in required_lines), use_saved=(z_rv not in non_persistent_lines))
+            line = ScriptLine(text, int(line_no), z_rv, *(text[0] for text in raw), required=(z_rv in required_lines), use_saved=(z_rv not in non_persistent_lines))
             if z_rv in condition_lines:
                 line.default = "1"
             else:

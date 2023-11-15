@@ -1,5 +1,5 @@
-import pathlib
 import customtkinter as ctk
+from design.data import CONDITION_LINES, LINE_DEFAULTS, NON_PERSISTENT_LINES, REQUIRED_FREE_TEXT_FIELDS, SCRIPT_INFOS
 
 from pages.ProblemPage import ProblemPage
 from pages.Page import Page
@@ -7,8 +7,8 @@ from pages.SettingsPage import SettingsPage
 from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
-from utils.constants import PAGE_NAMES
-from utils.constants import APPLICATION_PATH
+from utils.constants import ICON_PATH, PAGE_NAMES
+
 
 class App(ctk.CTk):
     def __init__(self) -> None:
@@ -16,12 +16,20 @@ class App(ctk.CTk):
         self.geometry(f"1500x750+10+10")
         self.title("AutoSMX")
 
-        self.after(201, lambda: self.iconbitmap(pathlib.Path(APPLICATION_PATH, "autosmx.ico")))  # pyright: ignore
+        self.after(201, lambda: self.iconbitmap(ICON_PATH))  # pyright: ignore
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
         storage = Storage()
+        for info, condition, defaults, requireds, non_persistents in storage.added_scripts:
+            SCRIPT_INFOS.append(info)
+            if condition is not None:
+                CONDITION_LINES.add(condition)
+            LINE_DEFAULTS.update(defaults)
+            REQUIRED_FREE_TEXT_FIELDS.update(requireds)
+            NON_PERSISTENT_LINES.update(non_persistents)
+
         self.pages: dict[PAGE_NAMES, Page] = {
             "TUTORIAL": TutorialPage(self._frame(), self.change_page, storage),
             "SETTINGS": SettingsPage(self._frame(), self.change_page, storage),

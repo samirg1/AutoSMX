@@ -59,6 +59,11 @@ class MRUList(Generic[_T]):
         self._current = self._current.next
         return temp
     
+    def __eq__(self, __value: object) -> bool:
+        if isinstance(__value, MRUList):
+            return self.nodes == __value.nodes  # type: ignore
+        return NotImplemented
+    
     def __len__(self) -> int:
         return len(self.nodes)
 

@@ -15,3 +15,8 @@ class JobManager:
     def delete_job(self, problem: Problem, job: Job) -> None:
         self.problem_to_jobs[problem].pop()
         del self.job_to_item[job]
+
+    def __eq__(self, __value: object) -> bool:
+        if isinstance(__value, JobManager):
+            return self.__dict__ == __value.__dict__
+        return NotImplemented

@@ -3,60 +3,56 @@ import functools
 from db.get_script import get_script
 from design.Script import Script
 from design.ScriptInfo import ScriptInfo
+from utils.constants import NA, NO, TRACK_LOAD_TEST, SPACE
 
-_NA = "N/A"
-_NO = "No"
-_LOAD = "200"
-_SPACE = " "
+CONDITION_LINES = {8877, 8305, 9610, 9599, 8315, 8237, 8284, 8333, 8324, 6014, 8248}
 
-_CONDITION_LINES = {8877, 8305, 9610, 9599, 8315, 8237, 8284, 8333, 8324, 6014, 8248}
-
-_LINE_DEFAULTS: dict[int, str] = {
-    8875: _NA,  # SLING: velcro
-    8291: _NA,  # CEILING: charger
-    8298: _NA,  # : sling
-    8303: _NA,  # : reset
-    8306: _NO,  # : usage
-    9850: _NA,  # TRACK: charger
-    9851: _LOAD,  # : load test
-    9853: _NA,  # : electrical
-    9608: _NA,  # WALKER: attachments
-    9611: _NO,  # : needs attention
-    9596: _NA,  # TABLE: charger
-    9597: _NA,  # : battery
-    9600: _NO,  # : needs attention
-    8312: _NA,  # COMMODE: charger
-    8313: _NA,  # : battery
-    8236: _NA,  # BED: battery/charger
-    8238: _NA,  # : self help pole
-    8273: _NA,  # FLOOR: charger
-    8274: _NA,  # : battey
-    8277: _NA,  # : sling
-    8283: _NA,  # : reset
-    8285: _NO,  # : usage
-    8330: _NA,  # TUB: charger
-    8331: _NA,  # : battey
-    8321: _NA,  # SCALE: charger
-    2824: _NA,  # CHARGER: battery
-    2827: _NA,  # : accessories
-    460: _NA,  # CLASSI: fuses and circuit
-    462: _SPACE,  # : earth Resistance with detachable lead
-    463: _SPACE,  # : earth Resistance fixed power lead
-    468: _NA,  # : battery
-    481: _NA,  # CLASSII: battery
-    483: _NA,  # : accessories
-    477: _SPACE,  # : earth resistance
-    485: _SPACE,  # : touch current
-    6019: _NA,  # WHEELCHAIR: attachments
-    6010: _NA,  # : charger
-    6011: _NA,  # : battery
-    6012: _NA,  # : electric controls
-    2507: _NA,  # FURNITURE: missing components
-    2510: _NA,  # : electrical check
+LINE_DEFAULTS: dict[int, str] = {
+    8875: NA,  # SLING: velcro
+    8291: NA,  # CEILING: charger
+    8298: NA,  # : sling
+    8303: NA,  # : reset
+    8306: NO,  # : usage
+    9850: NA,  # TRACK: charger
+    9851: TRACK_LOAD_TEST,  # : load test
+    9853: NA,  # : electrical
+    9608: NA,  # WALKER: attachments
+    9611: NO,  # : needs attention
+    9596: NA,  # TABLE: charger
+    9597: NA,  # : battery
+    9600: NO,  # : needs attention
+    8312: NA,  # COMMODE: charger
+    8313: NA,  # : battery
+    8236: NA,  # BED: battery/charger
+    8238: NA,  # : self help pole
+    8273: NA,  # FLOOR: charger
+    8274: NA,  # : battey
+    8277: NA,  # : sling
+    8283: NA,  # : reset
+    8285: NO,  # : usage
+    8330: NA,  # TUB: charger
+    8331: NA,  # : battey
+    8321: NA,  # SCALE: charger
+    2824: NA,  # CHARGER: battery
+    2827: NA,  # : accessories
+    460: NA,  # CLASSI: fuses and circuit
+    462: SPACE,  # : earth Resistance with detachable lead
+    463: SPACE,  # : earth Resistance fixed power lead
+    468: NA,  # : battery
+    481: NA,  # CLASSII: battery
+    483: NA,  # : accessories
+    477: SPACE,  # : earth resistance
+    485: SPACE,  # : touch current
+    6019: NA,  # WHEELCHAIR: attachments
+    6010: NA,  # : charger
+    6011: NA,  # : battery
+    6012: NA,  # : electric controls
+    2507: NA,  # FURNITURE: missing components
+    2510: NA,  # : electrical check
 }
 
-_REQUIRED_FREE_TEXT_FIELDS = {
-    *_CONDITION_LINES,
+REQUIRED_FREE_TEXT_FIELDS = {
+    *CONDITION_LINES,
     461,  # CLASS I: earth resistance power lead only
     464,  # : insulation resistance
     465,  # : earth leakage current
@@ -72,8 +68,8 @@ _REQUIRED_FREE_TEXT_FIELDS = {
     9851,  # TRACK: load test kg
 }
 
-_NON_PERSISTENT_LINES = {
-    *_CONDITION_LINES,
+NON_PERSISTENT_LINES = {
+    *CONDITION_LINES,
     461,  # CLASS I: earth resistance power lead only
     464,  # : insulation resistance
     465,  # : earth leakage current
@@ -86,11 +82,11 @@ _NON_PERSISTENT_LINES = {
     479,  # : insulation resistance enclosure
     485,  # : touch current
     484,  # : mains lead number
-    8304, # CEILING: number of lifts
+    8304,  # CEILING: number of lifts
 }
 
 
-_SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
+SCRIPT_INFOS: list[ScriptInfo] = [
     ScriptInfo(1278, "9999TEST", "CHANGE TILT TABLE", [], []),
     ScriptInfo(1261, "9999TEST", "SLING", [], ["SLING", "PATIENT TRANSFER SLING, MECHANICAL LIFT"]),
     ScriptInfo(1279, "9999TEST", "WALKER", ["WALK", "STAND", "STEDY"], []),
@@ -110,9 +106,9 @@ _SCRIPT_INFOS: tuple[ScriptInfo, ...] = (
     ScriptInfo(1190, "9999TEST", "VISUAL", [], []),
     ScriptInfo(1302, "9999TEST", "HR900 BED", [], []),
     ScriptInfo(605, "11083TEST", "CLASS I", [], []),
-)
+]
 
 
 @functools.lru_cache(maxsize=1)
 def get_all_scripts() -> dict[str, Script]:
-    return {info.nickname: get_script(info, _LINE_DEFAULTS, _CONDITION_LINES, _REQUIRED_FREE_TEXT_FIELDS, _NON_PERSISTENT_LINES) for info in _SCRIPT_INFOS}
+    return {info.nickname: get_script(info, LINE_DEFAULTS, CONDITION_LINES, REQUIRED_FREE_TEXT_FIELDS, NON_PERSISTENT_LINES) for info in SCRIPT_INFOS}

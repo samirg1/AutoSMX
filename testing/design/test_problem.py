@@ -1,4 +1,5 @@
 import pytest
+from design.Job import Job
 
 from design.data import get_all_scripts
 from design.Item import Item
@@ -32,6 +33,7 @@ def test_problem_add_test(mock_sql_connect_scripts: MockSqlObject) -> None:
 
     test1 = Test(Item("001", "001", "Test Item 1", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759"))
     test2 = Test(Item("002", "001", "Test Item 2", "ModelY", "ManufacturerY", "XYZ002", "RM1", "2019-01-01 03:45:44.759"))
+    test1.jobs.append(Job("1", "", "", []))
 
     custom1 = Script("Custom1", "Custom Script", 1, "999", "type", (), (), exact_matches=["Test Item 1"])
     get_all_scripts()["Custom1"] = custom1
@@ -48,6 +50,12 @@ def test_problem_add_test(mock_sql_connect_scripts: MockSqlObject) -> None:
     assert len(problem.test_breakdown) == 2
     assert problem.test_breakdown["Custom1"] == 2
     assert problem.test_breakdown["Custom2"] == 1
+
+    problem.sync()
+    for test in problem.tests:
+        assert test.synced
+        for job in test.jobs:
+            assert job.synced
 
 
 def test_problem_remove_test(mock_sql_connect_scripts: MockSqlObject) -> None:

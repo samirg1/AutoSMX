@@ -15,7 +15,7 @@ Test.__test__ = False  # type: ignore
     "mock_sql_connect",
     (
         [
-            ("None", 20, 30),  # get test id
+            (20, 30),  # get test id
             [],  # get open problems
             None,  # deletions
             None,
@@ -23,7 +23,6 @@ Test.__test__ = False  # type: ignore
             None,
             None,  # insert test
             None,  # insert script-tester
-            None,  # insert header line
             None,  # insert regular line
             None,  # insert job
             None,  # update item services
@@ -35,16 +34,16 @@ Test.__test__ = False  # type: ignore
 )
 def test_edit_test(mock_sql_connect: MockSqlObject, mock_config_parse: MockConfigObject) -> None:
     test = Test(Item("1", "1A", "d", "m", "manu", "s", "r", None))
-    line = ScriptLine("Test 1", 1, "Pass", "Fail")
-    test.script = Script("CustomScript", "Custom Script", 1287, "999", "type", (line,))
-    test.add_job(Job("dept", "contact", "comment"))
+    line = ScriptLine("Test 1", 1, 1, "Pass", "Fail")
+    test.script = Script("CustomScript", "Custom Script", 1287, "999", "type", (line,), ())
+    test.add_job(Job("dept", "contact", "comment", []))
     test.complete("comments", "result", [])
     problem = Problem("comp", "camp", "dept", "PM123", "customer_no", get_open_problems=False)
 
     edit_test(test, problem)
 
     calls = mock_sql_connect.calls
-    assert len(calls) == 14
+    assert len(calls) == 13
 
     for i, table in enumerate(["SCMobileTestsm1", "SCMobileTesterNumbersm1", "SCMobileTestLinesm1", "SCMProbsUploadm1"]):
         sql, params = calls[i + 2]
@@ -52,12 +51,12 @@ def test_edit_test(mock_sql_connect: MockSqlObject, mock_config_parse: MockConfi
         assert params == ("SMX0000000021",)
 
 
-@pytest.mark.parametrize("mock_sql_connect", ([("None", 20, 30), [], None, None, None, None],), indirect=True)  # get test id  # get open problems  # deletions
+@pytest.mark.parametrize("mock_sql_connect", ([(20, 30), [], None, None, None, None],), indirect=True)  # get test id  # get open problems  # deletions
 def test_edit_remove_only(mock_sql_connect: MockSqlObject, mock_config_parse: MockConfigObject) -> None:
     test = Test(Item("1", "1A", "d", "m", "manu", "s", "r", None))
-    line = ScriptLine("Test 1", 1, "Pass", "Fail")
-    test.script = Script("CustomScript", "Custom Script", 1287, "999", "type", (line,))
-    test.add_job(Job("dept", "contact", "comment"))
+    line = ScriptLine("Test 1", 1, 1, "Pass", "Fail")
+    test.script = Script("CustomScript", "Custom Script", 1287, "999", "type", (line,), ())
+    test.add_job(Job("dept", "contact", "comment", []))
     test.complete("comments", "result", [])
     problem = Problem("comp", "camp", "dept", "PM123", "customer_no", get_open_problems=False)
 

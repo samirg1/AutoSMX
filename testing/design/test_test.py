@@ -4,7 +4,7 @@ from design.data import get_all_scripts
 from design.Item import Item
 from design.Job import Job
 from design.Script import Script, ScriptLine
-from design.Test import ScriptError, Test
+from design.Test import InvalidTestResultError, ScriptError, Test
 from testing.conftest import MockConfigObject, MockSqlObject
 
 Test.__test__ = False  # type: ignore
@@ -65,11 +65,11 @@ def test_test_complete_and_full_info(mock_sql_connect_scripts: MockSqlObject) ->
     del get_all_scripts()["CustomScript"]
 
 
-@pytest.mark.parametrize("mock_sql_connect", ([("None", 20, 30), None],), indirect=True)
+@pytest.mark.parametrize("mock_sql_connect", ([(20, 30), None],), indirect=True)
 def test_test_complete(mock_sql_connect: MockSqlObject, mock_config_parse: MockConfigObject) -> None:
     item = Item("001", "001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
     test = Test(item)
-    line = ScriptLine("Test 1", 1, "Pass", "Fail")
+    line = ScriptLine("Test 1", 1, 1, "Pass", "Fail")
     test.script = Script("CustomScript", "Custom Script", 1, "999", "type", (line,), (), exact_matches=["Test Item"])
     test.complete("comment", "result", ["Pass"])
 
@@ -80,6 +80,11 @@ def test_test_complete(mock_sql_connect: MockSqlObject, mock_config_parse: MockC
     assert test.id == "SMX0000000021"
     assert test.script.lines[0].result == "Pass"
 
+    test2 = Test(item)
+    test2.id = "SMX0000000021"
+    assert test2 == test
+    assert test != "SMX0000000021"
+
 
 def test_test_item_model_property() -> None:
     item = Item("001", "001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
@@ -87,3 +92,28 @@ def test_test_item_model_property() -> None:
     test.script = Script("CustomScript", "Custom Script", 1, "999", "type", (), ())
 
     assert test.item_model == "Custom Script -> ModelX"
+
+@pytest.mark.parametrize(("result", "add_job", "comment", "script_answers"), [
+    ("", False, "", []),
+    ("Pass A/R", True, "", []),
+    ("Pass", True, "comment", []),
+    ("Fail", False, "", ["Fail"]),
+    ("Pass", False, "comment", ["Fail"]),
+    ("Passed A/R", False, "comment", ["Fail"]),
+    ("Pass", False, "", [""]),
+    ("Pass", False, "", [" "]),
+
+])
+def test_invalids(result: str, add_job: bool, comment: str, script_answers: list[str]) -> None:
+    item = Item("001", "001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")
+    test = Test(item)
+    line = ScriptLine("Test 1", 1, 1, "Pass", "Fail")
+    line.required = True
+    test.script = Script("CustomScript", "Custom Script", 1, "999", "type", (line,), (), exact_matches=["Test Item"])
+
+    if add_job:
+        job = Job("Quality Control", "John Doe", "Performing testing on batch 1", [])
+        test.add_job(job)
+
+    with pytest.raises(InvalidTestResultError):
+        test.complete(comment, result, script_answers)

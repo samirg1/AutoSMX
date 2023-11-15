@@ -15,7 +15,7 @@ def test_item_creation_and_properties() -> None:
     assert item.serial == "ABC456"
     assert item.room == "RM1"
     assert item.last_update
-    assert item.last_update.strftime(f"{DAYMONTHYEAR_FORMAT} {SIMPLIFIED_TIME_FORMAT}") == "2019-01-01 03:45:44"
+    assert item.last_update.strftime(f"{DAYMONTHYEAR_FORMAT} {SIMPLIFIED_TIME_FORMAT}") == "01-01-2019 03:45AM"
     assert item.full_info == "123 - Test Item - Model: Model123 - Manufacturer: Test Manufacturer - SN: ABC456 - Last Update: 01-01-2019 03:45AM"
 
     item = Item("123", "123A", "Test Item", "Model123", "Test Manufacturer", "ABC456", "RM1", get_sysmodtime(datetime.today()))

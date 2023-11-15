@@ -1,9 +1,11 @@
 from enum import StrEnum
 import os
+import pathlib
 import sys
 from typing import Literal
 
 APPLICATION_PATH = ""# os.path.dirname(sys.executable)
+ICON_PATH = pathlib.Path(APPLICATION_PATH, "autosmx.ico")
 
 PAGE_NAMES = Literal["PROBLEM", "TEST", "TUTORIAL", "SETTINGS"]
 EDITABLE_ITEM_FIELDS = Literal["room"]
@@ -23,9 +25,18 @@ BASE_FILE = rf"C:\Users\{os.getenv('USERNAME')}\AppData\Local\SMXMobile"
 HORIZONTAL_LINE = "-" * 600
 CTK_TEXT_START = "1.0"
 
+NA = "N/A"
+NO = "No"
+TRACK_LOAD_TEST = "200"
+SPACE = " "
+
+ON = "on"
+OFF = "off"
+
 
 class DatabaseFilenames(StrEnum):
     TESTS = "SCMTests"
     ASSETS = "SCMAssets"
     LOOKUP = "SCMLookup"
     SETTINGS = "Settings"
+

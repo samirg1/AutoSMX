@@ -1,5 +1,5 @@
 import tkinter
-from tkinter import _Anchor, _Cursor, _Relief, _ScreenUnits, Tk, Toplevel, Misc, Variable, _TakeFocusValue, _ImageSpec  # pyright: ignore[reportPrivateUsage]
+from tkinter import _Anchor, _Cursor, _Relief, _ScreenUnits, Checkbutton, Tk, Toplevel, Misc, Variable, _TakeFocusValue, _ImageSpec  # pyright: ignore[reportPrivateUsage]
 from tkinter.constants import *
 from tkinter.font import _FontDescription  # pyright: ignore[reportPrivateUsage]
 from tkinter.ttk import _Padding, _TtkCompound, Frame, Label, Button, Entry, Radiobutton  # pyright: ignore[reportPrivateUsage]
@@ -65,7 +65,9 @@ class CTkButton(Button):
 
 class CTkEntry(Entry): ...
 class CTkRadioButton(Radiobutton): ...
+class CTkCheckBox(Checkbutton): ...
 class CTkToplevel(Toplevel): ...
+
 
 class CTkSegmentedButton:
     def __init__(self, master: Misc, *, values: list[str], variable: StringVar) -> None: ...

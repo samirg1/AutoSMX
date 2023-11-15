@@ -5,7 +5,7 @@ from db.get_problems import get_problems
 from testing.conftest import MockSqlObject
 from utils.constants import DAYMONTHYEAR_FORMAT, SIMPLIFIED_TIME_FORMAT
 
-problem = [("company", "campus", "department", "number", 123)]
+problem = [("company", "campus", "department", "number", "123")]
 
 
 @pytest.mark.parametrize(("problem_number", "mock_sql_connect"), (["23314115", [problem, []]], ["PM1242522", [problem, []]]), indirect=["mock_sql_connect"])
@@ -35,6 +35,6 @@ def test_get_item(mock_sql_connect: MockSqlObject) -> None:
     assert item.serial == "serial"
     assert item.room == "room"
     assert item.last_update
-    assert item.last_update.strftime(f"{DAYMONTHYEAR_FORMAT} {SIMPLIFIED_TIME_FORMAT}") == "2019-01-01 03:45:44"
+    assert item.last_update.strftime(f"{DAYMONTHYEAR_FORMAT} {SIMPLIFIED_TIME_FORMAT}") == "01-01-2019 03:45AM"
     assert "123456" in mock_sql_connect.calls[0][1][0]
     assert mock_sql_connect.close_called

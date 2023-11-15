@@ -39,7 +39,7 @@ class Problem:
 
     def __repr__(self) -> str:
         return f"{self.number} - {self.campus} - {self.company}"
-    
+
     def sync(self) -> None:
         for test in self.tests:
             test.synced = True

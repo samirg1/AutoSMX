@@ -6,15 +6,28 @@ from design.Part import Part
 
 from design.Problem import Problem
 from design.JobManager import JobManager
+from design.ScriptInfo import AddedScript
 from utils.MRUList import MRUList
 from utils.constants import APPLICATION_PATH
 
 
 class Storage:
-    __slots__ = ("_file_path", "problems", "problem", "job_manager", "previous_parts", "total_tests", "test_breakdown", "tutorial_complete", "skip_overall_result_check", "item_model_to_script_answers")
+    __slots__ = (
+        "_file_path",
+        "problems",
+        "problem",
+        "job_manager",
+        "tutorial_complete",
+        "skip_overall_result_check",
+        "total_tests",
+        "test_breakdown",
+        "previous_parts",
+        "item_model_to_script_answers",
+        "added_scripts",
+    )
 
-    def __init__(self) -> None:
-        self._file_path = pathlib.Path(APPLICATION_PATH, "store.pkl")
+    def __init__(self, *, _file_path: pathlib.Path | None = None) -> None:
+        self._file_path = _file_path or pathlib.Path(APPLICATION_PATH, "store.pkl")
         self.problems: dict[str, Problem] = {}
         self.problem: Problem | None = None
         self.job_manager = JobManager()
@@ -24,6 +37,7 @@ class Storage:
         self.test_breakdown: dict[str, int] = {}
         self.previous_parts: MRUList[Part] = MRUList()
         self.item_model_to_script_answers: dict[str, list[str]] = {}
+        self.added_scripts: list[AddedScript] = []
 
         try:
             with open(self._file_path, mode="rb") as f:
