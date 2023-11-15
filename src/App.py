@@ -1,8 +1,8 @@
 import customtkinter as ctk
-from design.data import CONDITION_LINES, LINE_DEFAULTS, NON_PERSISTENT_LINES, REQUIRED_FREE_TEXT_FIELDS, SCRIPT_INFOS
 
-from pages.ProblemPage import ProblemPage
+from design.data import CONDITION_LINES, LINE_DEFAULTS, NON_PERSISTENT_LINES, REQUIRED_FREE_TEXT_FIELDS, SCRIPT_INFOS
 from pages.Page import Page
+from pages.ProblemPage import ProblemPage
 from pages.SettingsPage import SettingsPage
 from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage

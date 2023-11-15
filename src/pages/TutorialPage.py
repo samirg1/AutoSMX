@@ -2,6 +2,7 @@ from io import StringIO
 from itertools import zip_longest
 from tkinter import ttk
 from tkinter.font import Font
+
 import customtkinter as ctk
 
 from pages.Page import Page

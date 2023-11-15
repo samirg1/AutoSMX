@@ -1,4 +1,4 @@
-from attrs import frozen, field
+from attrs import field, frozen
 
 
 @frozen(repr=False)

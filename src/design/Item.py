@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 
 from attrs import field, frozen
 
-from utils.convert_stringed_date import convert_stringed_date
 from utils.constants import DAYMONTHYEAR_FORMAT, SIMPLIFIED_TIME_FORMAT
+from utils.convert_stringed_date import convert_stringed_date
 
 
 @frozen(repr=False)

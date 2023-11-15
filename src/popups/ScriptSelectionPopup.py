@@ -1,6 +1,7 @@
-from typing import Callable
-import customtkinter as ctk
 from tkinter import Misc
+from typing import Callable
+
+import customtkinter as ctk
 
 from design.data import get_all_scripts
 from design.Script import Script
@@ -13,7 +14,7 @@ class ScriptSelectionPopup(Popup):
         self.focus()
         self.master_select_script = master_select_script
         for i, script in enumerate(get_all_scripts().values()):
-            ctk.CTkButton(self.frame, text=script.name, command=lambda script=script: self._select_script(script)).grid(column=0, row=i, columnspan=2, sticky=ctk.W)  # type: ignore[misc]
+            ctk.CTkButton(self.pop_frame, text=script.name, command=lambda script=script: self._select_script(script)).grid(column=0, row=i, columnspan=2, sticky=ctk.W)  # type: ignore[misc]
 
     def _select_script(self, script: Script) -> None:
         self.master_select_script(script)

@@ -1,5 +1,4 @@
-from typing import Generic, TypeVar, Self
-
+from typing import Generic, Self, TypeVar
 
 _T = TypeVar("_T")
 
@@ -18,21 +17,21 @@ class MRUList(Generic[_T]):
 
     def add(self, value: _T) -> None:
         if value in self.nodes:
-            self.remove(value)        
+            self.remove(value)
 
         if self.head is None:
             self.head = _MRUListNode(value)
             self.nodes[value] = self.head
             return
-        
+
         temp = self.head
         self.head = _MRUListNode(value, None, temp)
         self.nodes[value] = self.head
         temp.previous = self.head
-        
+
     def remove(self, value: _T) -> None:
         node = self.nodes[value]
-        
+
         assert self.head
         if value == self.head.value:
             self.head = node.next
@@ -40,7 +39,7 @@ class MRUList(Generic[_T]):
                 self.head.previous = None
             del self.nodes[value]
             return
-        
+
         assert node.previous
         node.previous.next = node.next
         if node.next:
@@ -50,20 +49,20 @@ class MRUList(Generic[_T]):
     def __iter__(self) -> Self:
         self._current = self.head
         return self
-    
+
     def __next__(self) -> _T:
         if self._current is None:
             raise StopIteration
-        
+
         temp = self._current.value
         self._current = self._current.next
         return temp
-    
+
     def __eq__(self, __value: object) -> bool:
         if isinstance(__value, MRUList):
-            return self.nodes == __value.nodes  # type: ignore
+            return self.nodes == __value.nodes  # pyright: ignore[reportUnknownMemberType]
         return NotImplemented
-    
+
     def __len__(self) -> int:
         return len(self.nodes)
 

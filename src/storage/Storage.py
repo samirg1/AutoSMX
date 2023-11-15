@@ -1,14 +1,15 @@
-from contextlib import contextmanager
+import json
 import pathlib
 import pickle
+from contextlib import contextmanager
 from typing import Generator
-from design.Part import Part
 
-from design.Problem import Problem
 from design.JobManager import JobManager
+from design.Part import Part
+from design.Problem import Problem
 from design.ScriptInfo import AddedScript
-from utils.MRUList import MRUList
 from utils.constants import APPLICATION_PATH
+from utils.MRUList import MRUList
 
 
 class Storage:
@@ -52,8 +53,8 @@ class Storage:
             try:
                 pickle.dump(data, f)
             except Exception as e:
-                with open(self._file_path, mode="w") as backup:
-                    backup.write(f"{data}")
+                with open(self._file_path.parent / "backup.json", mode="w") as backup:
+                    json.dump({key: str(value) for key, value in data.items()}, backup)
                 raise e from None
 
     @contextmanager
@@ -62,3 +63,6 @@ class Storage:
             yield self
         finally:
             self._save()
+
+
+x = Storage(_file_path=pathlib.Path("store.pkl"))

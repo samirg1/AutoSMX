@@ -22,6 +22,8 @@ def test_test_creation_and_properties() -> None:
     assert test.comments == ""
     assert test.result == ""
 
+    assert repr(test) == "Test({'item': 001 - Test Item, 'jobs': [], 'comments': '', 'result': '', 'id': '', 'user': '', 'date': '', 'completed': False, 'synced': False})"
+
 
 def test_test_determine_script(mock_sql_connect_scripts: MockSqlObject) -> None:
     item = Item("001", "001", "Test Item", "ModelX", "ManufacturerX", "XYZ001", "RM1", "2019-01-01 03:45:44.759")

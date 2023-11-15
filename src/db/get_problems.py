@@ -1,7 +1,8 @@
+from typeguard import check_type
+
 from db.get_connection import get_connection
 from design.Problem import Problem
 from utils.constants import DatabaseFilenames
-from typeguard import check_type
 
 
 def get_problems(problem_number: str) -> list[Problem]:

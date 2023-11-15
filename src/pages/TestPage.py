@@ -1,4 +1,5 @@
 import tkinter
+
 import customtkinter as ctk
 
 from db.add_test import add_test
@@ -58,7 +59,7 @@ class TestPage(Page):
         if self.tooltip:
             self.tooltip.remove()
         if self.is_tested(item_number.get()):
-            self.edit_button.configure(state="normal")    
+            self.edit_button.configure(state="normal")
             self.tooltip = None
         else:
             self.edit_button.configure(state="disabled")
@@ -307,7 +308,7 @@ class TestPage(Page):
 
         if self.saved_script_answers == actual_script_answers:
             return
-        
+
         default = [stest.default for stest in self.test.script.lines]
         with self.storage.edit() as storage:
             if actual_script_answers == default:

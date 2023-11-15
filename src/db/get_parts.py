@@ -1,22 +1,20 @@
-from typing import Literal, overload
+from typing import overload
 
 from typeguard import check_type
 
 from db.get_connection import get_connection
 from design.Part import Part
-from utils.constants import DatabaseFilenames
-
-PART_FIELDS = Literal["manufacturer", "manufacturer_part_number", "part_desc"]
+from utils.constants import PART_FIELDS, DatabaseFilenames
 
 
 @overload
 def get_parts(search: str) -> Part | None:
-    ...
+    ...  # pragma: no cover
 
 
 @overload
 def get_parts(search: dict[PART_FIELDS, str]) -> list[Part]:
-    ...
+    ...  # pragma: no cover
 
 
 def get_parts(search: str | dict[PART_FIELDS, str]) -> list[Part] | Part | None:
@@ -25,7 +23,7 @@ def get_parts(search: str | dict[PART_FIELDS, str]) -> list[Part] | Part | None:
 
     if isinstance(search, str):
         where = "part_no = ?"
-        fields = (search,)
+        fields: tuple[str, ...] = (search,)
     else:
         where = " AND ".join(f"{field} LIKE ?" for field in search.keys())
         fields = tuple(f"%{value}%" for value in search.values())

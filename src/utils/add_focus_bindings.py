@@ -1,4 +1,5 @@
 import customtkinter as ctk
+
 from utils.constants import DEFAULT_TEXT_COLOUR_BUTTON, FOCUSED_TEXT_COLOUR_BUTTON
 
 

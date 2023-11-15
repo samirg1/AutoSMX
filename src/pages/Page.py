@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Callable
+
 import customtkinter as ctk
 
 from storage.Storage import Storage

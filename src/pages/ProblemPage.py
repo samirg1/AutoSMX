@@ -1,4 +1,5 @@
 from collections import Counter
+
 import customtkinter as ctk
 
 from design.Problem import Problem

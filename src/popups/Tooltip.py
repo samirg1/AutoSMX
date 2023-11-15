@@ -1,5 +1,6 @@
 import tkinter
 from typing import Any
+
 import customtkinter as ctk
 
 

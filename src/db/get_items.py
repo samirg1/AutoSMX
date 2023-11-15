@@ -1,7 +1,8 @@
+from typeguard import check_type
+
 from db.get_connection import get_connection
 from design.Item import Item
 from utils.constants import DatabaseFilenames
-from typeguard import check_type
 
 
 def get_items(item_number: str) -> list[Item]:

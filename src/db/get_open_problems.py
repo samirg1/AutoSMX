@@ -1,9 +1,11 @@
 from typing import NamedTuple
 
-from utils.convert_stringed_date import convert_stringed_date
+from typeguard import check_type
+
 from db.get_connection import get_connection
 from utils.constants import DAYMONTHYEAR_FORMAT, DatabaseFilenames
-from typeguard import check_type
+from utils.convert_stringed_date import convert_stringed_date
+
 
 class OpenProblem(NamedTuple):
     number: str

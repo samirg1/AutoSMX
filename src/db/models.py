@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from sqlite3 import Connection
 from typing import override
-from utils.rand_hex import rand_hex
 
 from design.Job import Job
 from design.Problem import Problem
 from design.Script import ScriptLine
 from design.Test import Test
+from utils.rand_hex import rand_hex
 
 
 class Model(ABC):

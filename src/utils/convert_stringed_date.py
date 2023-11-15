@@ -1,7 +1,6 @@
-from utils.constants import SYSMODTIME_FORMAT
-
-
 from datetime import datetime
+
+from utils.constants import SYSMODTIME_FORMAT
 
 
 def convert_stringed_date(date_string: str | None) -> datetime | None:

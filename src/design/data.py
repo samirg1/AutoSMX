@@ -3,7 +3,7 @@ import functools
 from db.get_script import get_script
 from design.Script import Script
 from design.ScriptInfo import ScriptInfo
-from utils.constants import NA, NO, TRACK_LOAD_TEST, SPACE
+from utils.constants import NA, NO, SPACE, TRACK_LOAD_TEST
 
 CONDITION_LINES = {8877, 8305, 9610, 9599, 8315, 8237, 8284, 8333, 8324, 6014, 8248}
 

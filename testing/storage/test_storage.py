@@ -1,11 +1,12 @@
+import json
+import os
 import pathlib
 import pickle
-import os
 from typing import Any, Callable, Generator
 
 import pytest
-from design import JobManager
 
+from design.JobManager import JobManager
 from storage.Storage import Storage
 from utils.MRUList import MRUList
 
@@ -91,3 +92,28 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], pathlib.Pat
 
     with pytest.raises(AttributeError):
         storage2.x = 1  # type: ignore
+
+
+class DumpException(Exception):
+    ...
+
+@pytest.fixture
+def mock_pickle_dump(monkeypatch: pytest.MonkeyPatch) -> None:
+    def mock_dump(content: Any, file: Any) -> None:
+        raise DumpException
+
+    monkeypatch.setattr("pickle.dump", mock_dump)
+
+
+def test_storage_backup(mock_pickle_dump: None, get_file_for_testing: Callable[[str], pathlib.Path]) -> None:
+    file = get_file_for_testing("missing.pkl")
+    _EMPTY_DATA["_file_path"] = str(file)
+
+    with pytest.raises(DumpException):
+        _ = Storage(_file_path=file)
+
+    with open(file.parent / "backup.json") as f:
+        data = json.load(f)
+
+    for key, value in _EMPTY_DATA.items():
+        assert str(value) == data[key]

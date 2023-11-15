@@ -1,9 +1,10 @@
 from collections import Counter
 
+from typeguard import check_type
+
 from db.get_connection import get_connection
 from design.Problem import Problem
 from utils.constants import DatabaseFilenames
-from typeguard import check_type
 
 
 def get_double_ups(problem: Problem) -> dict[str, list[str]]:

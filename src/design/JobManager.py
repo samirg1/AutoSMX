@@ -19,4 +19,7 @@ class JobManager:
     def __eq__(self, __value: object) -> bool:
         if isinstance(__value, JobManager):
             return self.__dict__ == __value.__dict__
-        return NotImplemented
+        return False
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.__dict__})"

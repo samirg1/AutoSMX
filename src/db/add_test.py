@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+
 from typeguard import check_type
 
 from db.get_connection import get_connection

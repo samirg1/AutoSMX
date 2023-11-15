@@ -1,8 +1,9 @@
+from typeguard import check_type
+
 from db.get_connection import get_connection
 from design.Script import Script, ScriptLine
 from design.ScriptInfo import ScriptInfo
 from utils.constants import DatabaseFilenames
-from typeguard import check_type
 
 
 def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition_lines: set[int], required_lines: set[int], non_persistent_lines: set[int]) -> Script:

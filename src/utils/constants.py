@@ -1,10 +1,10 @@
-from enum import StrEnum
 import os
 import pathlib
 import sys
+from enum import StrEnum
 from typing import Literal
 
-APPLICATION_PATH = ""# os.path.dirname(sys.executable)
+APPLICATION_PATH = ""  # os.path.dirname(sys.executable)
 ICON_PATH = pathlib.Path(APPLICATION_PATH, "autosmx.ico")
 
 PAGE_NAMES = Literal["PROBLEM", "TEST", "TUTORIAL", "SETTINGS"]
@@ -40,3 +40,5 @@ class DatabaseFilenames(StrEnum):
     LOOKUP = "SCMLookup"
     SETTINGS = "Settings"
 
+
+PART_FIELDS = Literal["manufacturer", "manufacturer_part_number", "part_desc"]

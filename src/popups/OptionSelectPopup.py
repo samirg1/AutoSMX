@@ -1,5 +1,6 @@
 from tkinter import Misc
 from typing import Callable, Generic, TypeVar
+
 import customtkinter as ctk
 
 from popups.Popup import Popup
@@ -13,7 +14,7 @@ class OptionSelectPopup(Popup, Generic[_T]):
         self._callback = callback
 
         for row, option in enumerate(options):
-            ctk.CTkButton(self.frame, text=display(option), command=lambda option=option: self._select(option)).grid(row=row, column=0, sticky=ctk.W)  # type: ignore[misc]
+            ctk.CTkButton(self.pop_frame, text=display(option), command=lambda option=option: self._select(option)).grid(row=row, column=0, sticky=ctk.W)  # type: ignore[misc]
 
     def _select(self, option: _T) -> None:
         self._callback(option)

@@ -1,6 +1,7 @@
+from typeguard import check_type
+
 from db.get_connection import get_connection
 from utils.constants import DatabaseFilenames
-from typeguard import check_type
 
 
 class NoTestIDsError(RuntimeError):
