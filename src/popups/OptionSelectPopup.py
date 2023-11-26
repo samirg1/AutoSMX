@@ -4,12 +4,13 @@ from typing import Callable, Generic, TypeVar
 import customtkinter as ctk
 
 from popups.Popup import Popup
+from utils.constants import OPTION_SELECT_POPUP_WIDTH
 
 _T = TypeVar("_T")
 
 
 class OptionSelectPopup(Popup, Generic[_T]):
-    def __init__(self, master: Misc | None, options: list[_T], callback: Callable[[_T], None], display: Callable[[_T], str] = str, *, width: int = 360 * 4) -> None:
+    def __init__(self, master: Misc | None, options: list[_T], callback: Callable[[_T], None], display: Callable[[_T], str] = str, *, width: int = OPTION_SELECT_POPUP_WIDTH) -> None:
         super().__init__(master, "Select Options", height_factor=0.75, columns=4, width=width)
         self._callback = callback
 

@@ -18,8 +18,7 @@ def add_test(test: Test, problem: Problem) -> None:
             TestModel(test, problem).insert(connection)
             ScriptTesterModel(test).insert(connection)
 
-            lines = test.script.lines + test.script.header_lines
-            for line in lines:
+            for line in test.script.lines + test.script.header_lines:
                 ScriptLineModel(test, line).insert(connection)
 
             for job in test.jobs:

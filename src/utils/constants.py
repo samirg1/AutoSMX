@@ -4,11 +4,12 @@ import sys
 from enum import StrEnum
 from typing import Literal
 
-APPLICATION_PATH = ""  # os.path.dirname(sys.executable)
+APPLICATION_PATH = os.path.dirname(sys.executable)
 ICON_PATH = pathlib.Path(APPLICATION_PATH, "autosmx.ico")
 
 PAGE_NAMES = Literal["PROBLEM", "TEST", "TUTORIAL", "SETTINGS"]
 EDITABLE_ITEM_FIELDS = Literal["room"]
+PART_FIELDS = Literal["manufacturer", "manufacturer_part_number", "part_desc"]
 
 SYSMODTIME_FORMAT = r"%Y-%m-%d %H:%M:%S.%f"
 DAYMONTHYEAR_FORMAT = r"%d-%m-%Y"
@@ -33,12 +34,12 @@ SPACE = " "
 ON = "on"
 OFF = "off"
 
+OPTION_SELECT_POPUP_WIDTH = 1440
+ADD_SCRIPT_POPUP_WIDTH = 1080
+
 
 class DatabaseFilenames(StrEnum):
     TESTS = "SCMTests"
     ASSETS = "SCMAssets"
     LOOKUP = "SCMLookup"
     SETTINGS = "Settings"
-
-
-PART_FIELDS = Literal["manufacturer", "manufacturer_part_number", "part_desc"]

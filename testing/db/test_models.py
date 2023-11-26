@@ -4,7 +4,8 @@ from db.models import TestModel, ScriptLineModel, ScriptTesterModel, JobModel
 from design.Item import Item
 from design.Job import Job
 from design.Problem import Problem
-from design.Script import Script, ScriptLine
+from design.Script import Script
+from design.ScriptLine import ScriptLine
 from design.Test import Test
 from testing.conftest import MockConfigObject, MockSqlObject
 from utils.constants import DatabaseFilenames

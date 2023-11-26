@@ -1,8 +1,9 @@
 from typeguard import check_type
 
 from db.get_connection import get_connection
-from design.Script import Script, ScriptLine
+from design.Script import Script
 from design.ScriptInfo import ScriptInfo
+from design.ScriptLine import ScriptLine
 from utils.constants import DatabaseFilenames
 
 
@@ -66,11 +67,7 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
                     break
 
             line = ScriptLine(text, int(line_no), z_rv, *(text[0] for text in raw), required=(z_rv in required_lines), use_saved=(z_rv not in non_persistent_lines))
-            if z_rv in condition_lines:
-                line.default = "1"
-            else:
-                line.default = line_defaults.get(z_rv, line.default)
-
+            line.default = "1" if z_rv in condition_lines else line_defaults.get(z_rv, line.default)
             lines.append(line)
 
     return Script(

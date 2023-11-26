@@ -12,7 +12,7 @@ from utils.constants import CTK_TEXT_START
 
 
 class JobPopup(Popup):
-    def __init__(self, master: tkinter.Misc | None, default_dept: str, default_contact: str, save_job: Callable[[Job], None], previous_parts: Iterable[Part]):
+    def __init__(self, master: tkinter.Misc | None, default_dept: str, default_contact: str, save_job: Callable[[Job], None], previous_parts: Iterable[Part]) -> None:
         super().__init__(master, "Add Job", height_factor=0.5, columns=2)
         self.save_job = save_job
         self.previous_parts = previous_parts
@@ -34,7 +34,7 @@ class JobPopup(Popup):
         self.search_button = ctk.CTkButton(self.pop_frame, text="Search")
         self.save_button = ctk.CTkButton(self.pop_frame, text="Save", command=lambda: self._save_job(department.get(), contact.get(), comment.get(CTK_TEXT_START, ctk.END)))
 
-        self.parts: list[tuple[ctk.StringVar, ctk.StringVar]] = []
+        self.part_entries: list[tuple[ctk.StringVar, ctk.StringVar]] = []
         self.row = 6
         self._add_line()
 
@@ -43,13 +43,13 @@ class JobPopup(Popup):
 
     def _add_line(self) -> None:
         part_var = ctk.StringVar()
-        self.parts.append((part_var, ctk.StringVar()))
+        self.part_entries.append((part_var, ctk.StringVar()))
         ctk.CTkLabel(self.pop_frame, text="Part Number").grid(column=0, row=self.row)
         ctk.CTkLabel(self.pop_frame, text="Quantity").grid(column=1, row=self.row)
 
-        part_number = ctk.CTkEntry(self.pop_frame, textvariable=self.parts[len(self.parts) - 1][0])
+        part_number = ctk.CTkEntry(self.pop_frame, textvariable=self.part_entries[len(self.part_entries) - 1][0])
         part_number.grid(column=0, row=self.row + 1)
-        ctk.CTkEntry(self.pop_frame, textvariable=self.parts[len(self.parts) - 1][1]).grid(column=1, row=self.row + 1)
+        ctk.CTkEntry(self.pop_frame, textvariable=self.part_entries[len(self.part_entries) - 1][1]).grid(column=1, row=self.row + 1)
         part_label = ctk.CTkLabel(self.pop_frame, text="")
         part_label.grid(column=0, row=self.row + 2, columnspan=2)
         part_number.bind("<FocusOut>", lambda _: self._get_part(part_var, part_label))
@@ -70,7 +70,7 @@ class JobPopup(Popup):
 
     def _save_job(self, department: str, contact: str, comment: str) -> None:
         part_quantities: list[tuple[Part, int]] = []
-        for pn, q in self.parts:
+        for pn, q in self.part_entries:
             part_number = pn.get()
             quantity = q.get()
 
@@ -81,12 +81,10 @@ class JobPopup(Popup):
             elif quantity == "":
                 return self._show_error("Invalid Input", f"Quantity required")
 
-            part = get_parts(part_number)
-            if part is None:
+            if (part := get_parts(part_number)) is None:
                 return self._show_error("Part not found", f"Part number '{part_number}' not found")
             try:
-                number = int(quantity)
-                if number <= 0:
+                if (number := int(quantity)) <= 0:
                     raise ValueError
             except ValueError:
                 return self._show_error("Quantity invalid", f"Invalid quantity '{quantity}'")

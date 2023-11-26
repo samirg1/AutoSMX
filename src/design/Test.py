@@ -33,7 +33,7 @@ class Test:
     def __eq__(self, __value: object) -> bool:
         if isinstance(__value, Test):
             return __value.id == self.id
-        return NotImplemented
+        return False
 
     @property
     def item_model(self) -> str:

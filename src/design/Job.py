@@ -2,7 +2,7 @@ from design.Part import Part
 
 
 class Job:
-    def __init__(self, department: str, contact_name: str, comment: str, parts: list[tuple[Part, int]]):
+    def __init__(self, department: str, contact_name: str, comment: str, parts: list[tuple[Part, int]]) -> None:
         self.department = department
         self.contact_name = contact_name
         self.comment = comment.strip()

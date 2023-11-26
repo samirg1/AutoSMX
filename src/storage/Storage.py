@@ -7,7 +7,7 @@ from typing import Generator
 from design.JobManager import JobManager
 from design.Part import Part
 from design.Problem import Problem
-from design.ScriptInfo import AddedScript
+from design.AddedScript import AddedScript
 from utils.constants import APPLICATION_PATH
 from utils.MRUList import MRUList
 

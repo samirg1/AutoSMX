@@ -1,4 +1,4 @@
-from design.Script import ScriptLine
+from design.ScriptLine import ScriptLine
 
 
 def test_script_test_creation() -> None:

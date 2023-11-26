@@ -3,8 +3,9 @@ import tkinter
 import customtkinter as ctk
 
 from db.get_script import get_script
+from design.AddedScript import AddedScript
 from design.data import CONDITION_LINES, LINE_DEFAULTS, NON_PERSISTENT_LINES, REQUIRED_FREE_TEXT_FIELDS, SCRIPT_INFOS, get_all_scripts
-from design.ScriptInfo import AddedScript, ScriptInfo
+from design.ScriptInfo import ScriptInfo
 from popups.Popup import Popup
 from popups.Tooltip import Tooltip
 from storage.Storage import Storage
@@ -12,7 +13,7 @@ from utils.constants import OFF, ON
 
 
 class AddScriptPopup(Popup):
-    def __init__(self, master: tkinter.Misc | None, storage: Storage):
+    def __init__(self, master: tkinter.Misc | None, storage: Storage) -> None:
         super().__init__(master, "Add Script", width=360 * 3, height_factor=0.75, columns=8)
         self.storage = storage
 

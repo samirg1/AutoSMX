@@ -4,7 +4,7 @@ from typing import override
 
 from design.Job import Job
 from design.Problem import Problem
-from design.Script import ScriptLine
+from design.ScriptLine import ScriptLine
 from design.Test import Test
 from utils.rand_hex import rand_hex
 

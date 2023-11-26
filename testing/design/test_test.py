@@ -1,9 +1,10 @@
 import pytest
+from design.ScriptLine import ScriptLine
 
 from design.data import get_all_scripts
 from design.Item import Item
 from design.Job import Job
-from design.Script import Script, ScriptLine
+from design.Script import Script
 from design.Test import InvalidTestResultError, ScriptError, Test
 from testing.conftest import MockConfigObject, MockSqlObject
 

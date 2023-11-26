@@ -1,6 +1,7 @@
 import pytest
 
-from design.Script import Script, ScriptLine
+from design.Script import Script
+from design.ScriptLine import ScriptLine
 
 
 def test_script_creation() -> None:
