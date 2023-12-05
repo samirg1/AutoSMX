@@ -8,7 +8,7 @@ from db.presync_check import get_double_ups
 from design.Problem import Problem
 from popups.Popup import Popup
 from utils.connected_to_internet import connected_to_internet
-from utils.constants import BASE_FILE, ERROR_TEXT_COLOUR_LABEL
+from utils.constants import ERROR_TEXT_COLOUR_LABEL, SYNC_EXECUTABLE_PATH, SYNC_LOG_PATH
 
 
 class SyncPopup(Popup):
@@ -40,10 +40,8 @@ class SyncPopup(Popup):
 
     def _sync(self, problems: dict[str, Problem]) -> None:
         if sys.platform == "win32":
-            with open(rf"{BASE_FILE}\SCMSync.log", "w"):
-                ...
-
-            os.startfile("C:\\Program Files (x86)\\SMX\\SCMSync.exe")
+            SYNC_LOG_PATH.write_text("")
+            os.startfile(SYNC_EXECUTABLE_PATH)
 
         for problem in problems.values():
             problem.sync()

@@ -13,7 +13,7 @@ class JobManager:
         self.job_to_item[job] = item
 
     def delete_job(self, problem: Problem, job: Job) -> None:
-        self.problem_to_jobs[problem].pop()
+        self.problem_to_jobs[problem].remove(job)
         del self.job_to_item[job]
 
     def __eq__(self, __value: object) -> bool:

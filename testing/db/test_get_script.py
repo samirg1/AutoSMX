@@ -62,6 +62,7 @@ def test_header(mock_sql_connect: MockSqlObject) -> None:
     script = get_script(ScriptInfo(123, "123", "nickname", [], []), {}, set(), set(), set())
     assert len(script.lines) == 0
 
+
 @pytest.mark.parametrize("mock_sql_connect", ([None],), indirect=True)
 def test_valueerror(mock_sql_connect: MockSqlObject) -> None:
     with pytest.raises(ValueError):

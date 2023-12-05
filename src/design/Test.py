@@ -2,7 +2,7 @@ from datetime import datetime
 
 from db.get_new_test_id import get_new_test_id
 from db.get_user import get_user
-from design.data import get_all_scripts
+from utils.get_all_scripts import get_all_scripts
 from design.Item import Item
 from design.Job import Job
 from design.Script import Script

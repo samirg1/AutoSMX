@@ -2,19 +2,18 @@ import tkinter
 
 import customtkinter as ctk
 
-from utils.constants import ICON_PATH
+from utils.constants import APP_HEIGHT, APP_WIDTH
+from utils.set_icon import set_icon
 
 
 class Popup(ctk.CTkToplevel):
-    def __init__(self, master: tkinter.Misc | None, title: str, /, *, width: int = 360, height_factor: float = 0.75, columns: int = 1) -> None:
+    def __init__(self, master: tkinter.Misc | None, title: str, /, *, width: int = APP_WIDTH // 4, height_factor: float = 0.75, columns: int = 1) -> None:
         super().__init__(master)
         self.title(title)
-        self.after(201, lambda: self.iconbitmap(ICON_PATH))  # pyright: ignore
+        set_icon(self)
 
-        height = int(750 * height_factor)
-        start_height = (750 - height) // 2 + 10
-
-        self.geometry(f"{width}x{height}+{(1500 - width) // 2 + 10}+{start_height}")
+        height = int(APP_HEIGHT * height_factor)
+        self.geometry(f"{width}x{height}+{(APP_WIDTH - width) // 2}+{(APP_HEIGHT - height) // 2}")
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)

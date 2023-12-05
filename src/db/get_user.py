@@ -1,10 +1,9 @@
 import configparser
-import pathlib
 
-from utils.constants import BASE_FILE
+from utils.constants import BASE_PATH
 
 
 def get_user() -> str:
     parser = configparser.ConfigParser()
-    parser.read(pathlib.Path(BASE_FILE, "SMX.ini"))
+    parser.read(BASE_PATH / "SMX.ini")
     return parser.get("Misc", "LastUser")

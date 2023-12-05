@@ -9,6 +9,7 @@ from design.Part import Part
 from popups.Popup import Popup
 from popups.SearchPartPopup import SearchPartPopup
 from utils.constants import CTK_TEXT_START
+from utils.show_error import show_error
 
 
 class JobPopup(Popup):
@@ -66,7 +67,7 @@ class JobPopup(Popup):
         part_label.configure(text="Part not found" if part is None else part.description)
 
     def _search(self, part_var: ctk.StringVar) -> None:
-        SearchPartPopup(self, part_var, self.previous_parts).mainloop()
+        SearchPartPopup(self, part_var, self.previous_parts)
 
     def _save_job(self, department: str, contact: str, comment: str) -> None:
         part_quantities: list[tuple[Part, int]] = []
@@ -95,5 +96,5 @@ class JobPopup(Popup):
         self.destroy()
 
     def _show_error(self, title: str, message: str) -> None:
-        tkinter.messagebox.showerror(title, message)  # type: ignore
+        show_error(title, message)  # type: ignore
         self.focus()

@@ -10,7 +10,7 @@ from db.get_new_test_id import NoTestIDsError
 from db.get_overall_results import get_overall_results
 from design.Item import Item
 from design.Job import Job
-from design.Script import Script
+from design.Script import InvalidTesterNumberError, Script
 from design.Test import InvalidTestResultError, ScriptError, Test
 from pages.Page import Page
 from popups.JobPopup import JobPopup
@@ -19,6 +19,7 @@ from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.Tooltip import Tooltip
 from utils.add_focus_bindings import add_focus_bindings
 from utils.constants import CTK_TEXT_START, DEFAULT_TEXT_COLOUR_LABEL, ERROR_TEXT_COLOUR_LABEL, HORIZONTAL_LINE
+from utils.show_error import show_error
 
 
 class TestPage(Page):
@@ -110,7 +111,6 @@ class TestPage(Page):
 
         script_popup = ScriptSelectionPopup(self.frame, lambda s: self.display_test(test, s))
         script_popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(test.item.number))
-        script_popup.mainloop()
 
     def display_test(self, test: Test, script: Script | None = None) -> None:
         if script is not None:
@@ -137,13 +137,16 @@ class TestPage(Page):
         # displaying the script
         row = 8
         script = self.test.script
-        ctk.CTkLabel(self.frame, text=f"{script.name} ({script.number}/{script.tester_number})").grid(column=0, row=row, columnspan=8)
+        ctk.CTkLabel(self.frame, text=f"{script.name} #{script.number}").grid(column=0, row=row, columnspan=8)
+        self.tester_number = ctk.StringVar(value=script.tester_number)
+        ctk.CTkEntry(self.frame, textvariable=self.tester_number).grid(column=9, row=row)
         label_row = row + 1
         row += 1
 
         if script.nickname == "CEILING" and test.item.manufacturer == "MOLIFT":
             line = next(line for line in script.lines if line.number == 19)
             line.required = True
+            line.default = ""
 
         if test.completed:
             self.saved_script_answers = [line.result for line in test.script.lines]
@@ -221,7 +224,7 @@ class TestPage(Page):
         with self.storage.edit():
             item_room = self.item_room.get()
             if item_room != self.test.item.room:
-                room = self.item_room.get() or None
+                room = item_room or None
                 edit_item(self.test.item.number, {"room": room})
                 self.test.item.set_room(room)
 
@@ -235,8 +238,7 @@ class TestPage(Page):
         return self.reset_page(self.test.item.number)
 
     def add_job(self) -> None:
-        job_popup = JobPopup(self.frame, self.test_problem.department or "", self.test_problem.company, self.save_job, self.storage.previous_parts)
-        job_popup.mainloop()
+        JobPopup(self.frame, self.test_problem.department or "", self.test_problem.company, self.save_job, self.storage.previous_parts)
 
     def save_job(self, job: Job) -> None:
         self.comment.insert(ctk.END, job.test_comment + "\n\n")
@@ -266,16 +268,20 @@ class TestPage(Page):
         self.add_job_button.configure(text=add_job_text)
 
     def save_test(self, script_answers: list[str], result: str) -> None:
+        try:
+            self.test.script.set_tester_number(self.tester_number.get())
+        except InvalidTesterNumberError as e:
+            return show_error("Invalid tester number", f"{e}")
+        
+        self.test.script.set_tester_number(self.tester_number.get())
         comment = self.comment.get(CTK_TEXT_START, ctk.END)
         with self.storage.edit():
             try:
                 self.test.complete(comment, result, script_answers)
             except InvalidTestResultError as e:
-                tkinter.messagebox.showerror("Invalid Answers", f"{e}")  # type: ignore
-                return
+                return show_error("Invalid Answers", f"{e}") 
             except NoTestIDsError:
-                tkinter.messagebox.showerror("Error occured", "No test IDs left, perform a manual sync")  # type: ignore
-                return
+                return show_error("Error occured", "No test IDs left, perform a manual sync")
             if self.is_editing:
                 self.test_problem.remove_test(self.test)
             self.test_problem.add_test(self.test)
@@ -312,10 +318,10 @@ class TestPage(Page):
         default = [stest.default for stest in self.test.script.lines]
         with self.storage.edit() as storage:
             if actual_script_answers == default:
-                del storage.item_model_to_script_answers[self.test.item_model]
+                storage.item_model_to_script_answers.pop(self.test.item_model, None)
             else:
                 storage.item_model_to_script_answers[self.test.item_model] = actual_script_answers
 
     def item_not_found(self, current_item_number: str) -> None:
-        tkinter.messagebox.showerror("Not Found", f"Item number '{current_item_number}'")  # type: ignore
+        show_error("Not Found", f"Item number '{current_item_number}'")
         self.reset_page(current_item_number)

@@ -7,7 +7,7 @@ from design.ScriptLine import ScriptLine
 from utils.constants import DatabaseFilenames
 
 
-def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition_lines: set[int], required_lines: set[int], non_persistent_lines: set[int]) -> Script:
+def get_script(script_info: ScriptInfo) -> Script:
     with get_connection(DatabaseFilenames.LOOKUP) as connection:
         res = check_type(
             connection.execute(
@@ -66,8 +66,14 @@ def get_script(script_info: ScriptInfo, line_defaults: dict[int, str], condition
                 ):
                     break
 
-            line = ScriptLine(text, int(line_no), z_rv, *(text[0] for text in raw), required=(z_rv in required_lines), use_saved=(z_rv not in non_persistent_lines))
-            line.default = "1" if z_rv in condition_lines else line_defaults.get(z_rv, line.default)
+            line = ScriptLine(text, int(line_no), z_rv, *(text[0] for text in raw), required=(z_rv in script_info.required_fields), use_saved=(z_rv not in script_info.non_persistent_fields))
+            if script_info.condition_line is not None and z_rv == script_info.condition_line:
+                line.default = "1"
+                line.required = True
+                line.use_saved = False
+            else:
+                line.default = script_info.line_defaults.get(z_rv, line.default)
+
             lines.append(line)
 
     return Script(

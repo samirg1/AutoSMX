@@ -7,6 +7,7 @@ from pages.Page import Page
 from popups.ProblemEntryPopup import ProblemEntryPopup
 from popups.SyncPopup import SyncPopup
 from utils.add_focus_bindings import add_focus_bindings
+from utils.ask_for_confirmation import ask_for_confirmation
 from utils.constants import DEFAULT_TEXT_COLOUR_LABEL, HORIZONTAL_LINE, UNSYNCED_TEXT_COLOUR_LABEL
 
 
@@ -23,7 +24,9 @@ class ProblemPage(Page):
         for i, campus in enumerate(self.problems.keys(), start=1):
             add_button.bind(f"{i}", lambda _, campus=campus: self.add_tests(campus))  # type: ignore[misc]
             add_button.bind(f"<Alt-Key-{i}>", lambda _, campus=campus: self.delete_problem(campus))  # type: ignore[misc]
-        ctk.CTkButton(self.frame, text="Settings", command=lambda: self.change_page("SETTINGS")).grid(column=18, row=0, columnspan=1)
+        settings_button = ctk.CTkButton(self.frame, text="Settings", command=lambda: self.change_page("SETTINGS"))
+        settings_button.grid(column=18, row=0, columnspan=1)
+        add_button.bind("s", lambda _: settings_button.invoke())
         ctk.CTkButton(self.frame, text="Sync", command=self.sync).grid(row=0, column=19, columnspan=1)
         ctk.CTkLabel(self.frame, text=HORIZONTAL_LINE).grid(column=0, row=1, columnspan=20)
         row = 2
@@ -51,6 +54,7 @@ class ProblemPage(Page):
                 if synced != len(problem_jobs):
                     ctk.CTkLabel(self.frame, text=f" (+{len(problem_jobs) - synced})", text_color=UNSYNCED_TEXT_COLOUR_LABEL).grid(row=row, column=3, sticky=ctk.W, columnspan=19)
                 row += 1
+
                 for job in problem_jobs:
                     colour = DEFAULT_TEXT_COLOUR_LABEL if job.synced else UNSYNCED_TEXT_COLOUR_LABEL
                     item = self.storage.job_manager.job_to_item[job]
@@ -79,6 +83,9 @@ class ProblemPage(Page):
             self.frame.after(201, add_button.focus)
 
     def delete_problem(self, campus: str) -> None:
+        if not ask_for_confirmation("Are you sure?", "If you delete this problem the data stored within this application will be lost and you won't be able to make any more edits"):
+            return
+
         with self.storage.edit() as storage:
             problem = self.problems[campus]
             del storage.problems[problem.campus]
@@ -102,4 +109,4 @@ class ProblemPage(Page):
         self.change_page("TEST" if go_to_tests else "PROBLEM")
 
     def sync(self) -> None:
-        SyncPopup(self.frame, self.storage.problems).mainloop()
+        SyncPopup(self.frame, self.storage.problems)
