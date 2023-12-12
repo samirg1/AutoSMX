@@ -1,6 +1,6 @@
 import os
-import sys
 from tkinter import Misc
+from typing import Callable
 
 import customtkinter as ctk
 
@@ -12,8 +12,9 @@ from utils.constants import ERROR_TEXT_COLOUR_LABEL, SYNC_EXECUTABLE_PATH, SYNC_
 
 
 class SyncPopup(Popup):
-    def __init__(self, master: Misc | None, problems: dict[str, Problem]):
+    def __init__(self, master: Misc | None, problems: dict[str, Problem], callback: Callable[[], None] | None = None):
         super().__init__(master, "Sync", height_factor=0.8, columns=2)
+        self.callback = callback
         row = 0
 
         for problem in problems.values():
@@ -31,19 +32,17 @@ class SyncPopup(Popup):
                         ctk.CTkLabel(self.pop_frame, text=text).grid(column=0, row=row, columnspan=2, sticky=ctk.W)
                         row += 1
 
-        ctk.CTkButton(self.pop_frame, text="Sync", command=lambda: self._sync(problems)).grid(column=0, row=row, columnspan=2)
+        ctk.CTkButton(self.pop_frame, text="Sync", command=self._sync).grid(column=0, row=row, columnspan=2)
         row += 1
 
         if not connected_to_internet():
             ctk.CTkLabel(self.pop_frame, text="Not connected to internet", text_color=ERROR_TEXT_COLOUR_LABEL).grid(row=row, column=0, columnspan=2)
             row += 1
 
-    def _sync(self, problems: dict[str, Problem]) -> None:
-        if sys.platform == "win32":
-            SYNC_LOG_PATH.write_text("")
-            os.startfile(SYNC_EXECUTABLE_PATH)
-
-        for problem in problems.values():
-            problem.sync()
+    def _sync(self) -> None:
+        SYNC_LOG_PATH.write_text("")
+        os.startfile(SYNC_EXECUTABLE_PATH)
 
         self.destroy()
+        if self.callback:
+            self.callback()

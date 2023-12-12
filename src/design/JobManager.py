@@ -9,10 +9,14 @@ class JobManager:
         self.job_to_item: dict[Job, Item] = {}
 
     def add_job(self, item: Item, problem: Problem, job: Job) -> None:
+        if job in self.job_to_item:
+            return
         self.problem_to_jobs.setdefault(problem, []).append(job)
         self.job_to_item[job] = item
 
     def delete_job(self, problem: Problem, job: Job) -> None:
+        if job not in self.job_to_item:
+            return
         self.problem_to_jobs[problem].remove(job)
         del self.job_to_item[job]
 

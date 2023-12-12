@@ -9,13 +9,14 @@ from design.Part import Part
 from popups.Popup import Popup
 from popups.SearchPartPopup import SearchPartPopup
 from utils.constants import CTK_TEXT_START
-from utils.show_error import show_error
+from utils.tkinter.show_error import show_error
 
 
 class JobPopup(Popup):
-    def __init__(self, master: tkinter.Misc | None, default_dept: str, default_contact: str, save_job: Callable[[Job], None], previous_parts: Iterable[Part]) -> None:
+    def __init__(self, master: tkinter.Misc | None, default_dept: str, default_contact: str, room: str | None, save_job: Callable[[Job], None], previous_parts: Iterable[Part]) -> None:
         super().__init__(master, "Add Job", height_factor=0.5, columns=2)
         self.save_job = save_job
+        self.room = room or "Not found"
         self.previous_parts = previous_parts
 
         ctk.CTkLabel(self.pop_frame, text="Department").grid(column=0, row=0)
@@ -92,7 +93,7 @@ class JobPopup(Popup):
 
             part_quantities.append((part, number))
 
-        self.save_job(Job(department, contact, comment, part_quantities))
+        self.save_job(Job(department, contact, comment, self.room, part_quantities))
         self.destroy()
 
     def _show_error(self, title: str, message: str) -> None:

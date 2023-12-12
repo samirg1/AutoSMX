@@ -7,7 +7,8 @@ from typing import Literal
 
 APP_NAME = "AutoSMX"
 
-APPLICATION_PATH = ""  # os.path.dirname(sys.executable)
+IS_DEV_MODE = "--dev" in sys.argv
+APPLICATION_PATH = "" if IS_DEV_MODE else os.path.dirname(sys.executable)
 ICON_PATH = pathlib.Path(APPLICATION_PATH, "autosmx.ico")
 
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
@@ -17,6 +18,7 @@ APP_GEOMETRY = f"{APP_WIDTH}x{APP_HEIGHT}+0+0"
 
 OPTION_SELECT_POPUP_WIDTH = 1440
 ADD_SCRIPT_POPUP_WIDTH = 1080
+PART_POPUP_WIDTH = 1080
 
 PAGE_NAMES = Literal["PROBLEM", "TEST", "TUTORIAL", "SETTINGS", "SCRIPTS"]
 EDITABLE_ITEM_FIELDS = Literal["room"]
@@ -48,6 +50,8 @@ OFF = "off"
 BASE_PATH = pathlib.Path("~", "AppData", "Local", "SMXMobile").expanduser()
 SYNC_LOG_PATH = BASE_PATH / "SCMSync.log"
 SYNC_EXECUTABLE_PATH = pathlib.Path("C:\\Program Files (x86)", "SMX", "SCMSync.exe")
+
+PASS_WITH_CONDITIONS_RESULT = "Pass W/C"
 
 
 class DatabaseFilenames(StrEnum):

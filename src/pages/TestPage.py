@@ -17,9 +17,10 @@ from popups.JobPopup import JobPopup
 from popups.OptionSelectPopup import OptionSelectPopup
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.Tooltip import Tooltip
-from utils.add_focus_bindings import add_focus_bindings
-from utils.constants import CTK_TEXT_START, DEFAULT_TEXT_COLOUR_LABEL, ERROR_TEXT_COLOUR_LABEL, HORIZONTAL_LINE
-from utils.show_error import show_error
+from utils.tkinter.add_focus_bindings import add_focus_bindings
+from utils.tkinter.ask_for_confirmation import ask_for_confirmation
+from utils.constants import CTK_TEXT_START, DEFAULT_TEXT_COLOUR_LABEL, ERROR_TEXT_COLOUR_LABEL, HORIZONTAL_LINE, PASS_WITH_CONDITIONS_RESULT
+from utils.tkinter.show_error import show_error
 
 
 class TestPage(Page):
@@ -100,6 +101,12 @@ class TestPage(Page):
         popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(item.number))
 
     def get_script(self, test: Test, choose_script: bool) -> None:
+        if self.is_editing and test.synced:
+            if not ask_for_confirmation(
+                "Test is already synced", "This test and any jobs raised with it are already synced, any changes may result in unexpected behaviour, are you sure you want to continue?"
+            ):
+                return
+
         try:
             if not hasattr(test, "script"):
                 if choose_script:
@@ -144,9 +151,9 @@ class TestPage(Page):
         row += 1
 
         if script.nickname == "CEILING" and test.item.manufacturer == "MOLIFT":
-            line = next(line for line in script.lines if line.number == 19)
-            line.required = True
-            line.default = ""
+            lifts_line = next(line for line in script.lines if line.number == 19)
+            lifts_line.required = True
+            lifts_line.default = ""
 
         if test.completed:
             self.saved_script_answers = [line.result for line in test.script.lines]
@@ -169,7 +176,7 @@ class TestPage(Page):
         row += 3
 
         # adding jobs
-        self.add_job_button = ctk.CTkButton(self.frame, text="Add Job", command=self.add_job)
+        self.add_job_button = ctk.CTkButton(self.frame, text="Add Job", command=self.show_job_popup)
         self.delete_job_button = ctk.CTkButton(self.frame, text="X", width=1, command=self.delete_job)
         self.add_job_button.grid(column=9, row=label_row, columnspan=8)
         if len(self.test.jobs):
@@ -221,9 +228,9 @@ class TestPage(Page):
         label_row += 1
 
     def edit_item_room(self) -> None:
-        with self.storage.edit():
-            item_room = self.item_room.get()
-            if item_room != self.test.item.room:
+        item_room = self.item_room.get()
+        if item_room != self.test.item.room:
+            with self.storage.edit():
                 room = item_room or None
                 edit_item(self.test.item.number, {"room": room})
                 self.test.item.set_room(room)
@@ -237,28 +244,34 @@ class TestPage(Page):
         edit_test(self.test, self.test_problem, remove_only=True)
         return self.reset_page(self.test.item.number)
 
-    def add_job(self) -> None:
-        JobPopup(self.frame, self.test_problem.department or "", self.test_problem.company, self.save_job, self.storage.previous_parts)
+    def show_job_popup(self) -> None:
+        JobPopup(self.frame, self.test_problem.department or "", self.test_problem.company, self.test.item.room, self.add_job, self.storage.previous_parts)
 
-    def save_job(self, job: Job) -> None:
-        self.comment.insert(ctk.END, job.test_comment + "\n\n")
-        with self.storage.edit() as storage:
-            self.test.add_job(job)
-            storage.job_manager.add_job(self.test.item, self.test_problem, job)
-            for part, _ in job.part_quantities:
-                storage.previous_parts.add(part)
+    def add_job(self, job: Job) -> None:
+        to_insert = ""
+        if len(self.test.jobs) == 0:
+            if self.comment.get(CTK_TEXT_START, ctk.END).strip() == "":
+                to_insert = job.comment + "\n\n"
+            else:
+                to_insert = "\n\n" + job.comment + "\n\n"
+        else:
+            to_insert = job.comment + "\n\n"
+
+        self.comment.insert(ctk.END, to_insert)
+        self.test.add_job(job)
         self.add_job_button.configure(text=f"Add Job ({len(self.test.jobs)})")
         self.delete_job_button.grid(column=15, row=self.add_job_button.grid_info()["row"], sticky=ctk.E)
 
     def delete_job(self) -> None:
         if len(self.test.jobs) == 0:
             return
+
         with self.storage.edit() as storage:
             job = self.test.jobs.pop()
             storage.job_manager.delete_job(self.test_problem, job)
         current_comment = self.comment.get(CTK_TEXT_START, ctk.END).strip()
         self.comment.delete(CTK_TEXT_START, ctk.END)
-        self.comment.insert(ctk.END, current_comment.replace(job.test_comment, ""))
+        self.comment.insert(ctk.END, current_comment.replace(job.comment, ""))
 
         add_job_text = "Add Job"
         if not self.test.jobs:
@@ -272,28 +285,38 @@ class TestPage(Page):
             self.test.script.set_tester_number(self.tester_number.get())
         except InvalidTesterNumberError as e:
             return show_error("Invalid tester number", f"{e}")
-        
-        self.test.script.set_tester_number(self.tester_number.get())
-        comment = self.comment.get(CTK_TEXT_START, ctk.END)
-        with self.storage.edit():
+
+        if result == PASS_WITH_CONDITIONS_RESULT and not ask_for_confirmation(
+            "Confirm asset location", f"Please confirm that this asset location is '{self.test.item.room}', as it will be appended to any jobs added"
+        ):
+            return
+
+        with self.storage.edit() as storage:
+            for job in self.test.jobs:
+                storage.job_manager.add_job(self.test.item, self.test_problem, job)
+                for part, _ in job.part_quantities:
+                    storage.previous_parts.add(part)
+
+            self.test.script.set_tester_number(self.tester_number.get())
+            comment = self.comment.get(CTK_TEXT_START, ctk.END)
+
             try:
                 self.test.complete(comment, result, script_answers)
             except InvalidTestResultError as e:
-                return show_error("Invalid Answers", f"{e}") 
+                return show_error("Invalid Answers", f"{e}")
             except NoTestIDsError:
                 return show_error("Error occured", "No test IDs left, perform a manual sync")
             if self.is_editing:
                 self.test_problem.remove_test(self.test)
             self.test_problem.add_test(self.test)
 
-        if self.is_editing:
-            edit_test(self.test, self.test_problem)
-        else:
-            add_test(self.test, self.test_problem)
+            self.edit_item_room()
 
-        self.edit_item_room()
+            if self.is_editing:
+                edit_test(self.test, self.test_problem)
+            else:
+                add_test(self.test, self.test_problem)
 
-        with self.storage.edit() as storage:
             storage.total_tests += 1
             storage.test_breakdown[self.test.script.nickname] = storage.test_breakdown.get(self.test.script.nickname, 0) + 1
 

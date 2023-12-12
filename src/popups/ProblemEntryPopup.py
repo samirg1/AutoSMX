@@ -7,7 +7,7 @@ from db.get_problems import get_problems
 from design.Problem import Problem
 from popups.OptionSelectPopup import OptionSelectPopup
 from popups.Popup import Popup
-from utils.show_error import show_error
+from utils.tkinter.show_error import show_error
 
 
 class ProblemEntryPopup(Popup):

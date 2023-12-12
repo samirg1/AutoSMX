@@ -6,9 +6,10 @@ from design.Problem import Problem
 from pages.Page import Page
 from popups.ProblemEntryPopup import ProblemEntryPopup
 from popups.SyncPopup import SyncPopup
-from utils.add_focus_bindings import add_focus_bindings
-from utils.ask_for_confirmation import ask_for_confirmation
-from utils.constants import DEFAULT_TEXT_COLOUR_LABEL, HORIZONTAL_LINE, UNSYNCED_TEXT_COLOUR_LABEL
+from popups.Tooltip import Tooltip
+from utils.tkinter.add_focus_bindings import add_focus_bindings
+from utils.tkinter.ask_for_confirmation import ask_for_confirmation
+from utils.constants import DEFAULT_TEXT_COLOUR_LABEL, HORIZONTAL_LINE, PASS_WITH_CONDITIONS_RESULT, UNSYNCED_TEXT_COLOUR_LABEL
 
 
 class ProblemPage(Page):
@@ -47,21 +48,6 @@ class ProblemPage(Page):
                     ctk.CTkLabel(self.frame, text=f"- {open_problem}").grid(row=row, column=2, sticky=ctk.W, columnspan=18)
                     row += 1
 
-            problem_jobs = self.storage.job_manager.problem_to_jobs.get(problem, [])
-            if problem_jobs:
-                synced = sum(1 for job in problem_jobs if job.synced)
-                ctk.CTkLabel(self.frame, text=f"Jobs Raised ({synced})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
-                if synced != len(problem_jobs):
-                    ctk.CTkLabel(self.frame, text=f" (+{len(problem_jobs) - synced})", text_color=UNSYNCED_TEXT_COLOUR_LABEL).grid(row=row, column=3, sticky=ctk.W, columnspan=19)
-                row += 1
-
-                for job in problem_jobs:
-                    colour = DEFAULT_TEXT_COLOUR_LABEL if job.synced else UNSYNCED_TEXT_COLOUR_LABEL
-                    item = self.storage.job_manager.job_to_item[job]
-                    comment = job.comment.replace("\n", " | ")
-                    ctk.CTkLabel(self.frame, text=f"- {item.description} ({item.number}): {comment}", text_color=colour).grid(row=row, column=2, sticky=ctk.W, columnspan=18)
-                    row += 1
-
             if problem.tests:
                 synced = sum(1 for test in problem.tests if test.synced)
                 ctk.CTkLabel(self.frame, text=f"Tests ({synced})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
@@ -76,6 +62,43 @@ class ProblemPage(Page):
                     if unsynced != 0:
                         ctk.CTkLabel(self.frame, text=f" (+{unsynced})", text_color=UNSYNCED_TEXT_COLOUR_LABEL).grid(row=row, column=4, sticky=ctk.W, columnspan=18)
                     row += 1
+
+            problem_jobs = self.storage.job_manager.problem_to_jobs.get(problem, [])
+            if problem_jobs:
+                synced = sum(1 for job in problem_jobs if job.synced)
+                ctk.CTkLabel(self.frame, text=f"Jobs Raised ({synced})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
+                if synced != len(problem_jobs):
+                    ctk.CTkLabel(self.frame, text=f" (+{len(problem_jobs) - synced})", text_color=UNSYNCED_TEXT_COLOUR_LABEL).grid(row=row, column=3, sticky=ctk.W, columnspan=19)
+                row += 1
+
+                for job in problem_jobs:
+                    colour = DEFAULT_TEXT_COLOUR_LABEL if job.synced else UNSYNCED_TEXT_COLOUR_LABEL
+                    item = self.storage.job_manager.job_to_item[job]
+                    comment = job.comment.replace("\n", " | ")
+                    text = f"- {item.description} ({item.number}): {comment}"
+                    label = ctk.CTkLabel(self.frame, text=text, text_color=colour)
+                    label.grid(row=row, column=2, sticky=ctk.W, columnspan=18)
+                    Tooltip(label, text)
+                    row += 1
+
+                part_counts: dict[str, int] = {}
+                total_parts = 0
+                for test in problem.tests:
+                    if test.result != PASS_WITH_CONDITIONS_RESULT:
+                        continue
+
+                    for job in test.jobs:
+                        for part, quantity in job.part_quantities:
+                            key = f"{part.number}: {part.description}"
+                            part_counts[key] = part_counts.get(key, 0) + quantity
+                            total_parts += quantity
+
+                if part_counts:
+                    ctk.CTkLabel(self.frame, text=f"Parts Required ({total_parts})").grid(row=row, column=1, sticky=ctk.W, columnspan=19)
+                    row += 1
+                    for part, count in part_counts.items():
+                        ctk.CTkLabel(self.frame, text=f"- {count} X {part}").grid(row=row, column=2, sticky=ctk.W, columnspan=18)
+                        row += 1
 
             self.frame.rowconfigure(row, minsize=20)
             row += 1
@@ -103,10 +126,19 @@ class ProblemPage(Page):
             self.add_problem(self.problems[campus], go_to_tests=True)
 
     def add_problem(self, problem: Problem, *, go_to_tests: bool = False) -> None:
-        self.storage.problem = problem
         with self.storage.edit() as storage:
+            storage.problem = problem
             storage.problems[problem.campus] = problem
-        self.change_page("TEST" if go_to_tests else "PROBLEM")
+
+        page = "TEST" if go_to_tests else "PROBLEM"
+        self.change_page(page)
 
     def sync(self) -> None:
-        SyncPopup(self.frame, self.storage.problems)
+        SyncPopup(self.frame, self.storage.problems, self.sync_after)
+
+    def sync_after(self) -> None:
+        with self.storage.edit() as storage:
+            for problem in storage.problems.values():
+                problem.sync()
+
+        self.change_page("PROBLEM")

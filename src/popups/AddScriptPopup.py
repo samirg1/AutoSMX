@@ -12,7 +12,7 @@ from popups.Popup import Popup
 from popups.Tooltip import Tooltip
 from storage.Storage import Storage
 from utils.get_all_scripts import get_all_scripts
-from utils.show_error import show_error
+from utils.tkinter.show_error import show_error
 from utils.constants import ADD_SCRIPT_POPUP_WIDTH, OFF, ON
 
 
@@ -146,11 +146,13 @@ class AddScriptPopup(Popup):
         line_defaults: dict[int, str] = {}
         for line, a in zip(self.script.lines, self.answers):
             answer = a.get()
-            if (line.options and line.options[0] == answer):
+            if line.options and line.options[0] == answer:
                 continue
             line_defaults[line.z_rv] = answer
 
-        added = ScriptInfo(script_info.number, self.tester_number.get(), self.nickname.get(), line_defaults, condition_line=condition_line, required_fields=requireds, non_persistent_fields=non_persistents)
+        added = ScriptInfo(
+            script_info.number, self.tester_number.get(), self.nickname.get(), line_defaults, condition_line=condition_line, required_fields=requireds, non_persistent_fields=non_persistents
+        )
         with self.storage.edit() as storage:
             is_editing_existing_script = self.saved_script is not None
             if not is_editing_existing_script:
@@ -164,7 +166,7 @@ class AddScriptPopup(Popup):
                     storage.added_script_infos.append(added)
 
             storage.deleted_script_numbers.discard(added.number)
-        
+
         get_all_scripts(self.storage.added_script_infos, self.storage.deleted_script_numbers)
         if self.callback:
             self.callback()

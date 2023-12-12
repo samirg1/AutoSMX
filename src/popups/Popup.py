@@ -3,7 +3,7 @@ import tkinter
 import customtkinter as ctk
 
 from utils.constants import APP_HEIGHT, APP_WIDTH
-from utils.set_icon import set_icon
+from utils.tkinter.set_icon import set_icon
 
 
 class Popup(ctk.CTkToplevel):
