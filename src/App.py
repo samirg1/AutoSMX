@@ -9,7 +9,7 @@ from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
 from utils.constants import APP_GEOMETRY, APP_NAME, PAGE_NAMES, ImmutableDict
 from utils.get_all_scripts import get_all_scripts
-from utils.tkinter.set_icon import set_icon
+from utils.tkinter import set_icon
 
 
 class App(ctk.CTk):

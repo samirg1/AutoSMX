@@ -3,7 +3,7 @@ from design.Script import Script
 
 from pages.Page import Page
 from popups.AddScriptPopup import AddScriptPopup
-from utils.tkinter.ask_for_confirmation import ask_for_confirmation
+from utils.tkinter import ask_for_confirmation
 from utils.constants import HORIZONTAL_LINE
 from utils.get_all_scripts import get_all_scripts
 

@@ -17,10 +17,8 @@ from popups.JobPopup import JobPopup
 from popups.OptionSelectPopup import OptionSelectPopup
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.Tooltip import Tooltip
-from utils.tkinter.add_focus_bindings import add_focus_bindings
-from utils.tkinter.ask_for_confirmation import ask_for_confirmation
+from utils.tkinter import add_focus_bindings, ask_for_confirmation, show_error
 from utils.constants import CTK_TEXT_START, DEFAULT_TEXT_COLOUR_LABEL, ERROR_TEXT_COLOUR_LABEL, HORIZONTAL_LINE, PASS_WITH_CONDITIONS_RESULT
-from utils.tkinter.show_error import show_error
 
 
 class TestPage(Page):

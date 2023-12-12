@@ -7,8 +7,7 @@ from pages.Page import Page
 from popups.ProblemEntryPopup import ProblemEntryPopup
 from popups.SyncPopup import SyncPopup
 from popups.Tooltip import Tooltip
-from utils.tkinter.add_focus_bindings import add_focus_bindings
-from utils.tkinter.ask_for_confirmation import ask_for_confirmation
+from utils.tkinter import add_focus_bindings, ask_for_confirmation
 from utils.constants import DEFAULT_TEXT_COLOUR_LABEL, HORIZONTAL_LINE, PASS_WITH_CONDITIONS_RESULT, UNSYNCED_TEXT_COLOUR_LABEL
 
 

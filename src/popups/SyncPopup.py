@@ -9,6 +9,8 @@ from design.Problem import Problem
 from popups.Popup import Popup
 from utils.connected_to_internet import connected_to_internet
 from utils.constants import ERROR_TEXT_COLOUR_LABEL, SYNC_EXECUTABLE_PATH, SYNC_LOG_PATH
+from utils.is_sync_running import is_sync_running
+from utils.tkinter import show_error
 
 
 class SyncPopup(Popup):
@@ -40,6 +42,11 @@ class SyncPopup(Popup):
             row += 1
 
     def _sync(self) -> None:
+        if is_sync_running():
+            show_error("Sync running", "Sync is already running!")
+            self.after(201, self.lift)
+            return
+        
         SYNC_LOG_PATH.write_text("")
         os.startfile(SYNC_EXECUTABLE_PATH)
 

@@ -12,7 +12,7 @@ from popups.Popup import Popup
 from popups.Tooltip import Tooltip
 from storage.Storage import Storage
 from utils.get_all_scripts import get_all_scripts
-from utils.tkinter.show_error import show_error
+from utils.tkinter import show_error
 from utils.constants import ADD_SCRIPT_POPUP_WIDTH, OFF, ON
 
 

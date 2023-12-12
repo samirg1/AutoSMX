@@ -6,7 +6,7 @@ import customtkinter as ctk
 from utils.get_all_scripts import get_all_scripts
 from design.Script import Script
 from popups.Popup import Popup
-from utils.add_focus_bindings import add_focus_bindings
+from utils.tkinter import add_focus_bindings
 
 
 class ScriptSelectionPopup(Popup):

@@ -49,7 +49,8 @@ OFF = "off"
 
 BASE_PATH = pathlib.Path("~", "AppData", "Local", "SMXMobile").expanduser()
 SYNC_LOG_PATH = BASE_PATH / "SCMSync.log"
-SYNC_EXECUTABLE_PATH = pathlib.Path("C:\\Program Files (x86)", "SMX", "SCMSync.exe")
+SYNC_EXECUTABLE_NAME = "SCMSync.exe"
+SYNC_EXECUTABLE_PATH = pathlib.Path("C:\\Program Files (x86)", "SMX", SYNC_EXECUTABLE_NAME)
 
 PASS_WITH_CONDITIONS_RESULT = "Pass W/C"
 

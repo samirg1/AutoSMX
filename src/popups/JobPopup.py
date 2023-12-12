@@ -9,7 +9,7 @@ from design.Part import Part
 from popups.Popup import Popup
 from popups.SearchPartPopup import SearchPartPopup
 from utils.constants import CTK_TEXT_START
-from utils.tkinter.show_error import show_error
+from utils.tkinter import show_error
 
 
 class JobPopup(Popup):
