@@ -95,7 +95,7 @@ class TestPage(Page):
         if len(possible_tests) == 1:
             return self.get_script(possible_tests[0], choose_script)
 
-        popup = OptionSelectPopup(self.frame, possible_tests, lambda test: self.get_script(test, choose_script), display=lambda test: f"{test.script.nickname} - {test.date}")
+        popup = OptionSelectPopup(self.frame, possible_tests, lambda test: self.get_script(test, choose_script), display=lambda test: f"{test.script.name} - Result: {test.result} - Time: {test.date}")
         popup.protocol("WM_DELETE_WINDOW", lambda: self.reset_page(item.number))
 
     def get_script(self, test: Test, choose_script: bool) -> None:
@@ -288,16 +288,23 @@ class TestPage(Page):
             "Confirm asset location", f"Please confirm that this asset location is '{self.test.item.room}', as it will be appended to any jobs added"
         ):
             return
+        
+        previously_tested: list[Test] = []
+        for test in self.test_problem.tests:
+            if test.item.number == self.test.item.number:
+                previously_tested.append(test)
+        
+        if previously_tested and not ask_for_confirmation(
+            "Item previously tested",
+            "This item has been tested in this problem already are you sure you want to continue?\nPrevious tests:\n - " + "\n - ".join(f"{test.script.name}: {test.date}" for test in previously_tested)
+        ):
+            return
 
         with self.storage.edit() as storage:
-            for job in self.test.jobs:
-                storage.job_manager.add_job(self.test.item, self.test_problem, job)
-                for part, _ in job.part_quantities:
-                    storage.previous_parts.add(part)
-
+            self.edit_item_room()
             self.test.script.set_tester_number(self.tester_number.get())
-            comment = self.comment.get(CTK_TEXT_START, ctk.END)
 
+            comment = self.comment.get(CTK_TEXT_START, ctk.END)
             try:
                 self.test.complete(comment, result, script_answers)
             except InvalidTestResultError as e:
@@ -308,7 +315,10 @@ class TestPage(Page):
                 self.test_problem.remove_test(self.test)
             self.test_problem.add_test(self.test)
 
-            self.edit_item_room()
+            for job in self.test.jobs:
+                storage.job_manager.add_job(self.test.item, self.test_problem, job)
+                for part, _ in job.part_quantities:
+                    storage.previous_parts.add(part)
 
             if self.is_editing:
                 edit_test(self.test, self.test_problem)
