@@ -6,7 +6,7 @@ import customtkinter as ctk
 from utils.get_all_scripts import get_all_scripts
 from design.Script import Script
 from popups.Popup import Popup
-from utils.tkinter import add_focus_bindings
+from utils.tkinter import add_focus_bindings, set_frame_scroll
 
 
 class ScriptSelectionPopup(Popup):
@@ -28,9 +28,14 @@ class ScriptSelectionPopup(Popup):
             ctk.CTkLabel(self.pop_frame, text="No scripts added to be used, add some from the settings page.").grid(row=0, column=0)
 
     def _set_button_focus(self, current: int):
-        self.buttons[current - 1].unbind("<Down>")
-        self.after(100, self.buttons[current].focus)
-        self.buttons[current].bind("<Down>", lambda _: self._set_button_focus((current + 1) % len(self.buttons)))
+        previous_button, new_button = self.buttons[current - 1], self.buttons[current]
+        previous_button.unbind("<Down>")
+        previous_button.unbind("<Up>")
+        self.after(100, new_button.focus)
+        set_frame_scroll(self.pop_frame, new_button.winfo_y() - new_button.winfo_height())
+
+        new_button.bind("<Down>", lambda _: self._set_button_focus((current + 1) % len(self.buttons)))
+        new_button.bind("<Up>", lambda _: self._set_button_focus((current - 1) % len(self.buttons)))
 
     def _select_script(self, script: Script) -> None:
         self.master_select_script(script)

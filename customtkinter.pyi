@@ -1,5 +1,5 @@
 import tkinter
-from tkinter import _Anchor, _Cursor, _Relief, _ScreenUnits, Checkbutton, Tk, Toplevel, Misc, Variable, _TakeFocusValue, _ImageSpec  # pyright: ignore[reportPrivateUsage]
+from tkinter import _Anchor, _Cursor, _Relief, _ScreenUnits, Canvas, Checkbutton, Tk, Toplevel, Misc, Variable, _TakeFocusValue, _ImageSpec  # pyright: ignore[reportPrivateUsage]
 from tkinter.constants import *
 from tkinter.font import _FontDescription  # pyright: ignore[reportPrivateUsage]
 from tkinter.ttk import _Padding, _TtkCompound, Frame, Label, Button, Entry, Radiobutton  # pyright: ignore[reportPrivateUsage]
@@ -7,7 +7,8 @@ from typing import Any, Literal, overload
 
 class CTk(Tk): ...
 class CTkFrame(Frame): ...
-class CTkScrollableFrame(Frame): ...
+class CTkScrollableFrame(Frame): 
+    _parent_canvas: Canvas
 
 class CTkLabel(Label):
     def __init__(
