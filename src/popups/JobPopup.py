@@ -68,7 +68,7 @@ class JobPopup(Popup):
         part_label.configure(text="Part not found" if part is None else part.description)
 
     def _search(self, part_var: ctk.StringVar) -> None:
-        SearchPartPopup(self, part_var, self.previous_parts)
+        SearchPartPopup(self, self.previous_parts, part_var)
 
     def _save_job(self, department: str, contact: str, comment: str) -> None:
         part_quantities: list[tuple[Part, int]] = []

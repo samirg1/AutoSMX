@@ -16,7 +16,7 @@ class _Field(NamedTuple):
 
 
 class SearchPartPopup(Popup):
-    def __init__(self, master: Misc | None, callback_var: ctk.StringVar, previous_parts: Iterable[Part]) -> None:
+    def __init__(self, master: Misc | None, previous_parts: Iterable[Part], callback_var: ctk.StringVar | None = None) -> None:
         super().__init__(master, "Part Search", width=PART_POPUP_WIDTH, height_factor=0.75, columns=2)
         self.callback_var = callback_var
 
@@ -57,19 +57,20 @@ class SearchPartPopup(Popup):
             line.grid(row=row, column=0, sticky=ctk.EW, columnspan=2)
             label = ctk.CTkLabel(self.pop_frame, text=f"PN: {part.number} - {part.description}")
             label.grid(row=row + 1, column=0, sticky=ctk.W)
-            button = ctk.CTkButton(self.pop_frame, text="Go", command=lambda part=part: self._select_part(part))  # type: ignore[misc]
-            button.grid(row=row + 1, column=1)
-            row += 2
+            if self.callback_var is not None:
+                button = ctk.CTkButton(self.pop_frame, text="Go", command=lambda part=part: self._select_part(part, self.callback_var))  # type: ignore[misc]
+                button.grid(row=row + 1, column=1)
+                self.result_widgets.append(button)
 
             self.result_widgets.append(line)
             self.result_widgets.append(label)
-            self.result_widgets.append(button)
+            row += 2
 
         text = "Previously Used" if previous else f"Search Results ({(row - start) // 2})" if parts else ""
         label = ctk.CTkLabel(self.pop_frame, text=text)
         label.grid(row=start-1, column=0, columnspan=2, sticky=ctk.EW)
         self.result_widgets.append(label)
 
-    def _select_part(self, part: Part) -> None:
-        self.callback_var.set(part.number)
+    def _select_part(self, part: Part, callback_var: ctk.StringVar) -> None:
+        callback_var.set(part.number)
         self.destroy()
