@@ -7,9 +7,9 @@ from design.Test import Test
 @frozen(repr=False)
 class Problem:
     company: str = field(hash=False, eq=False)
-    campus: str
+    campus: str = field(hash=False, eq=False)
     department: str | None = field(hash=False, eq=False)
-    number: str = field(hash=False, eq=False)
+    number: str
     customer_number: str = field(hash=False, eq=False)
     get_open_problems: bool = field(default=True, hash=False, eq=False, kw_only=True)
     open_problems: list[OpenProblem] = field(factory=list, init=False, hash=False, eq=False)
