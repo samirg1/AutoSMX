@@ -6,7 +6,6 @@ import customtkinter as ctk
 from db.get_script import get_script
 from db.get_tester_numbers import get_tester_numbers
 from design.Script import Script
-from design.data import SCRIPT_INFOS
 from design.ScriptInfo import ScriptInfo
 from popups.Popup import Popup
 from popups.Tooltip import Tooltip
@@ -14,6 +13,7 @@ from storage.Storage import Storage
 from utils.get_all_scripts import get_all_scripts
 from utils.tkinter import show_error
 from utils.constants import ADD_SCRIPT_POPUP_WIDTH, OFF, ON
+from utils.script_infos import SCRIPT_INFOS
 
 
 class AddScriptPopup(Popup):

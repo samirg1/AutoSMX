@@ -2,7 +2,7 @@ from typing import Sequence
 from db.get_script import get_script
 from design.Script import Script
 from design.ScriptInfo import ScriptInfo
-from design.data import SCRIPT_INFOS
+from utils.script_infos import SCRIPT_INFOS
 from utils.constants import ImmutableDict
 
 
