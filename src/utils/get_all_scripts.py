@@ -15,7 +15,7 @@ def get_all_scripts(added_script_infos: Sequence[ScriptInfo] | None = None, dele
         if _all_scripts is None:
             raise ValueError("using empty argument 'get_all_scripts' when scripts have not been set")
         return _all_scripts
-    
+
     deleteds = deleteds or set()
     added_script_infos = added_script_infos or []
     script_infos = [info for info in SCRIPT_INFOS if info.number not in deleteds]

@@ -46,7 +46,7 @@ class SyncPopup(Popup):
             show_error("Sync running", "Sync is already running!")
             self.after(201, self.lift)
             return
-        
+
         SYNC_LOG_PATH.write_text("")
         os.startfile(SYNC_EXECUTABLE_PATH)
 

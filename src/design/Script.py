@@ -4,7 +4,6 @@ from db.get_tester_numbers import get_tester_numbers
 from design.ScriptLine import ScriptLine
 
 
-
 class InvalidTesterNumberError(ValueError):
     ...
 
@@ -26,7 +25,7 @@ class Script:
 
     def is_for(self, item_description: str) -> bool:
         return any(term in item_description for term in self.search_terms)
-    
+
     def set_tester_number(self, tester_number: str) -> None:
         if tester_number not in get_tester_numbers():
             raise InvalidTesterNumberError(f"Tester number '{tester_number}' not found for use for any user")

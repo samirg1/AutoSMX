@@ -1,4 +1,3 @@
-
 from typeguard import check_type
 from design.OpenProblem import OpenProblem
 

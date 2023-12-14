@@ -3,6 +3,7 @@ from attr import frozen, field
 
 from utils.constants import ImmutableDict
 
+
 def _immutabledict_converter(d: Mapping[int, str]) -> ImmutableDict[int, str]:
     return ImmutableDict(d)
 

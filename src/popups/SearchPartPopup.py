@@ -68,7 +68,7 @@ class SearchPartPopup(Popup):
 
         text = "Previously Used" if previous else f"Search Results ({(row - start) // 2})" if parts else ""
         label = ctk.CTkLabel(self.pop_frame, text=text)
-        label.grid(row=start-1, column=0, columnspan=2, sticky=ctk.EW)
+        label.grid(row=start - 1, column=0, columnspan=2, sticky=ctk.EW)
         self.result_widgets.append(label)
 
     def _select_part(self, part: Part, callback_var: ctk.StringVar) -> None:
