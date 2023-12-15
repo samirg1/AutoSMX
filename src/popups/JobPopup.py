@@ -9,7 +9,7 @@ from design.Part import Part
 from popups.Popup import Popup
 from popups.SearchPartPopup import SearchPartPopup
 from utils.constants import CTK_TEXT_START
-from utils.tkinter import show_error
+from utils.tkinter import show_error, UppercaseText, UppercaseEntry
 
 
 class JobPopup(Popup):
@@ -20,27 +20,27 @@ class JobPopup(Popup):
 
         ctk.CTkLabel(self.pop_frame, text="Department").grid(column=0, row=0)
         department = ctk.StringVar(value=default_dept)
-        ctk.CTkEntry(self.pop_frame, textvariable=department).grid(column=1, row=0)
+        UppercaseEntry(self.pop_frame, textvariable=department).grid(column=1, row=0)
 
         ctk.CTkLabel(self.pop_frame, text="Contact Name").grid(column=0, row=1)
         contact = ctk.StringVar(value=default_contact)
-        ctk.CTkEntry(self.pop_frame, textvariable=contact).grid(column=1, row=1)
+        UppercaseEntry(self.pop_frame, textvariable=contact).grid(column=1, row=1)
 
         ctk.CTkLabel(self.pop_frame, text="Comment").grid(column=0, row=2, columnspan=2, sticky=ctk.EW)
-        comment = tkinter.Text(self.pop_frame, height=4, width=100)
-        self.after(100, comment.focus)
-        comment.grid(column=0, row=3, columnspan=2)
+        self.comment = UppercaseText(self.pop_frame, height=4, width=100)
+        self.after(100, self.comment.focus)
+        self.comment.grid(column=0, row=3, columnspan=2)
 
         self.add_button = ctk.CTkButton(self.pop_frame, text="+", command=self._add_line)
         self.search_button = ctk.CTkButton(self.pop_frame, text="Search")
-        self.save_button = ctk.CTkButton(self.pop_frame, text="Save", command=lambda: self._save_job(department.get(), contact.get(), comment.get(CTK_TEXT_START, ctk.END)))
+        self.save_button = ctk.CTkButton(self.pop_frame, text="Save", command=lambda: self._save_job(department.get(), contact.get(), self.comment.get(CTK_TEXT_START, ctk.END)))
 
         self.part_entries: list[tuple[ctk.StringVar, ctk.StringVar]] = []
         self.row = 6
         self._add_line()
 
-        comment.bind("<Alt-s>", lambda _: self.save_button.invoke())
-        comment.bind("<Alt-c>", lambda _: self.destroy())
+        self.comment.bind("<Alt-s>", lambda _: self.save_button.invoke())
+        self.comment.bind("<Alt-c>", lambda _: self.destroy())
 
     def _add_line(self) -> None:
         part_var = ctk.StringVar()
@@ -61,6 +61,9 @@ class JobPopup(Popup):
 
         self.save_button.grid(column=0, row=self.row + 4, columnspan=2)
         self.row += 4
+
+        if len(self.part_entries) == 1:
+            self.comment.bind("<Tab>", lambda _: self.after(100, part_number.focus))
 
     def _get_part(self, part_var: ctk.StringVar, part_label: ctk.CTkLabel) -> None:
         part = get_parts(part_var.get())
@@ -96,5 +99,5 @@ class JobPopup(Popup):
         self.destroy()
 
     def _show_error(self, title: str, message: str) -> None:
-        show_error(title, message)  # type: ignore
+        show_error(title, message)
         self.focus()

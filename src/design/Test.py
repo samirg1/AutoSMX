@@ -58,7 +58,6 @@ class Test:
         for job in self.jobs:
             job.finalise(self.item.room or "Unknown")
 
-        comment = comment.strip()
         if result == "":
             raise InvalidTestResultError("Test result not selected")
 

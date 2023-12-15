@@ -1,5 +1,3 @@
-import tkinter
-
 import customtkinter as ctk
 
 from db.add_test import add_test
@@ -17,7 +15,7 @@ from popups.JobPopup import JobPopup
 from popups.OptionSelectPopup import OptionSelectPopup
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.Tooltip import Tooltip
-from utils.tkinter import add_focus_bindings, ask_for_confirmation, show_error
+from utils.tkinter import add_focus_bindings, ask_for_confirmation, show_error, UppercaseText, UppercaseEntry
 from utils.constants import CTK_TEXT_START, DEFAULT_TEXT_COLOUR_LABEL, ERROR_TEXT_COLOUR_LABEL, HORIZONTAL_LINE, PASS_WITH_CONDITIONS_RESULT
 
 
@@ -31,7 +29,7 @@ class TestPage(Page):
 
         ctk.CTkLabel(self.frame, text="Item Number").grid(column=0, row=1, columnspan=2)
         item_number = ctk.StringVar(value=self.test_problem.previous_item_number)
-        item_entry = ctk.CTkEntry(self.frame, textvariable=item_number)
+        item_entry = UppercaseEntry(self.frame, textvariable=item_number)
         item_entry.grid(column=2, row=1, sticky=ctk.W, columnspan=2)
         item_entry.focus()
         item_entry.icursor(ctk.END)
@@ -186,7 +184,7 @@ class TestPage(Page):
         # test comment
         ctk.CTkLabel(self.frame, text="Comment").grid(column=9, row=label_row, columnspan=8)
         label_row += 1
-        self.comment = tkinter.Text(self.frame, height=4)
+        self.comment = UppercaseText(self.frame, height=4)
         if self.test.comments:
             self.comment.insert(ctk.END, self.test.comments + "\n\n")
         self.comment.grid(column=9, row=label_row, columnspan=8, rowspan=3)
@@ -279,6 +277,7 @@ class TestPage(Page):
         self.add_job_button.configure(text=add_job_text)
 
     def save_test(self, script_answers: list[str], result: str) -> None:
+        self.comment.set_uppercase()
         try:
             self.test.script.set_tester_number(self.tester_number.get())
         except InvalidTesterNumberError as e:
@@ -306,7 +305,7 @@ class TestPage(Page):
             self.edit_item_room()
             self.test.script.set_tester_number(self.tester_number.get())
 
-            comment = self.comment.get(CTK_TEXT_START, ctk.END)
+            comment = self.comment.get(CTK_TEXT_START, ctk.END).strip()
             try:
                 self.test.complete(comment, result, script_answers)
             except InvalidTestResultError as e:
