@@ -243,7 +243,7 @@ class TestPage(Page):
         return self.reset_page(self.test.item.number)
 
     def show_job_popup(self) -> None:
-        JobPopup(self.frame, self.test_problem.department or "", self.test_problem.company, self.test.item.room, self.add_job, self.storage.previous_parts)
+        JobPopup(self.frame, self.test_problem.department or "", self.test_problem.company, self.add_job, self.storage.previous_parts)
 
     def add_job(self, job: Job) -> None:
         to_insert = ""
@@ -285,21 +285,22 @@ class TestPage(Page):
             return show_error("Invalid tester number", f"{e}")
 
         if result == PASS_WITH_CONDITIONS_RESULT and not ask_for_confirmation(
-            "Confirm asset location", f"Please confirm that this asset location is '{self.test.item.room}', as it will be appended to any jobs added"
+            "Confirm asset location", f"Please confirm that this asset location is '{self.item_room.get()}', as it will be appended to any jobs added"
         ):
             return
 
-        previously_tested: list[Test] = []
-        for test in self.test_problem.tests:
-            if test.item.number == self.test.item.number:
-                previously_tested.append(test)
+        if not self.is_editing:
+            previously_tested: list[Test] = []
+            for test in self.test_problem.tests:
+                if test.item.number == self.test.item.number:
+                    previously_tested.append(test)
 
-        if previously_tested and not ask_for_confirmation(
-            "Item previously tested",
-            "This item has been tested in this problem already are you sure you want to continue?\nPrevious tests:\n - "
-            + "\n - ".join(f"{test.script.name}: {test.date}" for test in previously_tested),
-        ):
-            return
+            if previously_tested and not ask_for_confirmation(
+                "Item previously tested",
+                "This item has been tested in this problem already are you sure you want to continue?\nPrevious tests:\n - "
+                + "\n - ".join(f"{test.script.name}: {test.date}" for test in previously_tested),
+            ):
+                return
 
         with self.storage.edit() as storage:
             self.edit_item_room()

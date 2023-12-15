@@ -55,6 +55,9 @@ class Test:
         self.jobs.append(job)
 
     def complete(self, comment: str, result: str, script_answers: list[str]) -> None:
+        for job in self.jobs:
+            job.finalise(self.item.room or "Unknown")
+
         comment = comment.strip()
         if result == "":
             raise InvalidTestResultError("Test result not selected")
