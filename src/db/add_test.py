@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from typeguard import check_type
+from typeguard import TypeCheckError, check_type
 
 from db.get_connection import get_connection
 from db.models import JobModel, ScriptLineModel, ScriptTesterModel, TestModel
@@ -33,18 +33,20 @@ def add_test(test: Test, problem: Problem) -> None:
                 (test.date, next_spt_date, test.item.number, test.script.service_type),
             )
 
-            services = check_type(
-                asset_connection.execute(
-                    """
-                    SELECT service_type, service_interval, service_last, service_next
-                    FROM DEVICEA4
-                    WHERE logical_name = ?;
-                    """,
-                    (test.item.number,),
-                ).fetchall(),
-                list[tuple[str, float, str, str]],
-            )
+            services = asset_connection.execute(
+                """
+                SELECT service_type, service_interval, service_last, service_next
+                FROM DEVICEA4
+                WHERE logical_name = ?;
+                """,
+                (test.item.number,),
+            ).fetchall()
 
+            try:
+                services = check_type(services, list[tuple[str, float, str, str]])
+            except TypeCheckError:
+                services = []
+                
             servicearray = "\n".join("^".join(f"{int(s) if isinstance(s, float) else s}" for s in service) + "^" for service in services)
 
             connection.execute(
