@@ -15,6 +15,7 @@ from popups.JobPopup import JobPopup
 from popups.OptionSelectPopup import OptionSelectPopup
 from popups.ScriptSelectionPopup import ScriptSelectionPopup
 from popups.Tooltip import Tooltip
+from utils.is_sync_running import is_sync_running
 from utils.tkinter import add_focus_bindings, ask_for_confirmation, show_error, UppercaseText, UppercaseEntry
 from utils.constants import CTK_TEXT_START, DEFAULT_TEXT_COLOUR_LABEL, ERROR_TEXT_COLOUR_LABEL, HORIZONTAL_LINE, PASS_WITH_CONDITIONS_RESULT
 
@@ -278,6 +279,9 @@ class TestPage(Page):
 
     def save_test(self, script_answers: list[str], result: str) -> None:
         self.comment.set_uppercase()
+        if is_sync_running():
+            return show_error("Cannot save test", f"Cannot save test while sync is running")
+
         try:
             self.test.script.set_tester_number(self.tester_number.get())
         except InvalidTesterNumberError as e:
