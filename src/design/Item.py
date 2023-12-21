@@ -16,7 +16,8 @@ class Item:
     serial: str | None = field(hash=False, eq=False)
     room: str | None = field(hash=False, eq=False)
     last_update: datetime | None = field(hash=False, eq=False, converter=convert_stringed_date)
-
+    listed_location: str = field(hash=False, eq=False)
+    
     def __repr__(self) -> str:
         return f"{self.number} - {self.description}"
 

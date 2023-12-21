@@ -10,13 +10,13 @@ def get_items(item_number: str) -> list[Item]:
         item_fields = check_type(
             connection.execute(
                 """
-                SELECT logical_name, customer_barcode, description, model, manufacturer, serial_no_, room, last_spt_date
+                SELECT logical_name, customer_barcode, description, model, manufacturer, serial_no_, room, last_spt_date, location
                 FROM devicem1_PS
                 WHERE logical_name LIKE ?;
                 """,
                 (item_number + "%",),
             ).fetchall(),
-            list[tuple[str, str | None, str | None, str | None, str | None, str | None, str | None, str | None]],
+            list[tuple[str, str | None, str | None, str | None, str | None, str | None, str | None, str | None, str]],
         )
 
     return [Item(*fields) for fields in item_fields]

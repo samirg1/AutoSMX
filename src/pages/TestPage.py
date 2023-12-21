@@ -102,7 +102,13 @@ class TestPage(Page):
             if not ask_for_confirmation(
                 "Test is already synced", "This test and any jobs raised with it are already synced, any changes may result in unexpected behaviour, are you sure you want to continue?"
             ):
-                return
+                return self.reset_page(test.item.number)
+            
+        if test.item.listed_location != self.test_problem.campus:
+            if not ask_for_confirmation(
+                "Item location does not match", f"The item's listed location ({test.item.listed_location}) does not match problem's location ({self.test_problem.campus}), are you sure you want to continue?"
+            ):
+                return self.reset_page(test.item.number)
 
         try:
             if not hasattr(test, "script"):
