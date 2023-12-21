@@ -1,79 +1,46 @@
-from io import StringIO
-from itertools import zip_longest
-from tkinter import ttk
 from tkinter.font import Font
+import webbrowser
 
 import customtkinter as ctk
 
 from pages.Page import Page
-
-_TUTORIAL = {
-    "Quick Start": "After this tutorial you will be taken to the Problem Page. \
-        This is the first and main page of the application. \
-            To add a problem, click the '+' button on the top row, enter in the problem number and then press Enter or hit 'Add' \
-                This will take you to the item entry screen where you can input item numbers.",
-    "Enter Asset": "Enter the item into the program, then click 'Go' / press Enter. \
-        The program will then search for the item's script. \
-            Do not press 'Choose' unless the program has failed to find the script or unless you need to choose a script different from normal.\
-                The program will try and determine the script needed for this item, make sure this is correct before proceeding. \
-                    The program will also determine the location information to keep as context to the tests.",
-    "Edit Script": "Edit the script values, add a job by click the 'Add Job' button, add comments and anything else that is needed for the test. \
-        The defaulted script values are those deemed to be the most common for the specific script. \
-            If you change the script values from the default for a specifc item-model, the program will remember this next time you test that item-model.",
-    "Adding a Job": "Adding a job is made easier as the problem information is used to fill in the contact and department fields. \
-        Saving a job also pastes the comments from that job into the overall comments for the test (without any part numbers it can find). \
-            If you accidentally add a job, press the 'X' button to delete the most recently added job. ",
-    "Save Test": "Ensure values of the script are correct before clicking 'Save' (or press Enter straight away), this will save the test. \
-        The program will wait for the test to complete, once it has, it will save the results and return to the item entry screen.",
-    "Edit Test": "If you need to edit a test, enter the item number before clicking the 'Edit Test' button. \
-        The program will ensure that you cannot edit a test that you have not completed. \
-            Once you select edit, the script values will show as normal and you can edit and save them just like you would normally.",
-    "Problem Page": "Each problem you have entered while the program is open will show all the details including the amount of tests, with a breakdown by script, and any jobs raised. \
-        Select a problem (or anything inside of it) and press the 'Enter Job' button to keep adding items into that problem. \
-            Select a problem and press the 'Delete Problem' button to remove the problem from view. \
-                To start add new problem, press the '+' button, enter a problem number and press 'Add'. \
-                    These problems that are displayed serve only as helpers to show test breakdowns and jobs raised at each site, as well as help fill in job fields in the tests. ",
-    "Troubleshooting": "If the program incorrectly selects the script, press 'Cancel' and then select 'Choose' to manually select the script. \
-        If the program is glitching or bugging and you don't believe SMX is the issue, try restarting the program. \
-            If the problem persists raise an issue by sending an email to the developer. \
-                Please ensure you include any error messages as well as a description of the problem and how to reproduce it. \
-                      If you need see this tutorial again, navigate to the Problem page and click on the Settings button to access it.",
-}
+from utils.constants import APP_WIDTH, HORIZONTAL_LINE, TUTORIAL_PATH
 
 
 class TutorialPage(Page):
     def setup(self) -> None:
-        if self.storage.tutorial_complete:
-            return self.change_page("PROBLEM")
+        # if self.storage.tutorial_complete:
+        #     return self.change_page("PROBLEM")
 
-        ctk.CTkLabel(self.frame, text="Tutorial Page").grid(row=0, column=0, sticky=ctk.EW)
-        ctk.CTkButton(self.frame, text="Skip", command=self.end_tutorial).grid(row=0, column=3)
+        ctk.CTkLabel(self.frame, text="Tutorial Page").grid(row=0, column=0, sticky=ctk.EW, columnspan=16)
+        ctk.CTkButton(self.frame, text="View File", command=lambda: webbrowser.open(str(TUTORIAL_PATH))).grid(row=0, column=17)
+        ctk.CTkButton(self.frame, text="Skip", command=self._end_tutorial).grid(row=0, column=19)
 
-        self.frame.rowconfigure(1, minsize=20)
+        with open(TUTORIAL_PATH) as f:
+            tutorial = f.readlines()
 
-        # tree setup
-        tree = ttk.Treeview(self.frame, columns=("#1"), show="tree", height=15, selectmode=ctk.NONE)
-        style = ttk.Style(self.frame)
-        style.configure("Treeview", rowheight=60)  # pyright: ignore[reportUnknownMemberType]
-        tree.column("#0", width=0)
-        column = tree.column(tree["columns"][0])
-        assert column
+        lines: list[str] = []
+        for line in tutorial:
+            new_lines = self._adjust_newlines(line, APP_WIDTH)
+            lines.extend(line for line in new_lines if line)
 
-        for section_name, section in _TUTORIAL.items():
-            section_node = tree.insert("", ctk.END, values=(section_name,), open=True)
-            text_lines = self.adjust_newlines(section, column["width"])
-            for group in zip_longest(*(iter(text_lines),) * 3, fillvalue=" "):
-                text = StringIO()
-                for i, line in enumerate(group):
-                    text.write(line + ("\n" if i != len(group) - 1 else ""))
-                tree.insert(section_node, ctk.END, values=(text.getvalue(),))
+        row = 1
+        for line in lines:
+            if line.startswith("# "):
+                ctk.CTkLabel(self.frame, text=HORIZONTAL_LINE).grid(row=row, column=0, sticky=ctk.EW, columnspan=20)
+                ctk.CTkLabel(self.frame, text=line[2:], font=("Helvetica", 18, "bold")).grid(row=row + 1, column=0, columnspan=20)
+                ctk.CTkLabel(self.frame, text=HORIZONTAL_LINE).grid(row=row + 2, column=0, sticky=ctk.EW, columnspan=20)
+                row += 2
+            elif line.startswith("### "):
+                ctk.CTkLabel(self.frame, text="").grid(row=row, column=0, sticky=ctk.EW, columnspan=20)
+                ctk.CTkLabel(self.frame, text=line[4:], font=("Helvetica", 16)).grid(row=row + 1, column=0, columnspan=20)
+                row += 1
+            else:
+                line = line if not line.startswith("- ") else "\t" + line
+                ctk.CTkLabel(self.frame, text=line).grid(row=row, column=0, sticky=ctk.W, columnspan=20)
+            row += 1
 
-        scrollbar_y = ttk.Scrollbar(self.frame, orient=ctk.VERTICAL, command=tree.yview)  # pyright: ignore
-        tree.configure(yscroll=scrollbar_y.set)  # type: ignore
-        scrollbar_y.grid(row=2, column=4, sticky=ctk.NS)
-        tree.grid(row=2, column=0, columnspan=4, sticky=ctk.EW)
-
-    def adjust_newlines(self, val: str, width: int) -> list[str]:
+    def _adjust_newlines(self, val: str, width: int) -> list[str]:
         font = Font(font="TkDefaultFont")
         words = val.split()
         lines: list[str] = [""]
@@ -86,7 +53,7 @@ class TutorialPage(Page):
 
         return lines
 
-    def end_tutorial(self) -> None:
+    def _end_tutorial(self) -> None:
         with self.storage.edit() as storage:
             storage.tutorial_complete = True
         self.change_page("PROBLEM")

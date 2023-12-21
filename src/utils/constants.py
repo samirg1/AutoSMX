@@ -10,6 +10,7 @@ APP_NAME = "AutoSMX"
 IS_DEV_MODE = "--dev" in sys.argv
 APPLICATION_PATH = "" if IS_DEV_MODE else os.path.dirname(sys.executable)
 ICON_PATH = pathlib.Path(APPLICATION_PATH, "autosmx.ico")
+TUTORIAL_PATH = pathlib.Path(APPLICATION_PATH, "src", "pages", "tutorial.md")
 
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 APP_WIDTH = SCREEN_WIDTH - 410
