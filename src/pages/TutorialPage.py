@@ -9,8 +9,8 @@ from utils.constants import APP_WIDTH, HORIZONTAL_LINE, TUTORIAL_PATH
 
 class TutorialPage(Page):
     def setup(self) -> None:
-        # if self.storage.tutorial_complete:
-        #     return self.change_page("PROBLEM")
+        if self.storage.tutorial_complete:
+            return self.change_page("PROBLEM")
 
         ctk.CTkLabel(self.frame, text="Tutorial Page").grid(row=0, column=0, sticky=ctk.EW, columnspan=16)
         ctk.CTkButton(self.frame, text="View File", command=lambda: webbrowser.open(str(TUTORIAL_PATH))).grid(row=0, column=17)
