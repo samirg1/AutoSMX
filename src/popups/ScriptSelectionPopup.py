@@ -3,7 +3,7 @@ from typing import Callable
 
 import customtkinter as ctk
 
-from utils.get_all_scripts import get_all_scripts
+from utils.get_available_scripts import get_available_scripts
 from design.Script import Script
 from popups.Popup import Popup
 from utils.tkinter import add_focus_bindings, set_frame_scroll
@@ -15,7 +15,7 @@ class ScriptSelectionPopup(Popup):
         self.focus()
         self.master_select_script = master_select_script
         self.buttons: list[ctk.CTkButton] = []
-        for i, script in enumerate(get_all_scripts().values()):
+        for i, script in enumerate(get_available_scripts().values()):
             button = ctk.CTkButton(self.pop_frame, text=script.name, command=lambda script=script: self._select_script(script))  # type: ignore[misc]
             button.grid(column=0, row=i, columnspan=2, sticky=ctk.W)
             add_focus_bindings(button)

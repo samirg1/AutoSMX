@@ -2,15 +2,17 @@ import tkinter
 from typing import Callable
 
 import customtkinter as ctk
+from db.get_all_scripts import get_all_scripts
 
 from db.get_script import get_script
 from db.get_tester_numbers import get_tester_numbers
 from design.Script import Script
 from design.ScriptInfo import ScriptInfo
+from popups.OptionSelectPopup import OptionSelectPopup
 from popups.Popup import Popup
 from popups.Tooltip import Tooltip
 from storage.Storage import Storage
-from utils.get_all_scripts import get_all_scripts
+from utils.get_available_scripts import get_available_scripts
 from utils.tkinter import show_error
 from utils.constants import ADD_SCRIPT_POPUP_WIDTH, OFF, ON
 from utils.script_infos import SCRIPT_INFOS
@@ -24,31 +26,33 @@ class AddScriptPopup(Popup):
         self.callback = callback
 
         ctk.CTkLabel(self.pop_frame, text="Script Basics").grid(column=0, row=0, columnspan=8, sticky=ctk.EW)
-        number = ctk.StringVar(value=str(script.number) if script else "")
+        self.number = ctk.StringVar(value=str(script.number) if script else "")
         number_label = ctk.CTkLabel(self.pop_frame, text="Number")
         number_label.grid(column=0, row=1)
         Tooltip(number_label, "The script number, this is shown on the right in SMX when viewing scripts")
-        self.entry = ctk.CTkEntry(self.pop_frame, textvariable=number)
+        self.entry = ctk.CTkEntry(self.pop_frame, textvariable=self.number)
         self.entry.grid(column=1, row=1)
+        self.select_button = ctk.CTkButton(self.pop_frame, text="Select", command=self._select_script)
+        self.select_button.grid(column=2, row=1)
 
         self.tester_number = ctk.StringVar(value=script.tester_number if script else "")
         tester_label = ctk.CTkLabel(self.pop_frame, text="Tester Number")
-        tester_label.grid(column=2, row=1)
+        tester_label.grid(column=3, row=1)
         Tooltip(
             tester_label,
             "The default tester number to test with (e.g. 9999TEST, 11083TEST etc.) this shows up on the right in red when you select the script in SMX, you can edit this during testing.",
         )
-        ctk.CTkEntry(self.pop_frame, textvariable=self.tester_number).grid(column=3, row=1)
+        ctk.CTkEntry(self.pop_frame, textvariable=self.tester_number).grid(column=4, row=1)
 
         self.nickname = ctk.StringVar(value=script.nickname if script else "")
         nickname_label = ctk.CTkLabel(self.pop_frame, text="Nickname")
-        nickname_label.grid(column=4, row=1)
+        nickname_label.grid(column=5, row=1)
         Tooltip(nickname_label, "Your own nickname for the script")
         nickname_entry = ctk.CTkEntry(self.pop_frame, textvariable=self.nickname)
-        nickname_entry.grid(column=5, row=1)
+        nickname_entry.grid(column=6, row=1)
 
-        self.go = ctk.CTkButton(self.pop_frame, text="Go", command=lambda: self._get_script(number.get(), self.tester_number.get(), self.nickname.get()))
-        self.go.grid(column=6, row=1)
+        self.go = ctk.CTkButton(self.pop_frame, text="Go", command=lambda: self._get_script(self.number.get(), self.tester_number.get(), self.nickname.get()))
+        self.go.grid(column=7, row=1)
 
         nickname_entry.bind("<Return>", lambda _: self.go.invoke())
         self.after(100, self.entry.focus)
@@ -59,6 +63,7 @@ class AddScriptPopup(Popup):
     def _get_script(self, number: str, tester_number: str, nickname: str) -> None:
         self.entry.configure(state="disabled")
         self.go.configure(state="disabled")
+        self.select_button.configure(state="disabled")
 
         if tester_number == "":
             return self._show_error("Invalid input", "Tester number required")
@@ -119,6 +124,12 @@ class AddScriptPopup(Popup):
 
         ctk.CTkButton(self.pop_frame, text="Save Script", command=lambda: self.save_script(script_info)).grid(row=row, column=0, columnspan=8, sticky=ctk.EW)
 
+    def _select_script(self) -> None:
+        OptionSelectPopup(self, get_all_scripts(), self.select, lambda n: f"{n[0]}: {n[1]}")
+
+    def select(self, info: tuple[int, str]) -> None:
+        self.number.set(str(info[0]))
+
     def set_required(self, i: int) -> None:
         self.requireds[i].set(ON)
         self.non_persistents[i].set(OFF)
@@ -167,7 +178,7 @@ class AddScriptPopup(Popup):
 
             storage.deleted_script_numbers.discard(added.number)
 
-        get_all_scripts(self.storage.added_script_infos, self.storage.deleted_script_numbers)
+        get_available_scripts(self.storage.added_script_infos, self.storage.deleted_script_numbers)
         if self.callback:
             self.callback()
         self.destroy()

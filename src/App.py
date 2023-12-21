@@ -8,7 +8,7 @@ from pages.TestPage import TestPage
 from pages.TutorialPage import TutorialPage
 from storage.Storage import Storage
 from utils.constants import APP_GEOMETRY, APP_NAME, PAGE_NAMES, ImmutableDict
-from utils.get_all_scripts import get_all_scripts
+from utils.get_available_scripts import get_available_scripts
 from utils.tkinter import set_icon
 
 
@@ -28,7 +28,7 @@ class App(ctk.CTk):
             for info in storage.added_script_infos:
                 if info.number in storage.deleted_script_numbers:
                     storage.added_script_infos.remove(info)
-        get_all_scripts(storage.added_script_infos, storage.deleted_script_numbers)
+        get_available_scripts(storage.added_script_infos, storage.deleted_script_numbers)
 
         self.frame = ctk.CTkScrollableFrame(self)
         for i in range(20):

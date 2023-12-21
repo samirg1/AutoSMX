@@ -2,7 +2,7 @@ from datetime import datetime
 
 from db.get_new_test_id import get_new_test_id
 from db.get_user import get_user
-from utils.get_all_scripts import get_all_scripts
+from utils.get_available_scripts import get_available_scripts
 from design.Item import Item
 from design.Job import Job
 from design.Script import Script
@@ -41,11 +41,11 @@ class Test:
 
     def determine_script(self) -> Script:
         if self.item.description and self.item.description != "":
-            for script in get_all_scripts().values():
+            for script in get_available_scripts().values():
                 if self.item.description in script.exact_matches:
                     return script
 
-            for script in get_all_scripts().values():
+            for script in get_available_scripts().values():
                 if script.is_for(self.item.description):
                     return script
 

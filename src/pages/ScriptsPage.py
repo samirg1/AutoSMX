@@ -5,12 +5,12 @@ from pages.Page import Page
 from popups.AddScriptPopup import AddScriptPopup
 from utils.tkinter import ask_for_confirmation
 from utils.constants import HORIZONTAL_LINE
-from utils.get_all_scripts import get_all_scripts
+from utils.get_available_scripts import get_available_scripts
 
 
 class ScriptsPage(Page):
     def setup(self):
-        scripts = get_all_scripts()
+        scripts = get_available_scripts()
 
         ctk.CTkLabel(self.frame, text="All Scripts").grid(column=1, row=0, columnspan=16)
         ctk.CTkButton(self.frame, text="<", command=lambda: self.change_page("SETTINGS")).grid(column=0, row=0, columnspan=1)
@@ -32,7 +32,7 @@ class ScriptsPage(Page):
 
         with self.storage.edit() as storage:
             storage.deleted_script_numbers.add(number)
-        get_all_scripts(self.storage.added_script_infos, self.storage.deleted_script_numbers)
+        get_available_scripts(self.storage.added_script_infos, self.storage.deleted_script_numbers)
         self.reset_page()
 
     def reset_scripts(self) -> None:
@@ -41,7 +41,7 @@ class ScriptsPage(Page):
 
         with self.storage.edit() as storage:
             storage.deleted_script_numbers = set()
-        get_all_scripts(deleteds=self.storage.deleted_script_numbers)
+        get_available_scripts(deleteds=self.storage.deleted_script_numbers)
         self.reset_page()
 
     def reset_page(self) -> None:
