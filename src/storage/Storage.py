@@ -25,7 +25,7 @@ class Storage:
         "total_tests",
         "test_breakdown",
         "previous_parts",
-        "item_model_to_script_answers",
+        "model_defaults",
         "added_script_infos",
         "deleted_script_numbers",
     )
@@ -41,7 +41,7 @@ class Storage:
         self.total_tests = 0
         self.test_breakdown: dict[str, int] = {}
         self.previous_parts: MRUList[Part] = MRUList()
-        self.item_model_to_script_answers: dict[ItemModel, list[str]] = {}
+        self.model_defaults: dict[ItemModel, list[str]] = {}
         self.added_script_infos: list[ScriptInfo] = []
         self.deleted_script_numbers: set[int] = set()
 

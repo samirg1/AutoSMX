@@ -103,10 +103,11 @@ class TestPage(Page):
                 "Test is already synced", "This test and any jobs raised with it are already synced, any changes may result in unexpected behaviour, are you sure you want to continue?"
             ):
                 return self.reset_page(test.item.number)
-            
+
         if test.item.listed_location != self.test_problem.campus:
             if not ask_for_confirmation(
-                "Item location does not match", f"The item's listed location ({test.item.listed_location}) does not match problem's location ({self.test_problem.campus}), are you sure you want to continue?"
+                "Item location does not match",
+                f"The item's listed location ({test.item.listed_location}) does not match problem's location ({self.test_problem.campus}), are you sure you want to continue?",
             ):
                 return self.reset_page(test.item.number)
 
@@ -161,7 +162,7 @@ class TestPage(Page):
         if test.completed:
             self.saved_script_answers = [line.result for line in test.script.lines]
         else:
-            stored_answers = self.storage.item_model_to_script_answers.get(self.test.item_model)
+            stored_answers = self.storage.model_defaults.get(self.test.item_model)
             self.saved_script_answers = stored_answers or [stest.default for stest in script.lines]
 
         actual_answers = [ctk.StringVar(value=ans) for ans in self.saved_script_answers]
@@ -360,9 +361,9 @@ class TestPage(Page):
         default = [stest.default for stest in self.test.script.lines]
         with self.storage.edit() as storage:
             if actual_script_answers == default:
-                storage.item_model_to_script_answers.pop(self.test.item_model, None)
+                storage.model_defaults.pop(self.test.item_model, None)
             else:
-                storage.item_model_to_script_answers[self.test.item_model] = actual_script_answers
+                storage.model_defaults[self.test.item_model] = actual_script_answers
 
     def item_not_found(self, current_item_number: str) -> None:
         show_error("Not Found", f"Item number '{current_item_number}'")

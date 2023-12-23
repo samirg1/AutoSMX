@@ -75,7 +75,7 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], pathlib.Pat
         storage.total_tests += 1
         storage.test_breakdown["test"] = 1
         storage.tutorial_complete = True
-        storage.item_model_to_script_answers["test"] = ["test"]
+        storage.model_defaults["test"] = ["test"]
 
     with open(file, mode="rb") as f:
         data = pickle.load(f)
@@ -88,7 +88,7 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], pathlib.Pat
     assert storage2.total_tests == 1
     assert storage2.test_breakdown == {"test": 1}
     assert storage2.tutorial_complete
-    assert storage2.item_model_to_script_answers == {"test": ["test"]}
+    assert storage2.model_defaults == {"test": ["test"]}
 
     with pytest.raises(AttributeError):
         storage2.x = 1  # type: ignore
@@ -96,6 +96,7 @@ def test_storage_edit_and_save(get_file_for_testing: Callable[[str], pathlib.Pat
 
 class DumpException(Exception):
     ...
+
 
 @pytest.fixture
 def mock_pickle_dump(monkeypatch: pytest.MonkeyPatch) -> None:
