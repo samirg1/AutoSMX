@@ -4,6 +4,7 @@ from db.get_new_test_id import get_new_test_id
 from db.get_user import get_user
 from utils.get_available_scripts import get_available_scripts
 from design.Item import Item
+from design.ItemModel import ItemModel
 from design.Job import Job
 from design.Script import Script
 from utils.get_sysmodtime import get_sysmodtime
@@ -36,8 +37,8 @@ class Test:
         return False
 
     @property
-    def item_model(self) -> str:
-        return f"{self.script.name} -> {self.item.model}"
+    def item_model(self) -> ItemModel:
+        return ItemModel(self.script.name, self.item.model or "")
 
     def determine_script(self) -> Script:
         if self.item.description and self.item.description != "":
